@@ -1,9 +1,15 @@
+server:
+  port: 8080
+
 spring:
+  profiles:
+    default: dev
+
   datasource:
-    url: jdbc:mysql://localhost:3306/TImeCAlling
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
       mode: never
@@ -17,3 +23,43 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+
+---
+server:
+  port: 8081
+
+spring:
+  config:
+    activate:
+      on-profile: create
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create
+---
+server:
+  port: 8082
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+---
+server:
+  port: 8083
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
