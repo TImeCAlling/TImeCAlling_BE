@@ -42,10 +42,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: docker image build
-        run: docker build -f Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/TImeCAlling .
+        run: docker build -f Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/timecalling .
 
       - name: docker Hub push
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/TImeCAlling
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/timecalling
 
       - name: Deploy to EC2  # EC2에 배포
         uses: appleboy/ssh-action@master
@@ -55,6 +55,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo docker rm -f $(sudo docker ps -qa) || true
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/TImeCAlling
-            sudo docker run -d -p 8080:8080 --name TImeCAlling ${{ secrets.DOCKERHUB_USERNAME }}/TImeCAlling
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/timecalling
+            sudo docker run -d -p 8080:8080 --name TImeCAlling ${{ secrets.DOCKERHUB_USERNAME }}/timecalling
             sudo docker image prune -f
