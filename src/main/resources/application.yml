@@ -39,19 +39,6 @@ spring:
           auto: create
 ---
 server:
-  port: 8082
-
-spring:
-  config:
-    activate:
-      on-profile: dev
-  jpa:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: update
----
-server:
   port: 8083
 
 spring:
