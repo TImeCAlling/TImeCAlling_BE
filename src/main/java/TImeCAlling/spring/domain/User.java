@@ -39,16 +39,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String fcmToken;
     
-    @Column(nullable = false, columnDefinition = "varchar(10) default ACTIVE")
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.ACTIVE;
     
     @Column(nullable = false)
     private LocalDate inactivationDate;
     
-    @Column(nullable = true)
     private Integer success;
     
-    @Column(nullable = true)
     private Integer failed;
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

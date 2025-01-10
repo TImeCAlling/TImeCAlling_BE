@@ -25,7 +25,7 @@ public class PushMessage {
     private MessageStatus messageStatus;  // PENDING, SENT, FAILED
     
     @Column(nullable = false)
-    private Boolean repeat;
+    private Boolean isRepeat;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "push_message_setting_id")

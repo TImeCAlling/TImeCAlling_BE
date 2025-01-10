@@ -37,15 +37,15 @@ public class Schedule extends BaseEntity {
     private Integer moveTime;
     
     @Column(nullable = false)
-    private Boolean repeat;
+    private Boolean isRepeat;
     
     private LocalDate start;
     
     private LocalDate end;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "varchar(10) default NONE")
-    private Success success;
+    @Column(nullable = false)
+    private Success success = Success.NONE;
     
     @Enumerated(EnumType.STRING)
     private Spare spare;
