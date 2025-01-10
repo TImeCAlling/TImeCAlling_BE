@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -30,4 +32,11 @@ public class PushMessageSetting {
 
     @Column
     private Boolean isActive;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
+    @OneToMany(mappedBy = "pushMessageSetting", cascade = CascadeType.ALL)
+    private List<PushMessage> pushMessages = new ArrayList<>();
 }

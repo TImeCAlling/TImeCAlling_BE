@@ -3,7 +3,6 @@ package TImeCAlling.spring.domain;
 import TImeCAlling.spring.domain.enums.MessageStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.bridge.Message;
 
 import java.time.LocalDateTime;
 
@@ -28,4 +27,8 @@ public class PushMessage {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Boolean repeat;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "push_message_setting_id")
+    private PushMessageSetting pushMessageSetting;
 }

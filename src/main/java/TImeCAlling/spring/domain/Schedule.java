@@ -2,11 +2,13 @@ package TImeCAlling.spring.domain;
 
 import TImeCAlling.spring.domain.base.BaseEntity;
 import TImeCAlling.spring.domain.enums.*;
+import TImeCAlling.spring.domain.mapping.ScheduleCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -73,5 +75,12 @@ public class Schedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "repeat_day")
     private List<RepeatDay> repeatDays;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    private List<ScheduleCategory> scheduleCategories = new ArrayList<>();
     
 }

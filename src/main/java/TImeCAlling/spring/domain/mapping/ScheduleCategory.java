@@ -1,9 +1,8 @@
 package TImeCAlling.spring.domain.mapping;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import TImeCAlling.spring.domain.Category;
+import TImeCAlling.spring.domain.Schedule;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,5 +16,11 @@ public class ScheduleCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
 }

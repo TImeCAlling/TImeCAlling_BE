@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -49,4 +51,15 @@ public class User extends BaseEntity {
     @Column(nullable = true)
     private Integer failed;
     
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private ProfileImage profileImage;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Schedule> schedules = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Category> categories = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PushMessageSetting> pushMessageSettings = new ArrayList<>();
 }
