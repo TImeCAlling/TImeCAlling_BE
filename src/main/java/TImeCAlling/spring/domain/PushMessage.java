@@ -24,7 +24,6 @@ public class PushMessage {
     @Column(nullable = false)
     private MessageStatus messageStatus;  // PENDING, SENT, FAILED
     
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Boolean repeat;
     
