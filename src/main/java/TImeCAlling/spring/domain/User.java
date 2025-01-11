@@ -41,9 +41,9 @@ public class User extends BaseEntity {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Status status = Status.ACTIVE;
     
-    @Column(nullable = false)
     private LocalDate inactivationDate;
     
     private Integer success;
