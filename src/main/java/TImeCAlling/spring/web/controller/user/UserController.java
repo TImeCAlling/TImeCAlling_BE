@@ -34,5 +34,11 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.updateUser(userId, userUpdateDTO));
     }
     
+    @GetMapping("/{userId}")
+    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@PathVariable Long userId) {
+        
+        return ApiResponse.onSuccess(userCommandService.findMyUsers(userId));
+    }
+    
     
 }

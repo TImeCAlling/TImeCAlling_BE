@@ -54,6 +54,18 @@ public class UserCommandServiceImpl implements UserCommandService {
                 .build();
     }
     
+    @Override
+    public UserResponseDTO.UserMyPageDTO findMyUsers(Long id) {
+        
+        User finduser = getFinduser(id);
+        
+        return UserResponseDTO.UserMyPageDTO.builder()
+                .nickname(finduser.getNickname())
+                .avgPrepTime(finduser.getAvgPrepTime())
+                .freeTime(finduser.getFreeTime().toString())
+                .build();
+    }
+    
     private User getFinduser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }

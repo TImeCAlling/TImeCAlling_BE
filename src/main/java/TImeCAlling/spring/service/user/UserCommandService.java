@@ -11,4 +11,6 @@ public interface UserCommandService {
     
     UserResponseDTO.UserUpdateDTO updateUser(Long id, UserRequestDTO.UserUpdateDTO updateDTO);
     
+    UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
+    
 }
