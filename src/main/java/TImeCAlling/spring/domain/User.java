@@ -44,9 +44,9 @@ public class User extends BaseEntity implements UserDetails {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Status status = Status.ACTIVE;
     
-    @Column(nullable = false)
     private LocalDate inactivationDate;
     
     private Integer success;
@@ -64,6 +64,12 @@ public class User extends BaseEntity implements UserDetails {
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PushMessageSetting> pushMessageSettings = new ArrayList<>();
+
+    public void update(String nickname, Integer avgPrepTime, FreeTime freeTime) {
+        this.nickname = nickname;
+        this.avgPrepTime = avgPrepTime;
+        this.freeTime = freeTime;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
