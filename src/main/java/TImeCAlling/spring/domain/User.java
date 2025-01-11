@@ -6,9 +6,12 @@ import TImeCAlling.spring.domain.enums.SocialType;
 import TImeCAlling.spring.domain.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -16,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,4 +64,17 @@ public class User extends BaseEntity {
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PushMessageSetting> pushMessageSettings = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+    @Override
+    public String getPassword() {
+        return null;
+    }
+    @Override
+    public String getUsername() {
+        return null;
+    }
 }
