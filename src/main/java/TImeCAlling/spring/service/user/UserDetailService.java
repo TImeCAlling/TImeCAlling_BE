@@ -1,5 +1,7 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.UserHandler;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,13 @@ public class UserDetailService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("해당 유저가 없습니다.");
         }
+        return user;
+    }
+
+    public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
         return user;
     }
 }

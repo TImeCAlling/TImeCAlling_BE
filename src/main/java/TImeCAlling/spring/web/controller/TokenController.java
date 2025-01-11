@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -18,9 +19,8 @@ public class TokenController {
 
     @Operation(summary = "JWT 토큰 생성", description = "생성된 토큰 반환")
     @PostMapping("/createJWT")
-    public String createJWT() {
-        // userId, nickname 하드코딩
-        String token = jwtUtil.createAccessToken(1L, "user1", 1000 * 60 * 30L);
+    public String createJWT(@RequestParam Long userId, String nickname) {
+        String token = jwtUtil.createAccessToken(userId, nickname, 1000 * 60 * 30L);
         return token;
     }
 

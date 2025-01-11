@@ -71,14 +71,14 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailService.loadUserByUsername(this.getNickname(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UserDetails userDetails = userDetailService.loadUserByUserId(this.getUserId(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, null, null);
     }
 
-    public Long getUserId(String token) {
+    private Long getUserId(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
     }
-    public String getNickname(String token) {
+    private String getNickname(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
     }
 }
