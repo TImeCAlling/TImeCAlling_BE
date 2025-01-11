@@ -21,4 +21,13 @@ public class UserResponseDTO {
         
         Long id;
     }
+    
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Getter
+    public static class UserUpdateDTO{
+        
+        Long id;
+    }
 }

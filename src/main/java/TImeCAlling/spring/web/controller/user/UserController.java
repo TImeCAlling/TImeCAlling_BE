@@ -24,10 +24,15 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@RequestParam Long userId) {
         
-        Long deleteUserId = userCommandService.deleteUser(userId);
-        return ApiResponse.onSuccess(UserResponseDTO.UserDeleteDTO.builder()
-                .id(deleteUserId)
-                .build());
+        return ApiResponse.onSuccess(userCommandService.deleteUser(userId));
     }
+    
+    @PutMapping("/{userId}")
+    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@PathVariable Long userId,
+                                                                 @RequestBody UserRequestDTO.UserUpdateDTO userUpdateDTO) {
+        
+        return ApiResponse.onSuccess(userCommandService.updateUser(userId, userUpdateDTO));
+    }
+    
     
 }

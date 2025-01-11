@@ -12,4 +12,12 @@ public class UserRequestDTO {
         Integer avgPrepTime;
         String freeTime;
     }
+    
+    @Getter
+    public static class UserUpdateDTO {
+        
+        String nickname;
+        Integer avgPrepTime;
+        String freeTime;
+    }
 }

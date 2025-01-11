@@ -4,6 +4,7 @@ import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.apiPayload.exception.handler.UserHandler;
 import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.repository.user.UserRepository;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
@@ -31,11 +32,29 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     @Override
-    public Long deleteUser(Long id) {
-        User finduser = userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+    public UserResponseDTO.UserDeleteDTO deleteUser(Long id) {
         
+        User finduser = getFinduser(id);
         userRepository.delete(finduser);
         
-        return finduser.getId();
+        return UserResponseDTO.UserDeleteDTO.builder()
+                .id(finduser.getId())
+                .build();
+    }
+    
+    @Override
+    public UserResponseDTO.UserUpdateDTO updateUser(Long id, UserRequestDTO.UserUpdateDTO updateDTO) {
+        
+        User finduser = getFinduser(id);
+        finduser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), FreeTime.valueOf(updateDTO.getFreeTime()));
+        User saveduser = userRepository.save(finduser);
+        
+        return UserResponseDTO.UserUpdateDTO.builder()
+                .id(saveduser.getId())
+                .build();
+    }
+    
+    private User getFinduser(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 }
