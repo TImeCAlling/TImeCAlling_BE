@@ -29,5 +29,7 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<ScheduleCategory> scheduleCategories = new ArrayList<>();
 
-
+    public void changeType(String type) {
+        this.type = type;
+    }
 }
