@@ -1,5 +1,7 @@
 package TImeCAlling.spring.service.category;
 
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.CategoryHandler;
 import TImeCAlling.spring.converter.category.CategoryConverter;
 import TImeCAlling.spring.domain.Category;
 import TImeCAlling.spring.domain.User;
@@ -19,6 +21,9 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
     @Transactional
     public CategoryResponseDTO.CommandResultDto create(User user, CategoryRequestDTO.CreateOrUpdateDto request) {
         Category category = CategoryConverter.toCategory(user, request);
+        if (categoryRepository.findByType(category.getType()) != null) {
+            throw new CategoryHandler(ErrorStatus.CATEGORY_ALREADY_EXIST);
+        }
         Long id = categoryRepository.save(category).getId();
         return CategoryConverter.toCommandResultDto(id);
     }
