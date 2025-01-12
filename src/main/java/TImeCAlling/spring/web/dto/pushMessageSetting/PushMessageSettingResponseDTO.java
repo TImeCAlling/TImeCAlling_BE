@@ -12,7 +12,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingCreateDTO {
+    public static class CreateDTO {
         private Long id;
         private Long userId;
     }
@@ -21,7 +21,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingListDTO {
+    public static class ListDTO {
         private Long id;
         private Long userId;
         private Integer offset;
@@ -32,7 +32,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingDetailDTO {
+    public static class DetailDTO {
         private Long id;
         private Long userId;
         private Integer offset;
@@ -46,7 +46,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingUpdateBodyDTO {
+    public static class UpdateBodyDTO {
         private Long id;
         private String body;
     }
@@ -55,7 +55,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingUpdateMusicDTO {
+    public static class UpdateMusicDTO {
         private Long id;
         private String music;
         private String musicUrl;
@@ -65,7 +65,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingUpdateIsActiveDTO {
+    public static class UpdateIsActiveDTO {
         private Long id;
         private Boolean isActive;
     }
@@ -74,7 +74,7 @@ public class PushMessageSettingResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class PushMessageSettingDeleteDTO {
+    public static class DeleteDTO {
         private Long id;
     }
 }

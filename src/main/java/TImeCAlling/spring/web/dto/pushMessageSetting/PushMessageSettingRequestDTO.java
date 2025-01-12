@@ -4,10 +4,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-@Getter
 public class PushMessageSettingRequestDTO {
 
-    public static class PushMessageSettingCreateDTO {
+
+    @Getter
+    public static class CreateDTO {
         @NotNull(message = "userId는 필수 항목입니다.")
         private Long userId;
 
@@ -27,12 +28,16 @@ public class PushMessageSettingRequestDTO {
         private Boolean isActive;
     }
 
-    public static class PushMessageSettingUpdateBodyDTO {
+
+    @Getter
+    public static class UpdateBodyDTO {
         @Size(max = 20, message = "body는 최대 20자까지 입력 가능합니다.")
         private String body;
     }
 
-    public static class PushMessageSettingUpdateMusicDTO {
+
+    @Getter
+    public static class UpdateMusicDTO {
         @Size(max = 20, message = "music은 최대 20자까지 입력 가능합니다.")
         private String music;
 
@@ -40,7 +45,9 @@ public class PushMessageSettingRequestDTO {
         private String musicUrl;
     }
 
-    public static class PushMessageSettingUpdateIsActiveDTO {
+
+    @Getter
+    public static class UpdateIsActiveDTO {
         private Boolean isActive;
     }
 }
