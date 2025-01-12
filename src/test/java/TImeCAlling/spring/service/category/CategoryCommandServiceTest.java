@@ -1,5 +1,7 @@
 package TImeCAlling.spring.service.category;
 
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.CategoryHandler;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.web.dto.category.CategoryRequestDTO;
@@ -36,6 +38,23 @@ class CategoryCommandServiceTest {
         // then
         CategoryResponseDTO.QueryResultDto target = categoryQueryService.findOne(result.getCategoryId());
         assertThat(target.getType()).isEqualTo(request.getType());
+    }
+
+    @Test
+    @DisplayName("카테고리 생성 (이미 존재할 경우)")
+    void 카테고리_생성_이미_존재할때() {
+        // given
+        CategoryRequestDTO.CreateOrUpdateDto request = new CategoryRequestDTO.CreateOrUpdateDto();
+        request.setType("일상");
+        User user = userQueryService.findOne(1L);
+
+        // when
+        CategoryHandler exception = assertThrows(CategoryHandler.class, () -> {
+            categoryCommandService.create(user, request);
+        });
+
+        // then
+        assertEquals(ErrorStatus.CATEGORY_ALREADY_EXIST, exception.getCode());
     }
 
     @Test
