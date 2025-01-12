@@ -39,4 +39,23 @@ public class PushMessageSetting {
     
     @OneToMany(mappedBy = "pushMessageSetting", cascade = CascadeType.ALL)
     private List<PushMessage> pushMessages = new ArrayList<>();
+
+    public void update(Integer offset, String body, String music, String musicUrl) {
+        if (offset != null) {
+            this.offset = offset;
+        }
+        if (body != null) {
+            this.body = body;
+        }
+        if (music != null) {
+            this.music = music;
+        }
+        if (musicUrl != null) {
+            this.musicUrl = musicUrl;
+        }
+    }
+
+    public void updateIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
 }
