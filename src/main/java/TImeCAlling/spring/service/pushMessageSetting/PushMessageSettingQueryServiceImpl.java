@@ -21,7 +21,7 @@ public class PushMessageSettingQueryServiceImpl implements PushMessageSettingQue
     @Override
     public List<PushMessageSettingResponseDTO.ListDTO> getListPushMessageSetting(Long userId) {
 
-        return pushMessageSettingRepository.findByUserId(userId).stream()
+        return pushMessageSettingRepository.findByUserIdOrThrow(userId).stream()
                 .map(pushMessageSettingConverter::toListDTO)
                 .toList();
     }
