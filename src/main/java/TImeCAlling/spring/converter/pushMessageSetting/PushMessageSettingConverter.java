@@ -1,6 +1,7 @@
 package TImeCAlling.spring.converter.pushMessageSetting;
 
 import TImeCAlling.spring.domain.PushMessageSetting;
+import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.web.dto.pushMessageSetting.PushMessageSettingRequestDTO;
 import TImeCAlling.spring.web.dto.pushMessageSetting.PushMessageSettingResponseDTO;
 import org.springframework.stereotype.Component;
@@ -9,9 +10,10 @@ import org.springframework.stereotype.Component;
 public class PushMessageSettingConverter {
 
     public static PushMessageSetting toPushMessageSetting(
-            PushMessageSettingRequestDTO.CreateDTO createDTO) {
+            User user, PushMessageSettingRequestDTO.CreateDTO createDTO) {
 
         return PushMessageSetting.builder()
+                .user(user)
                 .offset(createDTO.getOffset())
                 .body(createDTO.getBody())
                 .music(createDTO.getMusic())
@@ -50,6 +52,7 @@ public class PushMessageSettingConverter {
 
         return PushMessageSettingResponseDTO.CreateDTO.builder()
                 .id(pushMessageSetting.getId())
+                .userId(pushMessageSetting.getUser().getId())
                 .build();
     }
 
