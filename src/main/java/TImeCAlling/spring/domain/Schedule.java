@@ -45,6 +45,7 @@ public class Schedule extends BaseEntity {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Success success = Success.NONE;
     
     @Enumerated(EnumType.STRING)
