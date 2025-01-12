@@ -1,6 +1,8 @@
 package TImeCAlling.spring.service.user;
 
 
-public interface UserQueryService {
+import TImeCAlling.spring.domain.User;
 
+public interface UserQueryService {
+    User findOne(Long id);
 }

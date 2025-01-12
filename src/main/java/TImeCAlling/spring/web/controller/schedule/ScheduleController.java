@@ -3,24 +3,25 @@ package TImeCAlling.spring.web.controller.schedule;
 import TImeCAlling.spring.apiPayload.ApiResponse;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.Schedule;
+import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.schedule.ScheduleCommandService;
+import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/schedules")
 public class ScheduleController {
     private final ScheduleCommandService scheduleCommandService;
+    private final UserQueryService userQueryService;
 
-    @PostMapping
-    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
+    @PostMapping("/{userId}")
+    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@PathVariable("id") Long id, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
+        User user = userQueryService.findOne(id);
         Schedule schedule = scheduleCommandService.createSchedule(request);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
