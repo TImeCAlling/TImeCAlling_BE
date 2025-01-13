@@ -2,6 +2,7 @@ package TImeCAlling.spring.service.schedule;
 
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.Schedule;
+import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.repository.schedule.ScheduleRepository;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     @Override
     @Transactional
-    public Schedule createSchedule(ScheduleRequestDTO.ScheduleCreateDTO request) {
-        Schedule newSchedule = ScheduleConverter.toSchedule(request);
+    public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request) {
+        Schedule newSchedule = ScheduleConverter.toSchedule(user, request);
 
         return scheduleRepository.save(newSchedule);
     }
