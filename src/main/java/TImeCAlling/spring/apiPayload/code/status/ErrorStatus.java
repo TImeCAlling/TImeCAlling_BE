@@ -16,7 +16,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
     
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "유저를 찾을 수 없습니다.")
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "유저를 찾을 수 없습니다."),
+
+    // 일정 관련 에러
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "CSCHEDULE4001", "일정을 찾을 수 없습니다."),
     ;
     
     

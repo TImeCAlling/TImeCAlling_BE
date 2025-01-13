@@ -1,5 +1,6 @@
 package TImeCAlling.spring.web.dto.schedule;
 
+import TImeCAlling.spring.domain.enums.Spare;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,18 @@ public class ScheduleResponseDTO {
     public static class ScheduleCreateDTO{
         Long scheduleId;
         LocalDateTime createdAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ScheduleGetDTO{
+        Long scheduleId;
+        LocalDateTime meetTime;
+        Boolean isRepeat;
+        String place;
+        String body;
+        Spare spare;
     }
 }

@@ -45,4 +45,15 @@ public class ScheduleConverter {
                 .scheduleCategories(new ArrayList<>())
                 .build();
     }
+
+    public static ScheduleResponseDTO.ScheduleGetDTO toScheduleGetDTO(Schedule schedule) {
+        return ScheduleResponseDTO.ScheduleGetDTO.builder()
+                .scheduleId(schedule.getId())
+                .meetTime(schedule.getMeetTime())
+                .isRepeat(schedule.getIsRepeat())
+                .place(schedule.getPlace())
+                .body(schedule.getBody())
+                .spare(schedule.getSpare())
+                .build();
+    }
 }
