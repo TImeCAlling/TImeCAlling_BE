@@ -19,9 +19,9 @@ public class ScheduleController {
     private final ScheduleCommandService scheduleCommandService;
     private final UserQueryService userQueryService;
 
-    @PostMapping("/{userId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@PathVariable("userId") Long id, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
-        User user = userQueryService.findOne(id);
+    @PostMapping
+    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
+        User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleCommandService.createSchedule(user, request);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
