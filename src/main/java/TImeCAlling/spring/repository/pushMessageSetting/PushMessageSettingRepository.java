@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface PushMessageSettingRepository extends JpaRepository<PushMessageSetting, Long>, PushMessageSettingRepositoryCustom {
 
-    List<PushMessageSetting> findByUserIdOrThrow(Long userId);
 }
