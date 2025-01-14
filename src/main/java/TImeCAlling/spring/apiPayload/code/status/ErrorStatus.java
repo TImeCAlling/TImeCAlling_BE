@@ -15,7 +15,6 @@ public enum ErrorStatus implements BaseErrorCode {
     _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
-
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "유저를 찾을 수 없습니다."),
 
     // 토큰 관련 에러
@@ -23,6 +22,10 @@ public enum ErrorStatus implements BaseErrorCode {
     WRONG_TYPE_SIGNATURE(HttpStatus.UNAUTHORIZED, "MEMBER4021", "잘못된 JWT 서명입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "MEMBER4022", "토큰이 만료되었습니다."),
     WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "MEMBER4023", "지원되지 않는 JWT 토큰입니다."),
+
+    // 푸시 메세지 세팅 관련 에러
+    PUSH_SETTING_NOT_FOUND(HttpStatus.NOT_FOUND, "PUSHSETTING4001", "푸시 메세지 세팅을 찾을 수 없습니다."),
+
     ;
     
     private final HttpStatus httpStatus;
