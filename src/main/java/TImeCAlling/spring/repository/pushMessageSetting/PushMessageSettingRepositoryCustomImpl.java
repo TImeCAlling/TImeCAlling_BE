@@ -31,7 +31,7 @@ public class PushMessageSettingRepositoryCustomImpl implements PushMessageSettin
                 .setParameter("userId", userId)
                 .getResultList();
 
-//        유저가 있음에도 푸시 메세지 세팅이 없는 경우 -> 정상 (있을 수 있다! 그냥 빈 리스트 출력)
+//        bugfix: 유저가 있음에도 푸시 메세지 세팅이 없는 경우 -> 정상 (있을 수 있다! 그냥 빈 리스트 출력)
 //        if (settings.isEmpty()) {
 //            throw new PushMessageSettingHandler(ErrorStatus.PUSH_SETTING_NOT_FOUND);
 //        }
