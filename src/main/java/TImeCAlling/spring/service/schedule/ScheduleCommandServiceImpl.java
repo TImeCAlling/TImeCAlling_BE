@@ -45,9 +45,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
         scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
 
-        if (request.getBody() != null) {
-            schedule.setBody(request.getBody());
-        }
+        schedule.setBody(request.getBody());
         schedule.setMoveTime(request.getMoveTime());
         schedule.setSpare(Spare.valueOf(request.getSpare()));
         schedule.setIsRepeat(request.getIsRepeat());

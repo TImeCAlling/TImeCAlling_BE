@@ -26,7 +26,6 @@ public class ScheduleRequestDTO {
     }
 
     @Getter
-    @Setter
     public static class ScheduleCreateDTO {
 
         @NotBlank
@@ -61,13 +60,13 @@ public class ScheduleRequestDTO {
     }
 
     @Getter
-    @Setter
     public static class SchedulePatchDTO {
 
         @Size(max = 20)
         String body;
 
         @NotNull
+                
         Integer moveTime;
 
         @NotNull

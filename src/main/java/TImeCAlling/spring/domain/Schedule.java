@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Setter
 public class Schedule extends BaseEntity {
     
     @Id
@@ -82,4 +81,10 @@ public class Schedule extends BaseEntity {
     private User user;
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private List<Category> categories = new ArrayList<>();}
+    private List<Category> categories = new ArrayList<>();
+
+    public void setBody(String body) { this.body = body; }
+    public void setMoveTime(Integer moveTime) { this.moveTime = moveTime; }
+    public void setSpare(Spare spare) { this.spare = spare; }
+    public void setIsRepeat(Boolean isRepeat) { this.isRepeat = isRepeat; }
+}
