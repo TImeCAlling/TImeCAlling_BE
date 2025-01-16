@@ -56,4 +56,10 @@ public class ScheduleConverter {
                 .spare(schedule.getSpare())
                 .build();
     }
+
+    public static ScheduleResponseDTO.ScheduleDeleteDTO toScheduleCommandDTO(Long scheduleId) {
+        return ScheduleResponseDTO.ScheduleDeleteDTO.builder()
+                .scheduleId(scheduleId)
+                .build();
+    }
 }

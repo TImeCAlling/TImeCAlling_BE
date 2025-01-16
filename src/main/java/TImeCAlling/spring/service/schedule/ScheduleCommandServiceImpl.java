@@ -1,5 +1,7 @@
 package TImeCAlling.spring.service.schedule;
 
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
@@ -20,7 +22,18 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     @Transactional
     public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request) {
         Schedule newSchedule = ScheduleConverter.toSchedule(user, request);
-
         return scheduleRepository.save(newSchedule);
+    }
+
+    @Override
+    @Transactional
+    public Schedule deleteSchedule(Long scheduleId, User user) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+        scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+        scheduleRepository.delete(schedule);
+        if (scheduleRepository.existsById(scheduleId)) {
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_DELETE_FAIL);
+        }
+        return schedule;
     }
 }

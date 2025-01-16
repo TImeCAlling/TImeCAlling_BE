@@ -30,4 +30,12 @@ public class ScheduleResponseDTO {
         String body;
         Spare spare;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ScheduleDeleteDTO{
+        Long scheduleId;
+    }
 }

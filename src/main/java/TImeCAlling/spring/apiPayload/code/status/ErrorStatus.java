@@ -20,6 +20,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 일정 관련 에러
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "CSCHEDULE4001", "일정을 찾을 수 없습니다."),
+    SCHEDULE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "CSCHEDULE4002", "일정 삭제에 실패했습니다."),
     ;
     
     

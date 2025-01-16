@@ -1,6 +1,8 @@
 package TImeCAlling.spring.web.controller.schedule;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
@@ -36,5 +38,12 @@ public class ScheduleController {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule));
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
+        User user = userQueryService.findOne(userId);
+        Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
+        return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
 }
