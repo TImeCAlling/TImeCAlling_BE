@@ -10,24 +10,38 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
-    
+
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
-    _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
-    _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
+    _BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "잘못된 요청입니다."),
+    _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
-    
+
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "유저를 찾을 수 없습니다."),
 
+    // 토큰 관련 에러
+    NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "MEMBER4020", "유효하지 않은 토큰입니다."),
+    WRONG_TYPE_SIGNATURE(HttpStatus.UNAUTHORIZED, "MEMBER4021", "잘못된 JWT 서명입니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "MEMBER4022", "토큰이 만료되었습니다."),
+    WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "MEMBER4023", "지원되지 않는 JWT 토큰입니다."),
+
+    // 푸시 메세지 세팅 관련 에러
+    PUSH_SETTING_NOT_FOUND(HttpStatus.NOT_FOUND, "PUSHSETTING4001", "푸시 메세지 세팅을 찾을 수 없습니다."),
+
+    // S3 이미지 업로드 관련
+    FILE_NOT_UPLOADED(HttpStatus.BAD_REQUEST, "S34001", "이미지를 업로드 할 수 없습니다."),
+    FILE_IS_EMPTY(HttpStatus.BAD_REQUEST, "S34002", "파일이 비어있습니다."),
+    FILE_NOT_IMAGE(HttpStatus.BAD_REQUEST, "S34003", "이미지 파일만 업로드 가능합니다."),
+    IO_EXCEPTION_ON_IMAGE_DELETE(HttpStatus.BAD_REQUEST, "S34004", "삭제 중 에러가 발생했습니다."),
+
     // 일정 관련 에러
-    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "CSCHEDULE4001", "일정을 찾을 수 없습니다."),
-    SCHEDULE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "CSCHEDULE4002", "일정 삭제에 실패했습니다."),
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4001", "일정을 찾을 수 없습니다."),
+    SCHEDULE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULE4002", "일정 삭제에 실패했습니다."),
     ;
-    
-    
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
-    
+
     @Override
     public ErrorReasonDTO getReason() {
         return ErrorReasonDTO.builder()
@@ -36,7 +50,7 @@ public enum ErrorStatus implements BaseErrorCode {
                 .isSuccess(false)
                 .build();
     }
-    
+
     @Override
     public ErrorReasonDTO getReasonHttpStatus() {
         return ErrorReasonDTO.builder()
