@@ -2,7 +2,6 @@ package TImeCAlling.spring.domain;
 
 import TImeCAlling.spring.domain.base.BaseEntity;
 import TImeCAlling.spring.domain.enums.*;
-import TImeCAlling.spring.domain.mapping.ScheduleCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -83,6 +82,4 @@ public class Schedule extends BaseEntity {
     private User user;
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private List<ScheduleCategory> scheduleCategories = new ArrayList<>();
-    
-}
+    private List<Category> categories = new ArrayList<>();}

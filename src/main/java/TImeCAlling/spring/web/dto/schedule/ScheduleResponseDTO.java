@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ScheduleResponseDTO {
     @Builder
@@ -22,6 +23,15 @@ public class ScheduleResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class CategoryDTO{
+        String categoryName;
+        String categoryColor;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ScheduleGetDTO{
         Long scheduleId;
         LocalDateTime meetTime;
@@ -29,6 +39,7 @@ public class ScheduleResponseDTO {
         String place;
         String body;
         Spare spare;
+        List<CategoryDTO> categories;
     }
 
     @Builder

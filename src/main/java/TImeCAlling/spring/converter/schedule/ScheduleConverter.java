@@ -1,5 +1,6 @@
 package TImeCAlling.spring.converter.schedule;
 
+import TImeCAlling.spring.domain.Category;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.Spare;
@@ -8,6 +9,8 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ScheduleConverter {
     public static ScheduleResponseDTO.ScheduleCreateDTO toScheduleCreateDTO(Schedule schedule) {
@@ -42,11 +45,17 @@ public class ScheduleConverter {
                 .moveTime(request.getMoveTime())
                 .spare(spare)
                 .isRepeat(request.getIsRepeat())
-                .scheduleCategories(new ArrayList<>())
                 .build();
     }
 
     public static ScheduleResponseDTO.ScheduleGetDTO toScheduleGetDTO(Schedule schedule) {
+        List<ScheduleResponseDTO.CategoryDTO> categoryDTOS = schedule.getCategories().stream()
+                .map(category -> ScheduleResponseDTO.CategoryDTO.builder()
+                        .categoryName(category.getName())
+                        .categoryColor(category.getColor())
+                        .build())
+                .collect(Collectors.toList());
+
         return ScheduleResponseDTO.ScheduleGetDTO.builder()
                 .scheduleId(schedule.getId())
                 .meetTime(schedule.getMeetTime())
@@ -54,6 +63,7 @@ public class ScheduleConverter {
                 .place(schedule.getPlace())
                 .body(schedule.getBody())
                 .spare(schedule.getSpare())
+                .categories(categoryDTOS)
                 .build();
     }
 

@@ -12,9 +12,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ScheduleRequestDTO {
+
+    @Getter
+    public static class CategoryDTO {
+
+        @Size(max = 10)
+        @NotBlank
+        String categoryName;
+
+        @Size(max = 10)
+        @NotBlank
+        String categoryColor;
+    }
+
     @Getter
     @Setter
     public static class ScheduleCreateDTO {
+
         @NotBlank
         @Size(max = 10)
         String name;
@@ -43,7 +57,7 @@ public class ScheduleRequestDTO {
         @NotNull
         Boolean isRepeat;
 
-        List<Long> category;
+        List<CategoryDTO> categories;
     }
 
     @Getter
@@ -63,6 +77,6 @@ public class ScheduleRequestDTO {
         @NotNull
         Boolean isRepeat;
 
-        List<Long> category;
+        List<CategoryDTO> categories;
     }
 }
