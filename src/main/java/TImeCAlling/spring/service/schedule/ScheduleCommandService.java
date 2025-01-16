@@ -6,5 +6,6 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 
 public interface ScheduleCommandService {
     public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request);
+    public Schedule patchSchedule(Long scheduleId, User user, ScheduleRequestDTO.SchedulePatchDTO request);
     public Schedule deleteSchedule(Long scheduleId, User user);
 }

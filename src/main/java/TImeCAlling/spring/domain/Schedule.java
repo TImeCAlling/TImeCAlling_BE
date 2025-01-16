@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Setter
 public class Schedule extends BaseEntity {
     
     @Id

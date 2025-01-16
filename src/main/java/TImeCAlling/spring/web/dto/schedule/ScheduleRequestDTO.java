@@ -36,6 +36,27 @@ public class ScheduleRequestDTO {
         @NotNull
         Integer moveTime;
 
+        @NotNull
+        @ValidEnum(enumClass = Spare.class)
+        String spare;
+
+        @NotNull
+        Boolean isRepeat;
+
+        List<Long> category;
+    }
+
+    @Getter
+    @Setter
+    public static class SchedulePatchDTO {
+
+        @Size(max = 20)
+        String body;
+
+        @NotNull
+        Integer moveTime;
+
+        @NotNull
         @ValidEnum(enumClass = Spare.class)
         String spare;
 

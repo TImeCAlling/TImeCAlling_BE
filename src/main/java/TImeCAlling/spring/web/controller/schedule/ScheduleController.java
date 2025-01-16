@@ -40,6 +40,13 @@ public class ScheduleController {
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule));
     }
 
+    @PatchMapping("/{scheduleId}")
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
+        User user = userQueryService.findOne(userId);
+        Schedule schedule = scheduleCommandService.patchSchedule(scheduleId, user, request);
+        return ApiResponse.onSuccess(ScheduleConverter.toSchedulePatchDTO(schedule));
+    }
+
     @DeleteMapping("/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
         User user = userQueryService.findOne(userId);

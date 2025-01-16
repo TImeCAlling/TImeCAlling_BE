@@ -57,6 +57,17 @@ public class ScheduleConverter {
                 .build();
     }
 
+    public static ScheduleResponseDTO.ScheduleGetDTO toSchedulePatchDTO(Schedule schedule) {
+        return ScheduleResponseDTO.ScheduleGetDTO.builder()
+                .scheduleId(schedule.getId())
+                .meetTime(schedule.getMeetTime())
+                .isRepeat(schedule.getIsRepeat())
+                .place(schedule.getPlace())
+                .body(schedule.getBody())
+                .spare(schedule.getSpare())
+                .build();
+    }
+
     public static ScheduleResponseDTO.ScheduleDeleteDTO toScheduleCommandDTO(Long scheduleId) {
         return ScheduleResponseDTO.ScheduleDeleteDTO.builder()
                 .scheduleId(scheduleId)
