@@ -23,6 +23,20 @@ spring:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 1000
+  jwt:
+    secret: ${JWT_SECRET}
+
+  cloud:
+    aws:
+      credentials:
+        accessKey: ${S3_ACCESS_KEY}
+        secretKey: ${S3_SECRET_KEY}
+      s3:
+        bucketName: ${S3_BUCKET_NAME}
+      region:
+        static: ap-northeast-2
+      stack:
+        auto: false
 
 ---
 server:
