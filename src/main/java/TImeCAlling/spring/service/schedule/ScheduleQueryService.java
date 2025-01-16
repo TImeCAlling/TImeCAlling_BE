@@ -5,5 +5,5 @@ import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 
 public interface ScheduleQueryService {
-    public Schedule getSchedule(User user, Long scheduleId);
+    public Schedule getSchedule(Long scheduleId, User user);
 }

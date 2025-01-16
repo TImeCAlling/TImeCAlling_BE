@@ -34,7 +34,7 @@ public class ScheduleController {
     @GetMapping("/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
         User user = userQueryService.findOne(userId);
-        Schedule schedule = scheduleQueryService.getSchedule(user, scheduleId);
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule));
     }
 }
