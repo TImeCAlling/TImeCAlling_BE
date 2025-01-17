@@ -46,7 +46,7 @@ public class ScheduleController {
     public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
-        return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule()));
+        return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
 
     @PatchMapping("/{scheduleId}")
