@@ -1,13 +1,12 @@
 package TImeCAlling.spring.web.dto.schedule;
 
 import TImeCAlling.spring.domain.enums.FreeTime;
-import TImeCAlling.spring.domain.enums.Spare;
+import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.validation.annotation.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,6 +53,10 @@ public class ScheduleRequestDTO {
         @NotNull
         @ValidEnum(enumClass = FreeTime.class)
         String freeTime;
+        
+        @NotNull
+        @ValidEnum(enumClass = RepeatDay.class)
+        List<String> repeatDies;
 
         @NotNull
         Boolean isRepeat;
