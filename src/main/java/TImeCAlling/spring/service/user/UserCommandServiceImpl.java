@@ -84,9 +84,8 @@ public class UserCommandServiceImpl implements UserCommandService {
     public User signUp(String kakaoAccessToken) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(kakaoAccessToken);
-        System.out.println("nickname : " + userInfo.getProperties().getNickname());
 
-        User newUser = UserConverter.toUser(userInfo.getProperties().getNickname());
+        User newUser = UserConverter.toUser(userInfo);
 
         return userRepository.save(newUser);
     }

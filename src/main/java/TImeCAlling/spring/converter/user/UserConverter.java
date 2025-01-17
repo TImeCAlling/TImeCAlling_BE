@@ -3,6 +3,7 @@ package TImeCAlling.spring.converter.user;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.SocialType;
+import TImeCAlling.spring.web.dto.user.UserAuthDTO;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 
@@ -26,10 +27,11 @@ public class UserConverter {
                 .build();
     }
 
-    public static User toUser(String nickname) {
+    public static User toUser(UserAuthDTO.KaKaoUserInfoDTO userInfo) {
 
         return User.builder()
-                .nickname(nickname)
+                .nickname(userInfo.getProperties().getNickname())
+                .socialId(userInfo.getId())
                 .socialType(SocialType.KAKAO)
                 .build();
     }

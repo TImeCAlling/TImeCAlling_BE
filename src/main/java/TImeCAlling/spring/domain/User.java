@@ -31,15 +31,17 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
+
+    private Long socialId;
     
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Integer avgPrepTime;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private FreeTime freeTime;
     
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String fcmToken;
     
     @Enumerated(EnumType.STRING)
