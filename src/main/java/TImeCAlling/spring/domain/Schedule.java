@@ -44,10 +44,6 @@ public class Schedule extends BaseEntity {
     @Column(nullable = false)
     private Boolean isRepeat;
     
-    private LocalDate start;
-    
-    private LocalDate end;
-    
     private Long shareId;
     
     @Column(length = 15, nullable = false)
@@ -68,9 +64,26 @@ public class Schedule extends BaseEntity {
     
     @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
     private RecurringSchedule recurringSchedule;
-
-    public void setBody(String body) { this.body = body; }
-    public void setMoveTime(Integer moveTime) { this.moveTime = moveTime; }
-    public void setFreeTime(FreeTime freeTime) { this.freeTime = freeTime; }
-    public void setIsRepeat(Boolean isRepeat) { this.isRepeat = isRepeat; }
+    
+    public void updateSchedule(
+            String name,
+            String body,
+            LocalDateTime meetTime,
+            String place,
+            String longitude,
+            String latitude,
+            Integer moveTime,
+            FreeTime freeTime,
+            Boolean isRepeat
+    ) {
+        this.name = name;
+        this.body = body;
+        this.meetTime = meetTime.toLocalTime();
+        this.place = place;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.moveTime = moveTime;
+        this.freeTime = freeTime;
+        this.isRepeat = isRepeat;
+    }
 }
