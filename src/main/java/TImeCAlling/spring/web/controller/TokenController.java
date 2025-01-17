@@ -19,8 +19,8 @@ public class TokenController {
 
     @Operation(summary = "JWT 토큰 생성", description = "생성된 토큰 반환")
     @PostMapping("/createJWT")
-    public String createJWT(@RequestParam Long userId, String nickname) {
-        String token = jwtUtil.createAccessToken(userId, nickname, 1000 * 60 * 30L);
+    public String createJWT(@RequestParam Long userId) {
+        String token = jwtUtil.createAccessToken(userId);
         return token;
     }
 

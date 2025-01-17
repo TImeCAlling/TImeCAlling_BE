@@ -50,7 +50,7 @@ public class UserController {
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> signUp (@RequestParam String kakaoAccessToken) {
 
         User user = userCommandService.signUp(kakaoAccessToken);
-        String accessToken = jwtUtil.createAccessToken(user.getId(), user.getNickname(), 60*60*1000L);
+        String accessToken = jwtUtil.createAccessToken(user.getId());
         return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken));
     }
     
