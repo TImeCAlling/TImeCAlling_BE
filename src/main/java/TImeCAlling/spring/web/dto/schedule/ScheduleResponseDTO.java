@@ -1,12 +1,13 @@
 package TImeCAlling.spring.web.dto.schedule;
 
-import TImeCAlling.spring.domain.enums.Spare;
+import TImeCAlling.spring.domain.enums.FreeTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class ScheduleResponseDTO {
@@ -34,11 +35,11 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleGetDTO{
         Long scheduleId;
-        LocalDateTime meetTime;
+        LocalTime meetTime;
         Boolean isRepeat;
         String place;
         String body;
-        Spare spare;
+        FreeTime freeTime;
         List<CategoryDTO> categories;
     }
 

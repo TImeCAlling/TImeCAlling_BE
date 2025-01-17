@@ -54,9 +54,8 @@ public class ScheduleRequestDTO {
         @ValidEnum(enumClass = FreeTime.class)
         String freeTime;
         
-        @NotNull
         @ValidEnum(enumClass = RepeatDay.class)
-        List<String> repeatDies;
+        List<String> repeatDays;
 
         @NotNull
         Boolean isRepeat;
