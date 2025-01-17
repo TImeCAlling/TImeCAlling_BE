@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -81,11 +81,16 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public User signUp(String kakaoAccessToken) {
+    public User kakaoLogin(String kakaoAccessToken) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(kakaoAccessToken);
 
-        User newUser = UserConverter.toUser(userInfo);
+        Long socialId = userInfo.getId();
+        Optional<User> findUser = userRepository.findBySocialId(socialId);
+
+        User newUser = findUser.orElseGet(
+                () -> UserConverter.toUser(userInfo) // DB에 없는 유저면 회원가입
+        );
 
         return userRepository.save(newUser);
     }

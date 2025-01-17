@@ -46,10 +46,10 @@ public class UserController {
     }
 
     @PostMapping("/kakao/signup")
-    @Operation(summary = "회원가입 API", description = "accessToken을 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> signUp (@RequestParam String kakaoAccessToken) {
+    @Operation(summary = "카카오 로그인", description = "accessToken을 입력하세요.")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestParam String kakaoAccessToken) {
 
-        User user = userCommandService.signUp(kakaoAccessToken);
+        User user = userCommandService.kakaoLogin(kakaoAccessToken);
         String accessToken = jwtUtil.createAccessToken(user.getId());
         return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken));
     }

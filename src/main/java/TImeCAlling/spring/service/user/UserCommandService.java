@@ -14,6 +14,6 @@ public interface UserCommandService {
     
     UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
 
-    User signUp(String kakaoAccessToken);
+    User kakaoLogin(String kakaoAccessToken);
     
 }
