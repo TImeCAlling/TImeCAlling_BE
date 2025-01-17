@@ -6,6 +6,8 @@ import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.service.schedule.ChecklistService;
+import TImeCAlling.spring.service.schedule.RecurringScheduleService;
 import TImeCAlling.spring.service.schedule.ScheduleCommandService;
 import TImeCAlling.spring.service.schedule.ScheduleQueryService;
 import TImeCAlling.spring.service.user.UserQueryService;
@@ -25,11 +27,18 @@ public class ScheduleController {
     private final UserQueryService userQueryService;
     private final ScheduleCommandService scheduleCommandService;
     private final ScheduleQueryService scheduleQueryService;
+    private final RecurringScheduleService recurringScheduleService;
+    private final ChecklistService checklistService;
 
     @PostMapping
     public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleCommandService.createSchedule(user, request);
+        if (request.getIsRepeat()) {
+            recurringScheduleService.createRecurringSchedule(schedule, request);
+        }
+        checklistService.createChecklists(schedule, request);
+        
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
 
