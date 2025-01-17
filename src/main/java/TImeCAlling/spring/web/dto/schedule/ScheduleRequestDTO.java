@@ -1,5 +1,6 @@
 package TImeCAlling.spring.web.dto.schedule;
 
+import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.Spare;
 import TImeCAlling.spring.validation.annotation.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,11 +52,15 @@ public class ScheduleRequestDTO {
         Integer moveTime;
 
         @NotNull
-        @ValidEnum(enumClass = Spare.class)
-        String spare;
+        @ValidEnum(enumClass = FreeTime.class)
+        String freeTime;
 
         @NotNull
         Boolean isRepeat;
+        
+        LocalDate start;
+        
+        LocalDate end;
 
         List<CategoryDTO> categories;
     }
@@ -66,12 +72,11 @@ public class ScheduleRequestDTO {
         String body;
 
         @NotNull
-                
         Integer moveTime;
 
         @NotNull
-        @ValidEnum(enumClass = Spare.class)
-        String spare;
+        @ValidEnum(enumClass = FreeTime.class)
+        String freeTime;
 
         @NotNull
         Boolean isRepeat;
