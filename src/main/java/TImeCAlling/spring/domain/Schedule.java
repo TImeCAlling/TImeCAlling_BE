@@ -32,6 +32,7 @@ public class Schedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FreeTime freeTime;
     
+    @Column(nullable = false)
     private LocalTime meetTime;
     
     @Column(length = 20, nullable = false)

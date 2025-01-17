@@ -1,6 +1,7 @@
 package TImeCAlling.spring.converter.schedule;
 
 import TImeCAlling.spring.domain.Category;
+import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
@@ -39,33 +40,39 @@ public class ScheduleConverter {
                 .build();
     }
 
-    public static ScheduleResponseDTO.ScheduleGetDTO toScheduleGetDTO(Schedule schedule) {
+    public static ScheduleResponseDTO.ScheduleGetDTO toScheduleGetDTO(Schedule schedule, RecurringSchedule recurringSchedule) {
         List<ScheduleResponseDTO.CategoryDTO> categoryDTOS = schedule.getCategories().stream()
                 .map(category -> ScheduleResponseDTO.CategoryDTO.builder()
                         .categoryName(category.getName())
                         .categoryColor(category.getColor())
                         .build())
                 .collect(Collectors.toList());
-
+        List<String> repeatDays = recurringSchedule.getRepeatDays().stream()
+                .map(Enum::toString)
+                .toList();
+        
         return ScheduleResponseDTO.ScheduleGetDTO.builder()
-                .scheduleId(schedule.getId())
+                .name(schedule.getName())
                 .meetTime(schedule.getMeetTime())
-                .isRepeat(schedule.getIsRepeat())
                 .place(schedule.getPlace())
-                .body(schedule.getBody())
-                .freeTime(schedule.getFreeTime())
+                .repeatDays(repeatDays)
+                .moveTime(schedule.getMoveTime())
+                .body(schedule.getBody() == null ? null : schedule.getBody())
+                .freeTime(schedule.getFreeTime().toString())
+                .isRepeat(schedule.getIsRepeat())
+                .start(recurringSchedule.getStart() == null ? null : recurringSchedule.getStart())
+                .end(recurringSchedule.getEnd() == null ? null : recurringSchedule.getEnd())
                 .categories(categoryDTOS)
                 .build();
     }
 
     public static ScheduleResponseDTO.ScheduleGetDTO toSchedulePatchDTO(Schedule schedule) {
         return ScheduleResponseDTO.ScheduleGetDTO.builder()
-                .scheduleId(schedule.getId())
                 .meetTime(schedule.getMeetTime())
                 .isRepeat(schedule.getIsRepeat())
                 .place(schedule.getPlace())
                 .body(schedule.getBody())
-                .freeTime(schedule.getFreeTime())
+                .freeTime(schedule.getFreeTime().toString())
                 .build();
     }
 
