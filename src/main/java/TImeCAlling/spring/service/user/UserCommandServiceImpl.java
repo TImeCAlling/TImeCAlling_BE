@@ -83,11 +83,12 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public User signUp(String kakaoAccessToken) {
 
-        // 카카오 서버에서 유저 정보 받아오기
-        UserAuthDTO.KaKaoUserInfoDTO userInfo = this.getUserInfo(kakaoAccessToken);
-        System.out.println("login Controller : " + userInfo.getProperties().getNickname());
+        UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(kakaoAccessToken);
+        System.out.println("nickname : " + userInfo.getProperties().getNickname());
 
-        return null;
+        User newUser = UserConverter.toUser(userInfo.getProperties().getNickname());
+
+        return userRepository.save(newUser);
     }
 
     private UserAuthDTO.KaKaoUserInfoDTO getUserInfo(String accessToken) {

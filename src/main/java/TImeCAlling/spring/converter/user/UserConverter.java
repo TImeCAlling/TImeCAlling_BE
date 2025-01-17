@@ -6,8 +6,6 @@ import TImeCAlling.spring.domain.enums.SocialType;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 
-import java.time.LocalDateTime;
-
 public class UserConverter {
     
     public static User toUser(UserRequestDTO.UserCreateDTO userCreateDTO) {
@@ -25,6 +23,14 @@ public class UserConverter {
         return UserResponseDTO.UserSignUpResultDTO.builder()
                 .userId(user.getId())
                 .accessToken(accessToken)
+                .build();
+    }
+
+    public static User toUser(String nickname) {
+
+        return User.builder()
+                .nickname(nickname)
+                .socialType(SocialType.KAKAO)
                 .build();
     }
 
