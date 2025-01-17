@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,11 @@ public class Schedule extends BaseEntity {
     @Column(length = 20)
     private String body;
     
-    private LocalDateTime meetTime;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FreeTime freeTime;
+    
+    private LocalTime meetTime;
     
     @Column(length = 20, nullable = false)
     private String place;
@@ -50,12 +55,6 @@ public class Schedule extends BaseEntity {
     @Column(length = 15, nullable = false)
     private String latitude;
     
-    @ElementCollection
-    @CollectionTable(name = "schedule_repeat_day", joinColumns = @JoinColumn(name = "schedule_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "repeat_day")
-    private List<RepeatDay> repeatDays;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -65,6 +64,9 @@ public class Schedule extends BaseEntity {
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<Checklist> checklists = new ArrayList<>();
+    
+    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
+    private RecurringSchedule recurringSchedule;
 
     public void setBody(String body) { this.body = body; }
     public void setMoveTime(Integer moveTime) { this.moveTime = moveTime; }
