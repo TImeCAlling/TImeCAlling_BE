@@ -36,4 +36,10 @@ public class RecurringSchedule extends BaseEntity {
     private Schedule schedule;
     
     
+    public void update(LocalDate start, LocalDate end, List<RepeatDay> repeatDays) {
+        this.start = start;
+        this.end = end;
+        this.repeatDays = repeatDays;
+    }
+    
 }

@@ -82,13 +82,45 @@ public class ScheduleConverter {
     }
 
     public static ScheduleResponseDTO.ScheduleGetDTO toSchedulePatchDTO(Schedule schedule) {
-        return ScheduleResponseDTO.ScheduleGetDTO.builder()
-                .meetTime(schedule.getMeetTime())
-                .isRepeat(schedule.getIsRepeat())
-                .place(schedule.getPlace())
-                .body(schedule.getBody())
-                .freeTime(schedule.getFreeTime().toString())
-                .build();
+        List<ScheduleResponseDTO.CategoryDTO> categoryDTOS = schedule.getCategories().stream()
+                .map(category -> ScheduleResponseDTO.CategoryDTO.builder()
+                        .categoryName(category.getName())
+                        .categoryColor(category.getColor())
+                        .build())
+                .collect(Collectors.toList());
+        
+        if (schedule.getIsRepeat()) {
+            List<String> repeatDays = schedule.getRecurringSchedule().getRepeatDays().stream()
+                    .map(Enum::toString)
+                    .toList();
+            return ScheduleResponseDTO.ScheduleGetDTO.builder()
+                    .name(schedule.getName())
+                    .meetTime(schedule.getMeetTime())
+                    .place(schedule.getPlace())
+                    .repeatDays(repeatDays)
+                    .moveTime(schedule.getMoveTime())
+                    .body(schedule.getBody() == null ? null : schedule.getBody())
+                    .freeTime(schedule.getFreeTime().toString())
+                    .isRepeat(schedule.getIsRepeat())
+                    .start(schedule.getRecurringSchedule().getStart())
+                    .end(schedule.getRecurringSchedule().getEnd())
+                    .categories(categoryDTOS)
+                    .build();
+        } else {
+            return ScheduleResponseDTO.ScheduleGetDTO.builder()
+                    .name(schedule.getName())
+                    .meetTime(schedule.getMeetTime())
+                    .place(schedule.getPlace())
+                    .repeatDays(null)
+                    .moveTime(schedule.getMoveTime())
+                    .body(schedule.getBody() == null ? null : schedule.getBody())
+                    .freeTime(schedule.getFreeTime().toString())
+                    .isRepeat(schedule.getIsRepeat())
+                    .start(null)
+                    .end(null)
+                    .categories(categoryDTOS)
+                    .build();
+        }
     }
 
     public static ScheduleResponseDTO.ScheduleDeleteDTO toScheduleCommandDTO(Long scheduleId) {

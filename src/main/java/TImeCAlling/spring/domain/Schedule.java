@@ -74,7 +74,9 @@ public class Schedule extends BaseEntity {
             String latitude,
             Integer moveTime,
             FreeTime freeTime,
-            Boolean isRepeat
+            Boolean isRepeat,
+            List<Category> categories,
+            List<Checklist> checklists
     ) {
         this.name = name;
         this.body = body;
@@ -85,5 +87,11 @@ public class Schedule extends BaseEntity {
         this.moveTime = moveTime;
         this.freeTime = freeTime;
         this.isRepeat = isRepeat;
+        this.categories = categories;
+        this.checklists = checklists;
+    }
+    
+    public void setRecurringSchedule(RecurringSchedule recurringSchedule) {
+        this.recurringSchedule = recurringSchedule;
     }
 }

@@ -69,10 +69,24 @@ public class ScheduleRequestDTO {
 
     @Getter
     public static class SchedulePatchDTO {
-
+        
+        @Size(max = 10)
+        String name;
+        
         @Size(max = 20)
         String body;
-
+        
+        LocalDateTime meetTime;
+        
+        @NotNull
+        String place;
+        
+        @NotNull
+        String longitude;
+        
+        @NotNull
+        String latitude;
+        
         @NotNull
         Integer moveTime;
 
@@ -82,6 +96,13 @@ public class ScheduleRequestDTO {
 
         @NotNull
         Boolean isRepeat;
+        
+        @ValidEnum(enumClass = RepeatDay.class)
+        List<String> repeatDays;
+        
+        LocalDate start;
+        
+        LocalDate end;
 
         List<CategoryDTO> categories;
     }
