@@ -1,12 +1,8 @@
 package TImeCAlling.spring.domain;
 
 import TImeCAlling.spring.domain.base.BaseEntity;
-import TImeCAlling.spring.domain.mapping.ScheduleCategory;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder
@@ -20,14 +16,12 @@ public class Category extends BaseEntity {
     private Long id;
     
     @Column(nullable = false, length = 10)
-    private String type;
-    
+    private String name;
+
+    @Column(nullable = false, length = 10)
+    private String color;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-    
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<ScheduleCategory> scheduleCategories = new ArrayList<>();
-
-
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
 }

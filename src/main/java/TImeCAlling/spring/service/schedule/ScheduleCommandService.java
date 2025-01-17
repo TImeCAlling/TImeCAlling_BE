@@ -1,0 +1,11 @@
+package TImeCAlling.spring.service.schedule;
+
+import TImeCAlling.spring.domain.Schedule;
+import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
+
+public interface ScheduleCommandService {
+    public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request);
+    public Schedule patchSchedule(Long scheduleId, User user, ScheduleRequestDTO.SchedulePatchDTO request);
+    public Schedule deleteSchedule(Long scheduleId, User user);
+}

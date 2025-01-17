@@ -2,7 +2,6 @@ package TImeCAlling.spring.domain;
 
 import TImeCAlling.spring.domain.base.BaseEntity;
 import TImeCAlling.spring.domain.enums.*;
-import TImeCAlling.spring.domain.mapping.ScheduleCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,6 +44,7 @@ public class Schedule extends BaseEntity {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Success success = Success.NONE;
     
     @Enumerated(EnumType.STRING)
@@ -81,6 +81,10 @@ public class Schedule extends BaseEntity {
     private User user;
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private List<ScheduleCategory> scheduleCategories = new ArrayList<>();
-    
+    private List<Category> categories = new ArrayList<>();
+
+    public void setBody(String body) { this.body = body; }
+    public void setMoveTime(Integer moveTime) { this.moveTime = moveTime; }
+    public void setSpare(Spare spare) { this.spare = spare; }
+    public void setIsRepeat(Boolean isRepeat) { this.isRepeat = isRepeat; }
 }
