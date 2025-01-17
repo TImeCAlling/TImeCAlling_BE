@@ -3,10 +3,8 @@ package TImeCAlling.spring.service.schedule;
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
-import TImeCAlling.spring.domain.Category;
-import TImeCAlling.spring.domain.Schedule;
-import TImeCAlling.spring.domain.User;
-import TImeCAlling.spring.domain.enums.Spare;
+import TImeCAlling.spring.domain.*;
+import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.repository.schedule.CategoryRepository;
 import TImeCAlling.spring.repository.schedule.ScheduleRepository;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
@@ -47,7 +45,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
         schedule.setBody(request.getBody());
         schedule.setMoveTime(request.getMoveTime());
-        schedule.setSpare(Spare.valueOf(request.getSpare()));
+        schedule.setFreeTime(FreeTime.valueOf(request.getFreeTime()));
         schedule.setIsRepeat(request.getIsRepeat());
 
         return schedule;
