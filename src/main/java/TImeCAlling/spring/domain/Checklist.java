@@ -35,7 +35,8 @@ public class Checklist extends BaseEntity {
     private Boolean isFit;
     
     @Column(nullable = false)
-    private Boolean isWritten;
+    @Builder.Default
+    private Boolean isWritten = Boolean.FALSE;
     
     private LocalDate date;
     
