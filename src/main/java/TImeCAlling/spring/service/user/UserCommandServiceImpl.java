@@ -1,5 +1,7 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.web.dto.user.UserAuthDTO;
+import com.google.gson.Gson;
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.apiPayload.exception.handler.UserHandler;
 import TImeCAlling.spring.converter.user.UserConverter;
@@ -12,6 +14,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -19,6 +28,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     
     
     private final UserRepository userRepository;
+    private final Gson gson;
     
     @Override
     public UserResponseDTO.UserCreateDTO createUser(UserRequestDTO.UserCreateDTO userCreateDTO) {
@@ -72,7 +82,42 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     public User signUp(String kakaoAccessToken) {
+
+        // 카카오 서버에서 유저 정보 받아오기
+        UserAuthDTO.KaKaoUserInfoDTO userInfo = this.getUserInfo(kakaoAccessToken);
+        System.out.println("login Controller : " + userInfo.getProperties().getNickname());
+
         return null;
+    }
+
+    private UserAuthDTO.KaKaoUserInfoDTO getUserInfo(String accessToken) {
+
+        String getURL = "https://kapi.kakao.com/v2/user/me";
+        StringBuilder result;
+
+        try {
+            URL url = new URL(getURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            int responseCode = conn.getResponseCode();  // 응답 코드
+            System.out.println("responseCode : " + responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            result = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+            System.out.println("response body : " + result);
+
+        } catch (IOException exception) {
+            throw new UserHandler(ErrorStatus.NOT_VALID_TOKEN);
+        }
+
+        return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
     }
 
 }
