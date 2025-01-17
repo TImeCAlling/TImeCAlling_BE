@@ -69,4 +69,10 @@ public class UserCommandServiceImpl implements UserCommandService {
     private User getFinduser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
+
+    @Override
+    public User signUp(String kakaoAccessToken) {
+        return null;
+    }
+
 }

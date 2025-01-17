@@ -4,6 +4,9 @@ import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.SocialType;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
+import TImeCAlling.spring.web.dto.user.UserResponseDTO;
+
+import java.time.LocalDateTime;
 
 public class UserConverter {
     
@@ -17,4 +20,12 @@ public class UserConverter {
                 .fcmToken("기본값")
                 .build();
     }
+
+    public static UserResponseDTO.UserSignUpResultDTO toUserSignUpResultDTO(User user, String accessToken) {
+        return UserResponseDTO.UserSignUpResultDTO.builder()
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .build();
+    }
+
 }

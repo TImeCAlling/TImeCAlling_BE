@@ -76,11 +76,11 @@ public class User extends BaseEntity implements UserDetails {
         return null;
     }
     @Override
-    public String getPassword() {
-        return null;
+    public String getUsername() {
+        return nickname;
     }
     @Override
-    public String getUsername() {
+    public String getPassword() {
         return null;
     }
 }

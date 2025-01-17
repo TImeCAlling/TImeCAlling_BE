@@ -9,7 +9,7 @@ public class UserResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class UserCreateDTO{
-        
+
         Long id;
     }
     
@@ -41,4 +41,14 @@ public class UserResponseDTO {
         Integer avgPrepTime;
         String freeTime;
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class UserSignUpResultDTO {
+        Long userId;
+        String accessToken;
+    }
+
 }
