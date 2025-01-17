@@ -70,5 +70,6 @@ public class Schedule extends BaseEntity {
 
     public void setBody(String body) { this.body = body; }
     public void setMoveTime(Integer moveTime) { this.moveTime = moveTime; }
+    public void setFreeTime(FreeTime freeTime) { this.freeTime = freeTime; }
     public void setIsRepeat(Boolean isRepeat) { this.isRepeat = isRepeat; }
 }
