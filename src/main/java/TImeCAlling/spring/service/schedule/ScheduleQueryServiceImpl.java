@@ -17,8 +17,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     @Override
     @ExistSchedule
     public Schedule getSchedule(Long scheduleId, User user) {
-        Schedule schedule = scheduleRepository.findByIdWithCategories(scheduleId).orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
-        scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
-        return schedule;
+        
+        return scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
     }
 }

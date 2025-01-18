@@ -15,7 +15,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "잘못된 요청입니다."),
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
-
+    
+    // 유저 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "유저를 찾을 수 없습니다."),
 
     // 토큰 관련 에러
@@ -36,6 +37,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 일정 관련 에러
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4001", "일정을 찾을 수 없습니다."),
     SCHEDULE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULE4002", "일정 삭제에 실패했습니다."),
+    RECURRING_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4003", "반복 일정 정보가 정상적으로 저장되지 않았습니다.")
     ;
 
     private final HttpStatus httpStatus;
