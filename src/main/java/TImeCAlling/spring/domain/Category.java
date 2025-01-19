@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class Category extends BaseEntity {
+public class Category {
     @Column(nullable = false, length = 10)
     private String name;
 
