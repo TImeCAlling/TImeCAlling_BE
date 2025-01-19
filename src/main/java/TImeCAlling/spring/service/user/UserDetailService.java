@@ -19,19 +19,15 @@ public class UserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String nickname) {
 
-        User user = userRepository.findByNickname(nickname);
-        if (user == null) {
-            throw new UsernameNotFoundException("해당 유저가 없습니다.");
-        }
-        return user;
+        return userRepository.findByNickname(nickname).orElseThrow(
+                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-        return user;
+        
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 }

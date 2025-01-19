@@ -62,9 +62,6 @@ public class User extends BaseEntity implements UserDetails {
     private List<Schedule> schedules = new ArrayList<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Category> categories = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PushMessageSetting> pushMessageSettings = new ArrayList<>();
 
     public void update(String nickname, Integer avgPrepTime, FreeTime freeTime) {

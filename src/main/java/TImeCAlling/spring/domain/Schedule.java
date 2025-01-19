@@ -2,12 +2,12 @@ package TImeCAlling.spring.domain;
 
 import TImeCAlling.spring.domain.base.BaseEntity;
 import TImeCAlling.spring.domain.enums.*;
-import TImeCAlling.spring.domain.mapping.ScheduleCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,12 @@ public class Schedule extends BaseEntity {
     @Column(length = 20)
     private String body;
     
-    private LocalDateTime meetTime;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FreeTime freeTime;
+    
+    @Column(nullable = false)
+    private LocalTime meetTime;
     
     @Column(length = 20, nullable = false)
     private String place;
@@ -39,29 +44,6 @@ public class Schedule extends BaseEntity {
     @Column(nullable = false)
     private Boolean isRepeat;
     
-    private LocalDate start;
-    
-    private LocalDate end;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Success success = Success.NONE;
-    
-    @Enumerated(EnumType.STRING)
-    private Spare spare;
-    
-    @Enumerated(EnumType.STRING)
-    private Late late;
-    
-    @Enumerated(EnumType.STRING)
-    private Reason reason;
-    
-    @Enumerated(EnumType.STRING)
-    private External external;
-    
-    @Enumerated(EnumType.STRING)
-    private Fit fit;
-    
     private Long shareId;
     
     @Column(length = 15, nullable = false)
@@ -70,17 +52,46 @@ public class Schedule extends BaseEntity {
     @Column(length = 15, nullable = false)
     private String latitude;
     
-    @ElementCollection
-    @CollectionTable(name = "schedule_repeat_day", joinColumns = @JoinColumn(name = "schedule_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "repeat_day")
-    private List<RepeatDay> repeatDays;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private List<ScheduleCategory> scheduleCategories = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
     
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    private List<Checklist> checklists = new ArrayList<>();
+    
+    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
+    private RecurringSchedule recurringSchedule;
+    
+    public void updateSchedule(
+            String name,
+            String body,
+            LocalDateTime meetTime,
+            String place,
+            String longitude,
+            String latitude,
+            Integer moveTime,
+            FreeTime freeTime,
+            Boolean isRepeat,
+            List<Category> categories,
+            List<Checklist> checklists
+    ) {
+        this.name = name;
+        this.body = body;
+        this.meetTime = meetTime.toLocalTime();
+        this.place = place;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.moveTime = moveTime;
+        this.freeTime = freeTime;
+        this.isRepeat = isRepeat;
+        this.categories = categories;
+        this.checklists = checklists;
+    }
+    
+    public void setRecurringSchedule(RecurringSchedule recurringSchedule) {
+        this.recurringSchedule = recurringSchedule;
+    }
 }
