@@ -6,7 +6,6 @@ import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.*;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.RepeatDay;
-import TImeCAlling.spring.repository.schedule.CategoryRepository;
 import TImeCAlling.spring.repository.schedule.RecurringScheduleRepository;
 import TImeCAlling.spring.repository.schedule.ScheduleRepository;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
@@ -23,8 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final ScheduleRepository scheduleRepository;
-    private final CategoryRepository categoryRepository;
-    private final RecurringScheduleRepository recurringScheduleRepository;
+     private final RecurringScheduleRepository recurringScheduleRepository;
     private final ChecklistService checklistService;
 
     @Override
@@ -32,14 +30,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request) {
         Schedule newSchedule = ScheduleConverter.toSchedule(user, request);
         Schedule savedSchedule = scheduleRepository.save(newSchedule);
-        List<Category> categories = request.getCategories().stream()
-                .map(categoryDTO -> Category.builder()
-                        .name(categoryDTO.getCategoryName())
-                        .color(categoryDTO.getCategoryColor())
-                        .schedule(savedSchedule)
-                        .build())
-                .collect(Collectors.toList());
-        categoryRepository.saveAll(categories);
+
         return savedSchedule;
     }
     
@@ -50,12 +41,11 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
         scheduleRepository.findByIdAndUser(scheduleId, user)
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
-        
+
         List<Category> categories = request.getCategories().stream()
                 .map(categoryDTO -> Category.builder()
                         .name(categoryDTO.getCategoryName())
                         .color(categoryDTO.getCategoryColor())
-                        .schedule(findSchedule)
                         .build())
                 .collect(Collectors.toList());
         
