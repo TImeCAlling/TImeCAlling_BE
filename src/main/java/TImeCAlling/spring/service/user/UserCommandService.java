@@ -3,6 +3,7 @@ package TImeCAlling.spring.service.user;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserCommandService {
     
@@ -13,6 +14,7 @@ public interface UserCommandService {
     UserResponseDTO.UserUpdateDTO updateUser(Long id, UserRequestDTO.UserUpdateDTO updateDTO);
     
     UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
+    UserDetails loadUserByUserId(Long id);
 
     User kakaoLogin(String kakaoAccessToken);
     

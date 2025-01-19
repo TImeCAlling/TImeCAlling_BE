@@ -11,6 +11,8 @@ import TImeCAlling.spring.repository.user.UserRepository;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +80,13 @@ public class UserCommandServiceImpl implements UserCommandService {
     
     private User getFinduser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    @Override
+    public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
+
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     @Override

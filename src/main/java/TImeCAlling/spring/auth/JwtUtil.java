@@ -2,7 +2,7 @@ package TImeCAlling.spring.auth;
 
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.auth.Handler.JwtExceptionHandler;
-import TImeCAlling.spring.service.user.UserDetailService;
+import TImeCAlling.spring.service.user.UserCommandService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,13 +25,13 @@ import java.util.Date;
 public class JwtUtil {
 
     private SecretKey secretKey;
-    private final UserDetailService userDetailService;
+    private final UserCommandService userCommandService;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 2 * 1000; // access 2시간
 //    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // refresh 7일
 
-    public JwtUtil(@Value("${spring.jwt.secret}") String secretKey, UserDetailService userDetailService) {
+    public JwtUtil(@Value("${spring.jwt.secret}") String secretKey, UserCommandService userCommandService) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-        this.userDetailService = userDetailService;
+        this.userCommandService = userCommandService;
     }
 
     // 토큰 생성
@@ -70,7 +70,7 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailService.loadUserByUserId(this.getUserId(token));
+        UserDetails userDetails = userCommandService.loadUserByUserId(this.getUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, null, null);
     }
 

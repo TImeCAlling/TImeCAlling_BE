@@ -54,7 +54,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler))
 
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/kakao/**").permitAll()
                         .requestMatchers("/createJWT").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().permitAll()) //임시로 모두 열어두었습니다
