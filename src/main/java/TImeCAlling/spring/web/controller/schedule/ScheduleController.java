@@ -4,6 +4,7 @@ import TImeCAlling.spring.apiPayload.ApiResponse;
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
+import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.schedule.ChecklistService;
@@ -16,6 +17,7 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,5 +63,10 @@ public class ScheduleController {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
+    }
+    
+    @GetMapping("/success-rate")
+    public ApiResponse<ScheduleResponseDTO.MyScheduleRateDTO> successRate(@AuthenticationPrincipal User user) {
+        return ApiResponse.onSuccess(UserConverter.toMyScheduleRateDTO(user));
     }
 }

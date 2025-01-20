@@ -54,4 +54,15 @@ public class ScheduleResponseDTO {
     public static class ScheduleDeleteDTO{
         Long scheduleId;
     }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MyScheduleRateDTO {
+        Integer total;
+        Integer success;
+        Integer failed;
+        Double successRate;
+    }
 }
