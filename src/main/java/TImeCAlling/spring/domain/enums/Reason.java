@@ -1,5 +1,8 @@
 package TImeCAlling.spring.domain.enums;
 
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.ChecklistHandler;
+
 public enum Reason {
     TRAFFIC_JAM("교통 체증"),
     LATE_DEPARTURE("늦게 출발"),
@@ -16,5 +19,14 @@ public enum Reason {
     
     public String getDescription() {
         return description;
+    }
+
+    public static Reason fromDescription(String description) {
+        for (Reason reason : Reason.values()) {
+            if (reason.getDescription().equals(description)) {
+                return reason;
+            }
+        }
+        throw new ChecklistHandler(ErrorStatus.REASON_NOT_FOUND);
     }
 }

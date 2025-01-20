@@ -1,13 +1,11 @@
 package TImeCAlling.spring.web.controller.schedule;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
-import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
-import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
-import TImeCAlling.spring.service.schedule.ChecklistService;
+import TImeCAlling.spring.service.schedule.checklist.ChecklistCommandService;
 import TImeCAlling.spring.service.schedule.RecurringScheduleService;
 import TImeCAlling.spring.service.schedule.ScheduleCommandService;
 import TImeCAlling.spring.service.schedule.ScheduleQueryService;
@@ -30,7 +28,7 @@ public class ScheduleController {
     private final ScheduleCommandService scheduleCommandService;
     private final ScheduleQueryService scheduleQueryService;
     private final RecurringScheduleService recurringScheduleService;
-    private final ChecklistService checklistService;
+    private final ChecklistCommandService checklistService;
 
     @PostMapping
     public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
