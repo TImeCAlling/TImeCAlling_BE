@@ -105,6 +105,18 @@ public class UserCommandServiceImpl implements UserCommandService {
         return userRepository.save(newUser);
     }
 
+    @Override
+    public User kakaoLogin(UserRequestDTO.UserLoginDTO request) {
+
+        UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
+
+        Long socialId = userInfo.getId();
+        User findUser = userRepository.findBySocialId(socialId).orElseThrow(
+                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        return findUser;
+    }
+
     private UserAuthDTO.KaKaoUserInfoDTO getUserInfo(String accessToken) {
 
         String getURL = "https://kapi.kakao.com/v2/user/me";

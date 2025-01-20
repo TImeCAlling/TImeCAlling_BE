@@ -17,5 +17,6 @@ public interface UserCommandService {
     UserDetails loadUserByUserId(Long id);
 
     User kakaoSignUp(UserRequestDTO.UserSignUpDTO request);
+    User kakaoLogin(UserRequestDTO.UserLoginDTO request);
     String getAccessToken(String code);
 }

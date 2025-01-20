@@ -33,4 +33,9 @@ public class UserRequestDTO {
         String freeTime;
     }
 
+    @Getter
+    public static class UserLoginDTO {
+
+        String kakaoAccessToken;
+    }
 }
