@@ -8,7 +8,9 @@ import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,37 +28,46 @@ public class UserController {
         return ApiResponse.onSuccess(response);
     }
     
-    @DeleteMapping("/{userId}")
-    public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@RequestParam Long userId) {
+    @DeleteMapping()
+    public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@AuthenticationPrincipal User user) {
         
-        return ApiResponse.onSuccess(userCommandService.deleteUser(userId));
+        return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
     
-    @PutMapping("/{userId}")
-    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@PathVariable Long userId,
+    @PutMapping()
+    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
                                                                  @RequestBody UserRequestDTO.UserUpdateDTO userUpdateDTO) {
         
-        return ApiResponse.onSuccess(userCommandService.updateUser(userId, userUpdateDTO));
+        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), userUpdateDTO));
     }
     
-    @GetMapping("/{userId}")
-    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@PathVariable Long userId) {
+    @GetMapping()
+    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@AuthenticationPrincipal User user) {
         
-        return ApiResponse.onSuccess(userCommandService.findMyUsers(userId));
+        return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
 
     @PostMapping("/kakao/signup")
     @Operation(summary = "카카오 로그인", description = "accessToken을 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestParam String kakaoAccessToken) {
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
 
-        User user = userCommandService.kakaoLogin(kakaoAccessToken);
+        User user = userCommandService.kakaoSignUp(request);
         String accessToken = jwtUtil.createAccessToken(user.getId());
         return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken));
     }
+
     @GetMapping("/kakao/token")
-    @Operation(summary = "(테스트용) kakao accessToken 받기")
+    @Operation(summary = "(개발용) kakao accessToken 받기", description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code")
     public ApiResponse<String> getAccessToken(String code) {
         String token = userCommandService.getAccessToken(code);
+        return ApiResponse.onSuccess(token);
+    }
+
+    @PostMapping("/token")
+    @Operation(summary = "(개발용) jwt 토큰 받기")
+    public ApiResponse<String> createJWT(@RequestParam Long userId) {
+        userCommandService.loadUserByUserId(userId);
+        String token = jwtUtil.createAccessToken(userId);
         return ApiResponse.onSuccess(token);
     }
     

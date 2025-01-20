@@ -27,12 +27,15 @@ public class UserConverter {
                 .build();
     }
 
-    public static User toUser(UserAuthDTO.KaKaoUserInfoDTO userInfo) {
+    public static User toUser(UserAuthDTO.KaKaoUserInfoDTO userInfo, UserRequestDTO.UserSignUpDTO request) {
 
         return User.builder()
-                .nickname(userInfo.getProperties().getNickname())
+                .nickname(request.getNickname())
                 .socialId(userInfo.getId())
                 .socialType(SocialType.KAKAO)
+                .avgPrepTime(request.getAvgPrepTime())
+                .freeTime(FreeTime.valueOf(request.getFreeTime()))
+                .fcmToken("기본값")
                 .build();
     }
 

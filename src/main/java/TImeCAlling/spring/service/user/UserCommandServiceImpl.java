@@ -14,7 +14,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +40,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         User saveduser = userRepository.save(newUser);
         
         return UserResponseDTO.UserCreateDTO.builder()
-                .id(saveduser.getId())
+                .userId(saveduser.getId())
                 .build();
     }
     
@@ -52,7 +51,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         userRepository.delete(finduser);
         
         return UserResponseDTO.UserDeleteDTO.builder()
-                .id(finduser.getId())
+                .userId(finduser.getId())
                 .build();
     }
     
@@ -64,7 +63,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         User saveduser = userRepository.save(finduser);
         
         return UserResponseDTO.UserUpdateDTO.builder()
-                .id(saveduser.getId())
+                .userId(saveduser.getId())
                 .build();
     }
     
@@ -74,9 +73,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         User finduser = getFinduser(id);
         
         return UserResponseDTO.UserMyPageDTO.builder()
+                .userId(finduser.getId())
                 .nickname(finduser.getNickname())
                 .avgPrepTime(finduser.getAvgPrepTime())
-                .freeTime(finduser.getFreeTime().toString())
+                .freeTime(String.valueOf(finduser.getFreeTime()))
                 .build();
     }
     
@@ -86,21 +86,20 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     public UserDetails loadUserByUserId(Long id) {
-
         return userRepository.findById(id).orElseThrow(
                 () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     @Override
-    public User kakaoLogin(String kakaoAccessToken) {
+    public User kakaoSignUp(UserRequestDTO.UserSignUpDTO request) {
 
-        UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(kakaoAccessToken);
+        UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
 
         Long socialId = userInfo.getId();
         Optional<User> findUser = userRepository.findBySocialId(socialId);
 
         User newUser = findUser.orElseGet(
-                () -> UserConverter.toUser(userInfo) // DB에 없는 유저면 회원가입
+                () -> UserConverter.toUser(userInfo, request) // DB에 없는 유저면 회원가입
         );
 
         return userRepository.save(newUser);

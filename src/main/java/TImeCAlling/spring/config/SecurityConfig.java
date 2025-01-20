@@ -55,9 +55,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/users/kakao/**").permitAll()
-                        .requestMatchers("/createJWT").permitAll()
+                        .requestMatchers("/api/users/token").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().permitAll()) //임시로 모두 열어두었습니다
+                        .anyRequest().authenticated())
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionHandlerFilter, JwtAuthenticationFilter.class);

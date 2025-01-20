@@ -10,7 +10,7 @@ public class UserResponseDTO {
     @Getter
     public static class UserCreateDTO{
 
-        Long id;
+        Long userId;
     }
     
     @Builder
@@ -19,7 +19,7 @@ public class UserResponseDTO {
     @Getter
     public static class UserDeleteDTO {
         
-        Long id;
+        Long userId;
     }
     
     @Builder
@@ -28,7 +28,7 @@ public class UserResponseDTO {
     @Getter
     public static class UserUpdateDTO{
         
-        Long id;
+        Long userId;
     }
     
     @Builder
@@ -36,7 +36,8 @@ public class UserResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class UserMyPageDTO{
-        
+
+        Long userId;
         String nickname;
         Integer avgPrepTime;
         String freeTime;
