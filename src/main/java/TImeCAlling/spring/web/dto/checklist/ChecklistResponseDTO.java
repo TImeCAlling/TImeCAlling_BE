@@ -1,7 +1,12 @@
 package TImeCAlling.spring.web.dto.checklist;
 
-public class ChecklistResponseDTO {
-    public static class UpdateResultDTO {
+import lombok.Builder;
+import lombok.Getter;
 
+public class ChecklistResponseDTO {
+    @Getter
+    @Builder
+    public static class UpdateResultDTO {
+        private Long checklistId;
     }
 }
