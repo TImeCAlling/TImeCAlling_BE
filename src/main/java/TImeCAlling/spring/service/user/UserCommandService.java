@@ -17,5 +17,5 @@ public interface UserCommandService {
     UserDetails loadUserByUserId(Long id);
 
     User kakaoLogin(String kakaoAccessToken);
-    
+    String getAccessToken(String code);
 }

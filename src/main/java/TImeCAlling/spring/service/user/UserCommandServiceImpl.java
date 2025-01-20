@@ -10,6 +10,8 @@ import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.repository.user.UserRepository;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -83,7 +85,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
+    public UserDetails loadUserByUserId(Long id) {
 
         return userRepository.findById(id).orElseThrow(
                 () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
@@ -132,6 +134,38 @@ public class UserCommandServiceImpl implements UserCommandService {
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
+    }
+
+    @Override
+    public String getAccessToken(String code) {
+
+        String getURL = "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&code="+code;
+        String accessToken = "";
+
+        try {
+            URL url = new URL(getURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();  // 응답 코드
+            System.out.println("responseCode : " + responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            StringBuilder result = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+
+            JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
+            accessToken = jsonObject.get("access_token").getAsString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return accessToken;
     }
 
 }

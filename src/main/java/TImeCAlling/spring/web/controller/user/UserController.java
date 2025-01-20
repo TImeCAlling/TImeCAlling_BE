@@ -53,5 +53,11 @@ public class UserController {
         String accessToken = jwtUtil.createAccessToken(user.getId());
         return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken));
     }
+    @GetMapping("/kakao/token")
+    @Operation(summary = "(테스트용) kakao accessToken 받기")
+    public ApiResponse<String> getAccessToken(String code) {
+        String token = userCommandService.getAccessToken(code);
+        return ApiResponse.onSuccess(token);
+    }
     
 }
