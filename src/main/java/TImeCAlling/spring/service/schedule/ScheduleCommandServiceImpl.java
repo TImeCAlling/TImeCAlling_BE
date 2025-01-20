@@ -45,7 +45,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         List<Category> categories = request.getCategories().stream()
                 .map(categoryDTO -> Category.builder()
                         .name(categoryDTO.getCategoryName())
-                        .color(categoryDTO.getCategoryColor())
+                        .color(categoryDTO.getColor())
                         .build())
                 .collect(Collectors.toList());
         

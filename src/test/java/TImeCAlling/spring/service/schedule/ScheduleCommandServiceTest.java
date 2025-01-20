@@ -34,8 +34,8 @@ class ScheduleCommandServiceTest {
 
         List<String> repeatDays = new ArrayList<>();
         repeatDays.add("MONDAY");
-        ScheduleRequestDTO.CategoryDTO category1 = new ScheduleRequestDTO.CategoryDTO("알바", "red");
-        ScheduleRequestDTO.CategoryDTO category2 = new ScheduleRequestDTO.CategoryDTO("수업", "green");
+        ScheduleRequestDTO.CategoryDTO category1 = new ScheduleRequestDTO.CategoryDTO("알바", 0);
+        ScheduleRequestDTO.CategoryDTO category2 = new ScheduleRequestDTO.CategoryDTO("수업", 9);
         List<ScheduleRequestDTO.CategoryDTO> categoryDTOS = new ArrayList<>();
         categoryDTOS.add(category1);
         categoryDTOS.add(category2);
