@@ -1,5 +1,6 @@
 package TImeCAlling.spring.converter.schedule;
 
+import TImeCAlling.spring.domain.Category;
 import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
