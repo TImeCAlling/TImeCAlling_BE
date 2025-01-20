@@ -3,9 +3,8 @@ package TImeCAlling.spring.web.dto.schedule;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.validation.annotation.ValidEnum;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -15,15 +14,18 @@ import java.util.List;
 public class ScheduleRequestDTO {
 
     @Getter
+    @AllArgsConstructor
     public static class CategoryDTO {
 
         @Size(max = 10)
         @NotBlank
         String categoryName;
 
-        @Size(max = 10)
+        @Max(9)
+        @Min(0)
         @NotBlank
-        String categoryColor;
+        Integer color;
+
     }
 
     @Getter
@@ -68,6 +70,7 @@ public class ScheduleRequestDTO {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class SchedulePatchDTO {
         
         @Size(max = 10)

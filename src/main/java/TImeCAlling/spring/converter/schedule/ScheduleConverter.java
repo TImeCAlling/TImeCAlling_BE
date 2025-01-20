@@ -23,8 +23,15 @@ public class ScheduleConverter {
     }
 
     public static Schedule toSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request){
-        
+
         FreeTime freeTime = FreeTime.valueOf(request.getFreeTime());
+
+        List<Category> categories = request.getCategories().stream()
+                .map(categoryDTO -> Category.builder()
+                        .name(categoryDTO.getCategoryName())
+                        .color(categoryDTO.getColor())
+                        .build())
+                .collect(Collectors.toList());
 
         return Schedule.builder()
                 .user(user)
@@ -37,6 +44,7 @@ public class ScheduleConverter {
                 .moveTime(request.getMoveTime())
                 .freeTime(freeTime)
                 .isRepeat(request.getIsRepeat())
+                .categories(categories)
                 .build();
     }
 
