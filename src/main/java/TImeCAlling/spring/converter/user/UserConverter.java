@@ -23,8 +23,8 @@ public class UserConverter {
     public static ScheduleResponseDTO.MyScheduleRateDTO toMyScheduleRateDTO(User user) {
         int success = user.getSuccess();
         int failed = user.getFailed();
-
-        double percentage = ((double) success / (success + failed)) * 100;
+        
+        double percentage = (success + failed == 0) ? 0.0 : ((double) success / (success + failed)) * 100;
         
         return ScheduleResponseDTO.MyScheduleRateDTO.builder()
                 .total(success + failed)
