@@ -56,7 +56,8 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
     
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @ElementCollection
+    @CollectionTable(name = "category", joinColumns = @JoinColumn(name = "schedule_id"))
     private List<Category> categories = new ArrayList<>();
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)

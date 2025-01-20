@@ -2,6 +2,7 @@ package TImeCAlling.spring.web.controller.schedule;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
+import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.schedule.ChecklistService;
@@ -14,6 +15,7 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,12 +64,16 @@ public class ScheduleController {
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
-
+  
     /** 공유 일정 멤버 조회 컨트롤러*/
     @GetMapping("/{scheduleId}/users")
     public ApiResponse<List<ScheduleResponseDTO.SharedScheduleUserDTO>> getSharedScheduleUser(
             @PathVariable @ExistSchedule Long scheduleId) {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId);
         return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
+    
+    @GetMapping("/success-rate")
+    public ApiResponse<ScheduleResponseDTO.MyScheduleRateDTO> successRate(@AuthenticationPrincipal User user) {
+        return ApiResponse.onSuccess(UserConverter.toMyScheduleRateDTO(user));
     }
 }

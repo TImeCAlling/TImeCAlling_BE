@@ -26,7 +26,7 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class CategoryDTO{
         String categoryName;
-        String categoryColor;
+        Integer categoryColor;
     }
 
     @Builder
@@ -54,7 +54,7 @@ public class ScheduleResponseDTO {
     public static class ScheduleDeleteDTO{
         Long scheduleId;
     }
-
+  
     @Builder
     @Getter
     @NoArgsConstructor
@@ -64,4 +64,12 @@ public class ScheduleResponseDTO {
         String nickname;
         String profile; //유저 이미지 URL
     }
+  
+    public static class MyScheduleRateDTO {
+        Integer total;
+        Integer success;
+        Integer failed;
+        Double successRate;
+    }
 }
+
