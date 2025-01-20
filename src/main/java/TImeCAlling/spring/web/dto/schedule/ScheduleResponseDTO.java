@@ -46,7 +46,7 @@ public class ScheduleResponseDTO {
         LocalDate end;
         List<CategoryDTO> categories;
     }
-
+    
     @Builder
     @Getter
     @NoArgsConstructor
@@ -72,4 +72,3 @@ public class ScheduleResponseDTO {
         Double successRate;
     }
 }
-
