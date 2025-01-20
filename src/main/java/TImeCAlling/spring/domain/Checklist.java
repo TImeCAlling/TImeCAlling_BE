@@ -43,4 +43,14 @@ public class Checklist extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+    public void updateChecklist(Boolean isSuccess, Spare spare, Late late, Reason reason, External external, boolean isFit) {
+        this.isSuccess = isSuccess;
+        this.spare = spare;
+        this.late = late;
+        this.reason = reason;
+        this.external = external;
+        this.isFit = isFit;
+        this.isWritten = true;
+    }
 }

@@ -1,4 +1,4 @@
-package TImeCAlling.spring.service.schedule;
+package TImeCAlling.spring.service.schedule.checklist;
 
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;

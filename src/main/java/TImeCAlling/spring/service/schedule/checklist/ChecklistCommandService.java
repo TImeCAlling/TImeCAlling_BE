@@ -1,4 +1,4 @@
-package TImeCAlling.spring.service.schedule;
+package TImeCAlling.spring.service.schedule.checklist;
 
 import TImeCAlling.spring.domain.Checklist;
 import TImeCAlling.spring.domain.Schedule;
