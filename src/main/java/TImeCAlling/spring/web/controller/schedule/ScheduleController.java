@@ -19,6 +19,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/schedules")
@@ -62,9 +65,17 @@ public class ScheduleController {
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
-    
+
     @GetMapping("/success-rate")
     public ApiResponse<ScheduleResponseDTO.MyScheduleRateDTO> successRate(@AuthenticationPrincipal User user) {
         return ApiResponse.onSuccess(UserConverter.toMyScheduleRateDTO(user));
+    }
+
+    /** 공유 일정 멤버 조회 컨트롤러*/
+    @GetMapping("/{scheduleId}/users")
+    public ApiResponse<List<ScheduleResponseDTO.SharedScheduleUserDTO>> getSharedScheduleUser(
+            @PathVariable @ExistSchedule Long scheduleId) {
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId);
+        return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
     }
 }

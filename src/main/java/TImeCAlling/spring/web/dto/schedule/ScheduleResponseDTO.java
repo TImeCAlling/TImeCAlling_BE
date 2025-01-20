@@ -46,7 +46,7 @@ public class ScheduleResponseDTO {
         LocalDate end;
         List<CategoryDTO> categories;
     }
-
+    
     @Builder
     @Getter
     @NoArgsConstructor
@@ -54,7 +54,17 @@ public class ScheduleResponseDTO {
     public static class ScheduleDeleteDTO{
         Long scheduleId;
     }
-    
+  
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SharedScheduleUserDTO{
+        Long userId;
+        String nickname;
+        String profile; //유저 이미지 URL
+    }
+
     @Builder
     @Getter
     @NoArgsConstructor
