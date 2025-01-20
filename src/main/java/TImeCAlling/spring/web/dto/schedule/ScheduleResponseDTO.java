@@ -54,4 +54,14 @@ public class ScheduleResponseDTO {
     public static class ScheduleDeleteDTO{
         Long scheduleId;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SharedScheduleUserDTO{
+        Long userId;
+        String nickname;
+        String profile; //유저 이미지 URL
+    }
 }

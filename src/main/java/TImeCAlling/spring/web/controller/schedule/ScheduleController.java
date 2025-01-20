@@ -1,8 +1,6 @@
 package TImeCAlling.spring.web.controller.schedule;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
-import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
-import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.converter.schedule.ScheduleConverter;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
@@ -18,6 +16,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,5 +61,13 @@ public class ScheduleController {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
+    }
+
+    /** 공유 일정 멤버 조회 컨트롤러*/
+    @GetMapping("/{scheduleId}/users")
+    public ApiResponse<List<ScheduleResponseDTO.SharedScheduleUserDTO>> getSharedScheduleUser(
+            @PathVariable @ExistSchedule Long scheduleId) {
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId);
+        return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
     }
 }

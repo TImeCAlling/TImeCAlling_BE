@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
@@ -14,4 +15,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Optional<Schedule> findByIdWithCategories(@Param("id") Long id);
 
     Optional<Schedule> findByIdAndUser(Long id, User user);
+
+    Optional<List<Schedule>> findByShareId(Long shareId);
 }
