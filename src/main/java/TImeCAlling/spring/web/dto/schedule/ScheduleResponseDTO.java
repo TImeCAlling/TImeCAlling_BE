@@ -64,7 +64,11 @@ public class ScheduleResponseDTO {
         String nickname;
         String profile; //유저 이미지 URL
     }
-  
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class MyScheduleRateDTO {
         Integer total;
         Integer success;
