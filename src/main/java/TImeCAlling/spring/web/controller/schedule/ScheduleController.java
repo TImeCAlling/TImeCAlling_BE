@@ -16,8 +16,13 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,5 +66,13 @@ public class ScheduleController {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
+    }
+    
+    @GetMapping("/{scheduleId}/status")
+    public ApiResponse<ScheduleResponseDTO.ScheduleStatusDTO> getScheduleStatus(@PathVariable @ExistSchedule Long scheduleId,
+                                                                                @AuthenticationPrincipal User user) {
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+        List<User> users = new ArrayList<>();
+        return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule, users));
     }
 }

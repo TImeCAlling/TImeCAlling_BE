@@ -9,7 +9,10 @@ import TImeCAlling.spring.domain.enums.Spare;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -127,5 +130,26 @@ public class ScheduleConverter {
         return ScheduleResponseDTO.ScheduleDeleteDTO.builder()
                 .scheduleId(scheduleId)
                 .build();
+    }
+    
+    public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule, List<User> users) {
+        List<ScheduleResponseDTO.UserProfileDTO> userProfileDTOS = users.stream()
+                .map(user -> ScheduleResponseDTO.UserProfileDTO.builder()
+                        .profileImage(user.getProfileImage().getFileUrl())
+                        .build()
+                ).collect(Collectors.toList());
+        Long leftTime = ChronoUnit.MINUTES.between(LocalTime.now(), schedule.getMeetTime());
+        
+        return ScheduleResponseDTO.ScheduleStatusDTO.builder()
+                .name(schedule.getName())
+                .userProfiles(userProfileDTOS)
+                .meetTime(schedule.getMeetTime())
+                .totalTime(LocalTime.MIN.plusMinutes(schedule.getMoveTime()))
+                .leftTime(leftTime)
+                .build();
+        
+        
+        
+        
     }
 }
