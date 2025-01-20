@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,10 +39,8 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     @ExistSchedule
     public List<ScheduleResponseDTO.SharedScheduleUserDTO> getSharedScheduleUsers(Schedule schedule) {
 
-        List<ScheduleResponseDTO.SharedScheduleUserDTO> userDTOList = new ArrayList<>();
-
         if (schedule.getShareId() == null) {
-            return userDTOList;
+            return Collections.emptyList();
         }
 
         List<Schedule> users = scheduleRepository.findByShareId(schedule.getShareId())
