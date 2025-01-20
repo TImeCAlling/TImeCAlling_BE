@@ -8,6 +8,7 @@ import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.repository.schedule.RecurringScheduleRepository;
 import TImeCAlling.spring.repository.schedule.ScheduleRepository;
+import TImeCAlling.spring.service.schedule.checklist.ChecklistCommandService;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final ScheduleRepository scheduleRepository;
      private final RecurringScheduleRepository recurringScheduleRepository;
-    private final ChecklistService checklistService;
+    private final ChecklistCommandService checklistService;
 
     @Override
     @Transactional
