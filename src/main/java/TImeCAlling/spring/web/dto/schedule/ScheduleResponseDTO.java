@@ -26,7 +26,7 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class CategoryDTO{
         String categoryName;
-        String categoryColor;
+        Integer categoryColor;
     }
 
     @Builder
