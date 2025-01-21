@@ -37,11 +37,11 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createAccessToken(User user) {
-        return generateToken(user.getId(), ACCESS_TOKEN_EXPIRE_TIME);
+    public String createAccessToken(Long userId) {
+        return generateToken(userId, ACCESS_TOKEN_EXPIRE_TIME);
     }
-    public String createRefreshToken(User user) {
-        return generateToken(user.getId(), REFRESH_TOKEN_EXPIRE_TIME);
+    public String createRefreshToken(Long userId) {
+        return generateToken(userId, REFRESH_TOKEN_EXPIRE_TIME);
     }
     public String generateToken(Long id, long expiredTime) {
         return Jwts.builder()

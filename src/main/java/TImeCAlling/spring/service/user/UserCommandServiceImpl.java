@@ -111,8 +111,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         User newUser = UserConverter.toUser(userInfo, request);
         User savedUser = userRepository.save(newUser);
 
-        String accessToken = jwtUtil.createAccessToken(savedUser);
-        String refreshToken = jwtUtil.createRefreshToken(savedUser);
+        String accessToken = jwtUtil.createAccessToken(savedUser.getId());
+        String refreshToken = jwtUtil.createRefreshToken(savedUser.getId());
         savedUser.setRefreshToken(refreshToken);
         userRepository.save(savedUser);
 
@@ -131,8 +131,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         User findUser = userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        String accessToken = jwtUtil.createAccessToken(findUser);
-        String refreshToken = jwtUtil.createRefreshToken(findUser);
+        String accessToken = jwtUtil.createAccessToken(findUser.getId());
+        String refreshToken = jwtUtil.createRefreshToken(findUser.getId());
         findUser.setRefreshToken(refreshToken);
         userRepository.save(findUser);
 

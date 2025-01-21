@@ -2,7 +2,6 @@ package TImeCAlling.spring.web.controller.user;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
 import TImeCAlling.spring.auth.JwtUtil;
-import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -74,8 +72,8 @@ public class UserController {
     @PostMapping("/token")
     @Operation(summary = "(개발용) jwt 토큰 받기")
     public ApiResponse<String> createJWT(@RequestParam Long userId) {
-        UserDetails findUser = userCommandService.loadUserByUserId(userId);
-        String token = jwtUtil.createAccessToken((User) findUser);
+        userCommandService.loadUserByUserId(userId);
+        String token = jwtUtil.createAccessToken(userId);
         return ApiResponse.onSuccess(token);
     }
     
