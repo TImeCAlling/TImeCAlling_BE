@@ -138,24 +138,15 @@ public class ScheduleConverter {
     }
     
     public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule, List<User> users) {
-        List<ScheduleResponseDTO.UserProfileDTO> userProfileDTOS = users.stream()
-                .map(user -> ScheduleResponseDTO.UserProfileDTO.builder()
-                        .profileImage(user.getProfileImage().getFileUrl())
-                        .build()
-                ).collect(Collectors.toList());
+        
         Long leftTime = ChronoUnit.MINUTES.between(LocalTime.now(), schedule.getMeetTime());
         
         return ScheduleResponseDTO.ScheduleStatusDTO.builder()
                 .name(schedule.getName())
-                .userProfiles(userProfileDTOS)
                 .meetTime(schedule.getMeetTime())
                 .totalTime(LocalTime.MIN.plusMinutes(schedule.getMoveTime()))
                 .leftTime(leftTime)
                 .build();
-        
-        
-        
-        
     }
 
     public static List<ScheduleResponseDTO.SharedScheduleUserDTO> toSharedScheduleUserDTO (List<Schedule> schedules) {
