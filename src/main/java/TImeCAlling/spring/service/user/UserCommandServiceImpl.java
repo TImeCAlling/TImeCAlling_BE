@@ -98,9 +98,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         Long socialId = userInfo.getId();
         Optional<User> findUser = userRepository.findBySocialId(socialId);
 
-        User newUser = findUser.orElseGet(
-                () -> UserConverter.toUser(userInfo, request) // DB에 없는 유저면 회원가입
-        );
+        if (findUser.isPresent()) {
+            throw new UserHandler(ErrorStatus.USER_ALREADY_EXIST);
+        }
+        User newUser = UserConverter.toUser(userInfo, request);
 
         return userRepository.save(newUser);
     }
@@ -111,8 +112,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
 
         Long socialId = userInfo.getId();
-        User findUser = userRepository.findBySocialId(socialId).orElseThrow(
-                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        User findUser = userRepository.findBySocialId(socialId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         return findUser;
     }

@@ -49,7 +49,7 @@ public class UserController {
 
     @PostMapping("/kakao/signup")
     @Operation(summary = "카카오 회원가입")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
 
         User user = userCommandService.kakaoSignUp(request);
         String accessToken = jwtUtil.createAccessToken(user.getId());
