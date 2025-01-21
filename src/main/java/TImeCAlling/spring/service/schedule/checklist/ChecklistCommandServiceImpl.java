@@ -13,6 +13,7 @@ import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.web.dto.checklist.ChecklistRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -150,5 +151,13 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
         user.addResult(request.getIsSuccess());
 
         return checklist.getId();
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void deleteExpiredChecklists() {
+        LocalDate now = LocalDate.now();
+        checklistRepository.deleteExpiredChecklists(now);
     }
 }
