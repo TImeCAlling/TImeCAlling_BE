@@ -5,10 +5,10 @@ import TImeCAlling.spring.apiPayload.exception.handler.ScheduleHandler;
 import TImeCAlling.spring.domain.Checklist;
 import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
+import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.repository.schedule.ChecklistRepository;
 import TImeCAlling.spring.repository.schedule.RecurringScheduleRepository;
-import TImeCAlling.spring.repository.schedule.ScheduleRepository;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -121,6 +121,11 @@ public class ChecklistServiceImpl implements ChecklistService {
         }
         
         return checklists;
+    }
+    
+    @Override
+    public List<Checklist> getCheckListByDateAndUser(LocalDate date, User user) {
+        return checklistRepository.findChecklistsByUserAndDate(user.getId(), date);
     }
     
     private List<LocalDate> calculateRepeatDates(LocalDate start, LocalDate end, java.util.List<RepeatDay> repeatDays) {
