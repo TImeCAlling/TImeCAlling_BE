@@ -83,18 +83,9 @@ public class ScheduleResponseDTO {
     public static class ScheduleStatusDTO{
         
         String name;
-        List<UserProfileDTO> userProfiles;
         LocalTime meetTime;
         LocalTime totalTime;
         Long leftTime;
     }
     
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserProfileDTO{
-        
-        String profileImage;
-    }
 }
