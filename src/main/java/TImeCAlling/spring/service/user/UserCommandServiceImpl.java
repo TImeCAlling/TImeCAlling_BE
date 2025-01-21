@@ -1,5 +1,8 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.converter.user.ProfileImageConverter;
+import TImeCAlling.spring.domain.ProfileImage;
+import TImeCAlling.spring.repository.user.ProfileImageRepository;
 import TImeCAlling.spring.web.dto.user.UserAuthDTO;
 import com.google.gson.Gson;
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
@@ -31,6 +34,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     
     
     private final UserRepository userRepository;
+    private final ProfileImageRepository profileImageRepository;
     private final Gson gson;
     
     @Override
@@ -102,8 +106,11 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new UserHandler(ErrorStatus.USER_ALREADY_EXIST);
         }
         User newUser = UserConverter.toUser(userInfo, request);
+        User savedUser = userRepository.save(newUser);
+        ProfileImage profileImage = ProfileImageConverter.toProfileImage(savedUser, request.getProfileUrl());
+        profileImageRepository.save(profileImage);
 
-        return userRepository.save(newUser);
+        return savedUser;
     }
 
     @Override

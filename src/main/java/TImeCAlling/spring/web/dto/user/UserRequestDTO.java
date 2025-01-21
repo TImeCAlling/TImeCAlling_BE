@@ -27,6 +27,7 @@ public class UserRequestDTO {
     public static class UserSignUpDTO {
 
         String kakaoAccessToken;
+        String profileUrl;
         String nickname;
         Integer avgPrepTime;
         @ValidEnum(enumClass = FreeTime.class)
