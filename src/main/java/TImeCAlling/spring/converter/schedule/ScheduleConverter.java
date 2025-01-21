@@ -6,6 +6,8 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -129,6 +131,18 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.ScheduleDeleteDTO toScheduleCommandDTO(Long scheduleId) {
         return ScheduleResponseDTO.ScheduleDeleteDTO.builder()
                 .scheduleId(scheduleId)
+                .build();
+    }
+    
+    public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule) {
+        
+        Long leftTime = ChronoUnit.MINUTES.between(LocalTime.now(), schedule.getMeetTime());
+        
+        return ScheduleResponseDTO.ScheduleStatusDTO.builder()
+                .name(schedule.getName())
+                .meetTime(schedule.getMeetTime())
+                .totalTime(LocalTime.MIN.plusMinutes(schedule.getMoveTime()))
+                .leftTime(leftTime)
                 .build();
     }
     

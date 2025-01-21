@@ -80,11 +80,23 @@ public class ScheduleResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class ScheduleStatusDTO{
+        
+        String name;
+        LocalTime meetTime;
+        LocalTime totalTime;
+        Long leftTime;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ScheduleByDateDTO {
         Long scheduleId;
         String name;
         Boolean iseRepeat;
-        List<CategoryDTO> categories;
+        List<ScheduleResponseDTO.CategoryDTO> categories;
         LocalTime meetTime;
         Boolean isWritten;
         
