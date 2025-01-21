@@ -18,10 +18,12 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -74,9 +76,9 @@ public class ScheduleController {
     }
     
     @GetMapping("/date")
-    public ApiResponse<ScheduleResponseDTO.SchedulesByDateDTO> getSchedulesByDate(@RequestBody ScheduleRequestDTO.SearchSchedulesByDateDTO date,
+    public ApiResponse<ScheduleResponseDTO.SchedulesByDateDTO> getSchedulesByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                                                                   @AuthenticationPrincipal User user) {
-        List<Checklist> checklists = checklistService.getCheckListByDateAndUser(date.getDate(), user);
+        List<Checklist> checklists = checklistService.getCheckListByDateAndUser(date, user);
         
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulesByDateDTO(checklists));
     }
