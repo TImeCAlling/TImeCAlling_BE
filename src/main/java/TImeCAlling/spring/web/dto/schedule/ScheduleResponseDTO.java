@@ -75,4 +75,26 @@ public class ScheduleResponseDTO {
         Integer failed;
         Double successRate;
     }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ScheduleByDateDTO {
+        Long scheduleId;
+        String name;
+        Boolean iseRepeat;
+        List<CategoryDTO> categories;
+        LocalTime meetTime;
+        Boolean isWritten;
+        
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SchedulesByDateDTO {
+        List<ScheduleByDateDTO> schedules;
+    }
 }

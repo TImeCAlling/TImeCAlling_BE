@@ -7,6 +7,8 @@ import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.*;
+import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.repository.schedule.ChecklistRepository;
 import TImeCAlling.spring.repository.schedule.RecurringScheduleRepository;
 import TImeCAlling.spring.service.user.UserQueryService;
@@ -128,6 +130,12 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
         return checklists;
     }
 
+    
+    @Override
+    public List<Checklist> getCheckListByDateAndUser(LocalDate date, User user) {
+        return checklistRepository.findChecklistsBySchedule_User_IdAndDate(user.getId(), date);
+    }
+    
     private List<LocalDate> calculateRepeatDates(LocalDate start, LocalDate end, java.util.List<RepeatDay> repeatDays) {
         List<LocalDate> repeatDates = new ArrayList<>();
 

@@ -1,9 +1,6 @@
 package TImeCAlling.spring.converter.schedule;
 
-import TImeCAlling.spring.domain.Category;
-import TImeCAlling.spring.domain.RecurringSchedule;
-import TImeCAlling.spring.domain.Schedule;
-import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.domain.*;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
@@ -132,6 +129,35 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.ScheduleDeleteDTO toScheduleCommandDTO(Long scheduleId) {
         return ScheduleResponseDTO.ScheduleDeleteDTO.builder()
                 .scheduleId(scheduleId)
+                .build();
+    }
+    
+    public static List<ScheduleResponseDTO.CategoryDTO> toCategoryDTOList(List<Category> categories) {
+        return categories.stream()
+                .map(category -> ScheduleResponseDTO.CategoryDTO.builder()
+                        .categoryName(category.getName())
+                        .categoryColor(category.getColor())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+    
+    
+    public static ScheduleResponseDTO.SchedulesByDateDTO toSchedulesByDateDTO(List<Checklist> checklistList) {
+        List<ScheduleResponseDTO.ScheduleByDateDTO> schedulesByDateDTOList = checklistList.stream()
+                .map(checklist -> ScheduleResponseDTO.ScheduleByDateDTO.builder()
+                        .scheduleId(checklist.getSchedule().getId())
+                        .name(checklist.getSchedule().getName())
+                        .iseRepeat(checklist.getSchedule().getIsRepeat())
+                        .isWritten(checklist.getIsWritten())
+                        .meetTime(checklist.getSchedule().getMeetTime())
+                        .categories(toCategoryDTOList(checklist.getSchedule().getCategories()))
+                        .build()
+                )
+                .collect(Collectors.toList());
+        
+        return ScheduleResponseDTO.SchedulesByDateDTO.builder()
+                .schedules(schedulesByDateDTOList)
                 .build();
     }
 
