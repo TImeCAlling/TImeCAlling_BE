@@ -73,7 +73,7 @@ public class UserController {
 
     @GetMapping("/test/kakao")
     @Operation(summary = "(테스트용) kakao accessToken 받기",
-            description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code <br><br> 리다이렉트된 url의 code를 입력하세요")
+            description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code <br><br> 주소 접속 후 리다이렉트된 url의 code를 입력하세요")
     public ApiResponse<String> getAccessToken(String code) {
         String token = userCommandService.getAccessToken(code);
         return ApiResponse.onSuccess(token);
