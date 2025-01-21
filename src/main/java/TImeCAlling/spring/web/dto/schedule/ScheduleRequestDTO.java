@@ -109,4 +109,11 @@ public class ScheduleRequestDTO {
 
         List<CategoryDTO> categories;
     }
+    
+    @Getter
+    public static class SearchSchedulesByDateDTO {
+        
+        @NotNull
+        LocalDate date;
+    }
 }
