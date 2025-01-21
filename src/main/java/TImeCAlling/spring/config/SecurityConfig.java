@@ -55,7 +55,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/users/kakao/**").permitAll()
-                        .requestMatchers("/api/users/token").permitAll()
+                        .requestMatchers("/api/users/token/refresh").permitAll()
+                        .requestMatchers("/api/users/test/**").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
 

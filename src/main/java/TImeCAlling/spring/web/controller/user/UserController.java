@@ -2,6 +2,7 @@ package TImeCAlling.spring.web.controller.user;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
 import TImeCAlling.spring.auth.JwtUtil;
+import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
@@ -70,19 +71,21 @@ public class UserController {
         return ApiResponse.onSuccess(response);
     }
 
-    @GetMapping("/kakao/token")
-    @Operation(summary = "(테스트용) kakao accessToken 받기", description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code")
+    @GetMapping("/test/kakao")
+    @Operation(summary = "(테스트용) kakao accessToken 받기",
+            description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code <br><br> 리다이렉트된 url의 code를 입력하세요")
     public ApiResponse<String> getAccessToken(String code) {
         String token = userCommandService.getAccessToken(code);
         return ApiResponse.onSuccess(token);
     }
 
-    @PostMapping("/token")
+    @PostMapping("/test/jwt")
     @Operation(summary = "(테스트용) jwt 토큰 받기")
-    public ApiResponse<String> createJWT(@RequestParam Long userId) {
-        userCommandService.loadUserByUserId(userId);
-        String token = jwtUtil.createAccessToken(userId);
-        return ApiResponse.onSuccess(token);
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createJWT(@RequestParam Long userId) {
+        User user = (User) userCommandService.loadUserByUserId(userId);
+        String accessToken = jwtUtil.createAccessToken(userId);
+        String refreshToken = user.getRefreshToken();
+        return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken, refreshToken));
     }
     
 }
