@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,6 +44,8 @@ public class User extends BaseEntity implements UserDetails {
     
     @Column(nullable = false)
     private String fcmToken;
+
+    private String refreshToken;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -68,6 +71,10 @@ public class User extends BaseEntity implements UserDetails {
         this.nickname = nickname;
         this.avgPrepTime = avgPrepTime;
         this.freeTime = freeTime;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @Override

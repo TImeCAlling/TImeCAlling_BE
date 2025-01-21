@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,18 +52,16 @@ public class UserController {
     @Operation(summary = "카카오 회원가입")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
 
-        User user = userCommandService.kakaoSignUp(request);
-        String accessToken = jwtUtil.createAccessToken(user.getId());
-        return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken));
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(request);
+        return ApiResponse.onSuccess(response);
     }
 
     @PostMapping("/kakao/login")
     @Operation(summary = "카카오 로그인")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserLoginDTO request) {
 
-        User user = userCommandService.kakaoLogin(request);
-        String accessToken = jwtUtil.createAccessToken(user.getId());
-        return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken));
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoLogin(request);
+        return ApiResponse.onSuccess(response);
     }
 
     @GetMapping("/kakao/token")
@@ -75,8 +74,8 @@ public class UserController {
     @PostMapping("/token")
     @Operation(summary = "(개발용) jwt 토큰 받기")
     public ApiResponse<String> createJWT(@RequestParam Long userId) {
-        userCommandService.loadUserByUserId(userId);
-        String token = jwtUtil.createAccessToken(userId);
+        UserDetails findUser = userCommandService.loadUserByUserId(userId);
+        String token = jwtUtil.createAccessToken((User) findUser);
         return ApiResponse.onSuccess(token);
     }
     

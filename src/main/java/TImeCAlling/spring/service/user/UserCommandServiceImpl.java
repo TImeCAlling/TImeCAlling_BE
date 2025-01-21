@@ -1,5 +1,6 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
 import TImeCAlling.spring.repository.user.ProfileImageRepository;
@@ -35,6 +36,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     
     private final UserRepository userRepository;
     private final ProfileImageRepository profileImageRepository;
+    private final JwtUtil jwtUtil;
     private final Gson gson;
     
     @Override
@@ -95,7 +97,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public User kakaoSignUp(UserRequestDTO.UserSignUpDTO request) {
+    public UserResponseDTO.UserSignUpResultDTO kakaoSignUp(UserRequestDTO.UserSignUpDTO request) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
 
@@ -105,16 +107,23 @@ public class UserCommandServiceImpl implements UserCommandService {
         if (findUser.isPresent()) {
             throw new UserHandler(ErrorStatus.USER_ALREADY_EXIST);
         }
+
         User newUser = UserConverter.toUser(userInfo, request);
         User savedUser = userRepository.save(newUser);
+
+        String accessToken = jwtUtil.createAccessToken(savedUser);
+        String refreshToken = jwtUtil.createRefreshToken(savedUser);
+        savedUser.setRefreshToken(refreshToken);
+        userRepository.save(savedUser);
+
         ProfileImage profileImage = ProfileImageConverter.toProfileImage(savedUser, request.getProfileUrl());
         profileImageRepository.save(profileImage);
 
-        return savedUser;
+        return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
     }
 
     @Override
-    public User kakaoLogin(UserRequestDTO.UserLoginDTO request) {
+    public UserResponseDTO.UserSignUpResultDTO kakaoLogin(UserRequestDTO.UserLoginDTO request) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
 
@@ -122,7 +131,12 @@ public class UserCommandServiceImpl implements UserCommandService {
         User findUser = userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        return findUser;
+        String accessToken = jwtUtil.createAccessToken(findUser);
+        String refreshToken = jwtUtil.createRefreshToken(findUser);
+        findUser.setRefreshToken(refreshToken);
+        userRepository.save(findUser);
+
+        return UserConverter.toUserSignUpResultDTO(findUser, accessToken, refreshToken);
     }
 
     private UserAuthDTO.KaKaoUserInfoDTO getUserInfo(String accessToken) {

@@ -20,10 +20,11 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserResponseDTO.UserSignUpResultDTO toUserSignUpResultDTO(User user, String accessToken) {
+    public static UserResponseDTO.UserSignUpResultDTO toUserSignUpResultDTO(User user, String accessToken, String refreshToken) {
         return UserResponseDTO.UserSignUpResultDTO.builder()
                 .userId(user.getId())
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 

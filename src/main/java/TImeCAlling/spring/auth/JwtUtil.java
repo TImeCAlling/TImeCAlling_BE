@@ -2,7 +2,8 @@ package TImeCAlling.spring.auth;
 
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.auth.Handler.JwtExceptionHandler;
-import TImeCAlling.spring.service.user.UserCommandService;
+import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.service.user.UserDetailService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,22 +25,29 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private SecretKey secretKey;
-    private final UserCommandService userCommandService;
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 2 * 1000; // access 2시간
-//    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // refresh 7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 2 * 1000L; // access 2시간
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 60 * 60 * 24 * 14 * 1000L; // refresh 14일
 
-    public JwtUtil(@Value("${spring.jwt.secret}") String secretKey, UserCommandService userCommandService) {
+    private SecretKey secretKey;
+    private final UserDetailService userDetailService;
+
+    public JwtUtil(@Value("${spring.jwt.secret}") String secretKey, UserDetailService userDetailService) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-        this.userCommandService = userCommandService;
+        this.userDetailService = userDetailService;
     }
 
     // 토큰 생성
-    public String createAccessToken(Long id) {
+    public String createAccessToken(User user) {
+        return generateToken(user.getId(), ACCESS_TOKEN_EXPIRE_TIME);
+    }
+    public String createRefreshToken(User user) {
+        return generateToken(user.getId(), REFRESH_TOKEN_EXPIRE_TIME);
+    }
+    public String generateToken(Long id, long expiredTime) {
         return Jwts.builder()
                 .claim("userId", id)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
+                .expiration(new Date(System.currentTimeMillis() + expiredTime))
                 .signWith(secretKey)
                 .compact();
     }
@@ -70,7 +78,7 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userCommandService.loadUserByUserId(this.getUserId(token));
+        UserDetails userDetails = userDetailService.loadUserByUserId(this.getUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, null, null);
     }
 

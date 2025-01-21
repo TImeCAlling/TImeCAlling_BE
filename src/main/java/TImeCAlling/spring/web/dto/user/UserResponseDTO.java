@@ -50,6 +50,7 @@ public class UserResponseDTO {
     public static class UserSignUpResultDTO {
         Long userId;
         String accessToken;
+        String refreshToken;
     }
 
 }
