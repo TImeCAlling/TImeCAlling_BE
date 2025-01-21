@@ -4,6 +4,7 @@ import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.SocialType;
 import TImeCAlling.spring.web.dto.user.UserAuthDTO;
+import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 
@@ -40,4 +41,17 @@ public class UserConverter {
                 .build();
     }
 
+    public static ScheduleResponseDTO.MyScheduleRateDTO toMyScheduleRateDTO(User user) {
+        int success = user.getSuccess();
+        int failed = user.getFailed();
+        
+        double percentage = (success + failed == 0) ? 0.0 : ((double) success / (success + failed)) * 100;
+        
+        return ScheduleResponseDTO.MyScheduleRateDTO.builder()
+                .total(success + failed)
+                .failed(success)
+                .success(success)
+                .successRate(percentage)
+                .build();
+    }
 }

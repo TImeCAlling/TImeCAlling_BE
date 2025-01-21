@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,9 +53,11 @@ public class User extends BaseEntity implements UserDetails {
     
     private LocalDate inactivationDate;
     
-    private Integer success;
+    @Builder.Default
+    private Integer success = 0;
     
-    private Integer failed;
+    @Builder.Default
+    private Integer failed = 0;
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ProfileImage profileImage;
@@ -82,11 +83,19 @@ public class User extends BaseEntity implements UserDetails {
         return null;
     }
     @Override
-    public String getUsername() {
-        return nickname;
-    }
-    @Override
     public String getPassword() {
         return null;
+    }
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    public void addResult(Boolean isSuccess) {
+        if (isSuccess) {
+            success += 1;
+        } else {
+            failed += 1;
+        }
     }
 }

@@ -5,12 +5,10 @@ import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
-import TImeCAlling.spring.domain.enums.Spare;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +21,15 @@ public class ScheduleConverter {
     }
 
     public static Schedule toSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request){
-        
+
         FreeTime freeTime = FreeTime.valueOf(request.getFreeTime());
+
+        List<Category> categories = request.getCategories().stream()
+                .map(categoryDTO -> Category.builder()
+                        .name(categoryDTO.getCategoryName())
+                        .color(categoryDTO.getColor())
+                        .build())
+                .collect(Collectors.toList());
 
         return Schedule.builder()
                 .user(user)
@@ -37,6 +42,7 @@ public class ScheduleConverter {
                 .moveTime(request.getMoveTime())
                 .freeTime(freeTime)
                 .isRepeat(request.getIsRepeat())
+                .categories(categories)
                 .build();
     }
 
@@ -127,5 +133,16 @@ public class ScheduleConverter {
         return ScheduleResponseDTO.ScheduleDeleteDTO.builder()
                 .scheduleId(scheduleId)
                 .build();
+    }
+
+    public static List<ScheduleResponseDTO.SharedScheduleUserDTO> toSharedScheduleUserDTO (List<Schedule> schedules) {
+        return schedules.stream()
+                .map(schedule -> ScheduleResponseDTO.SharedScheduleUserDTO.builder()
+                        .userId(schedule.getUser().getId())
+                        .nickname(schedule.getUser().getNickname())
+                        .profile(schedule.getUser().getProfileImage().getFileUrl())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 }
