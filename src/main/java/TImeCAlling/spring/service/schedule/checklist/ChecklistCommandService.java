@@ -14,4 +14,6 @@ public interface ChecklistCommandService {
     List<Checklist> patchChecklists(Schedule schedule, ScheduleRequestDTO.SchedulePatchDTO request);
 
     Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.UpdateDTO request);
+
+    void deleteExpiredChecklists();
 }
