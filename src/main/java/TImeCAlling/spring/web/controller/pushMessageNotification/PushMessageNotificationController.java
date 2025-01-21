@@ -1,7 +1,6 @@
 package TImeCAlling.spring.web.controller.pushMessageNotification;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
-import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.pushMessageNotification.PushNotificationCommandService;
 import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.web.dto.fcm.FcmTokenRequestDTO;
@@ -24,8 +23,7 @@ public class PushMessageNotificationController {
     public ApiResponse<FcmTokenResponseDTO.UpdateDTO> updateFcmToken(
             @RequestBody FcmTokenRequestDTO.UpdateDTO updateDTO) {
 
-        User findUser = userQueryService.findOne(updateDTO.getUserId());
-
-        return ApiResponse.onSuccess(pushNotificationCommandService.updateFcmToken(findUser, updateDTO.getFcmToken()));
+        return ApiResponse.onSuccess(pushNotificationCommandService.updateFcmToken(
+                userQueryService.findOne(updateDTO.getUserId()), updateDTO.getFcmToken()));
     }
 }
