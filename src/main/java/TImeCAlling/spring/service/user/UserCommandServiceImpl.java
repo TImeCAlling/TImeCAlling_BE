@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -201,4 +202,25 @@ public class UserCommandServiceImpl implements UserCommandService {
         return accessToken;
     }
 
+    @Override
+    public UserResponseDTO.UserSignUpResultDTO refreshToken(UserRequestDTO.refreshTokenDTO request) {
+
+        String refreshToken = request.getRefreshToken();
+
+        jwtUtil.validateToken(refreshToken);
+
+        Long userId = jwtUtil.getUserId(refreshToken);
+        User findUser = userRepository.findByRefreshToken(refreshToken).orElseThrow(
+                () -> new UserHandler(ErrorStatus.NOT_VALID_TOKEN));
+
+        if (!Objects.equals(findUser.getId(), userId))
+            throw new UserHandler(ErrorStatus.NOT_VALID_TOKEN);
+
+        String newAccessToken = jwtUtil.createAccessToken(findUser.getId());
+        String newRefreshToken = jwtUtil.createRefreshToken(findUser.getId());
+        findUser.setRefreshToken(newRefreshToken);
+        userRepository.save(findUser);
+
+        return UserConverter.toUserSignUpResultDTO(findUser, newAccessToken, newRefreshToken);
+    }
 }

@@ -62,15 +62,23 @@ public class UserController {
         return ApiResponse.onSuccess(response);
     }
 
+    @PostMapping("/token/refresh")
+    @Operation(summary = "토큰 재발급")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> refreshToken(@RequestBody UserRequestDTO.refreshTokenDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.refreshToken(request);
+        return ApiResponse.onSuccess(response);
+    }
+
     @GetMapping("/kakao/token")
-    @Operation(summary = "(개발용) kakao accessToken 받기", description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code")
+    @Operation(summary = "(테스트용) kakao accessToken 받기", description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code")
     public ApiResponse<String> getAccessToken(String code) {
         String token = userCommandService.getAccessToken(code);
         return ApiResponse.onSuccess(token);
     }
 
     @PostMapping("/token")
-    @Operation(summary = "(개발용) jwt 토큰 받기")
+    @Operation(summary = "(테스트용) jwt 토큰 받기")
     public ApiResponse<String> createJWT(@RequestParam Long userId) {
         userCommandService.loadUserByUserId(userId);
         String token = jwtUtil.createAccessToken(userId);

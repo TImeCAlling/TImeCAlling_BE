@@ -18,5 +18,6 @@ public interface UserCommandService {
 
     UserResponseDTO.UserSignUpResultDTO kakaoSignUp(UserRequestDTO.UserSignUpDTO request);
     UserResponseDTO.UserSignUpResultDTO kakaoLogin(UserRequestDTO.UserLoginDTO request);
+    UserResponseDTO.UserSignUpResultDTO refreshToken(UserRequestDTO.refreshTokenDTO request);
     String getAccessToken(String code);
 }

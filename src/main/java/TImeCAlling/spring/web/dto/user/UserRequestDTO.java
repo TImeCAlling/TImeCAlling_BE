@@ -39,4 +39,11 @@ public class UserRequestDTO {
 
         String kakaoAccessToken;
     }
+
+    @Getter
+    public static class refreshTokenDTO {
+
+        String accessToken;
+        String refreshToken;
+    }
 }

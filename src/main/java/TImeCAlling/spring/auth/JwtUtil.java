@@ -2,7 +2,6 @@ package TImeCAlling.spring.auth;
 
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.auth.Handler.JwtExceptionHandler;
-import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserDetailService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SecurityException;
@@ -66,10 +65,10 @@ public class JwtUtil {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new JwtExceptionHandler(ErrorStatus.WRONG_TYPE_SIGNATURE.getMessage(), e);
         } catch (ExpiredJwtException e) {
             throw new JwtExceptionHandler(ErrorStatus.TOKEN_EXPIRED.getMessage(), e);
+        } catch (SecurityException | MalformedJwtException e) {
+            throw new JwtExceptionHandler(ErrorStatus.WRONG_TYPE_SIGNATURE.getMessage(), e);
         } catch (UnsupportedJwtException e) {
             throw new JwtExceptionHandler(ErrorStatus.WRONG_TYPE_TOKEN.getMessage(), e);
         } catch (IllegalArgumentException e) {
@@ -82,7 +81,7 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, null, null);
     }
 
-    private Long getUserId(String token) {
+    public Long getUserId(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
     }
 }
