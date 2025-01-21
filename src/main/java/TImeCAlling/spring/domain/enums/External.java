@@ -1,5 +1,8 @@
 package TImeCAlling.spring.domain.enums;
 
+import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.ChecklistHandler;
+
 public enum External {
     WEATHER("날씨"),
     TRAFFIC_CONDITIONS("교통상황"),
@@ -14,5 +17,14 @@ public enum External {
 
     public String getDescription() {
         return description;
+    }
+
+    public static External fromDescription(String description) {
+        for (External external : External.values()) {
+            if (external.getDescription().equals(description)) {
+                return external;
+            }
+        }
+        throw new ChecklistHandler(ErrorStatus.EXTERNAL_NOT_FOUND);
     }
 }

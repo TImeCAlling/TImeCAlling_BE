@@ -82,4 +82,12 @@ public class User extends BaseEntity implements UserDetails {
     public String getUsername() {
         return null;
     }
+
+    public void addResult(Boolean isSuccess) {
+        if (isSuccess) {
+            success += 1;
+        } else {
+            failed += 1;
+        }
+    }
 }

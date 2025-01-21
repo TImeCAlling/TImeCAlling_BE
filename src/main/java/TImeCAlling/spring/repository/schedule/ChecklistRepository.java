@@ -13,4 +13,6 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
     
     @EntityGraph(attributePaths = {"schedule"})
     List<Checklist> findChecklistsBySchedule_User_IdAndDate(Long userId, LocalDate date);
+
+    Checklist findByScheduleIdAndDate(Long scheduleId, LocalDate date);
 }
