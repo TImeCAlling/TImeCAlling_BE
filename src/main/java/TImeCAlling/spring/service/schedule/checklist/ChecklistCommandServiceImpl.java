@@ -7,12 +7,15 @@ import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.*;
+import TImeCAlling.spring.domain.User;
+import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.repository.schedule.ChecklistRepository;
 import TImeCAlling.spring.repository.schedule.RecurringScheduleRepository;
 import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.web.dto.checklist.ChecklistRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,6 +130,12 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
         return checklists;
     }
 
+    
+    @Override
+    public List<Checklist> getCheckListByDateAndUser(LocalDate date, User user) {
+        return checklistRepository.findChecklistsBySchedule_User_IdAndDate(user.getId(), date);
+    }
+    
     private List<LocalDate> calculateRepeatDates(LocalDate start, LocalDate end, java.util.List<RepeatDay> repeatDays) {
         List<LocalDate> repeatDates = new ArrayList<>();
 
@@ -150,5 +159,13 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
         user.addResult(request.getIsSuccess());
 
         return checklist.getId();
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void deleteExpiredChecklists() {
+        LocalDate now = LocalDate.now();
+        checklistRepository.deleteExpiredChecklists(now);
     }
 }
