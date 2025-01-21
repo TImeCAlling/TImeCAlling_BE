@@ -19,4 +19,5 @@ public interface ChecklistCommandService {
     
     List<Checklist> getCheckListByDateAndUser(LocalDate date, User user);
     
+    void deleteExpiredChecklists();
 }
