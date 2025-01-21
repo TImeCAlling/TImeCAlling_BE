@@ -90,4 +90,9 @@ public class User extends BaseEntity implements UserDetails {
             failed += 1;
         }
     }
+
+    /**Fcm 토큰 업데이트 관련 메소드*/
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }
