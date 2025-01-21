@@ -73,7 +73,7 @@ public class ScheduleController {
     public ApiResponse<ScheduleResponseDTO.ScheduleStatusDTO> getScheduleStatus(@PathVariable @ExistSchedule Long scheduleId,
                                                                                 @AuthenticationPrincipal User user) {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
-        return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule, users));
+        return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule));
     }
 
     @GetMapping("/success-rate")

@@ -134,7 +134,7 @@ public class ScheduleConverter {
                 .build();
     }
     
-    public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule, List<User> users) {
+    public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule) {
         
         Long leftTime = ChronoUnit.MINUTES.between(LocalTime.now(), schedule.getMeetTime());
         

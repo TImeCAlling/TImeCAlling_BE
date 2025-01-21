@@ -88,8 +88,6 @@ public class ScheduleResponseDTO {
         Long leftTime;
     }
     
-}
-    
     @Builder
     @Getter
     @NoArgsConstructor
@@ -98,7 +96,7 @@ public class ScheduleResponseDTO {
         Long scheduleId;
         String name;
         Boolean iseRepeat;
-        List<CategoryDTO> categories;
+        List<ScheduleResponseDTO.CategoryDTO> categories;
         LocalTime meetTime;
         Boolean isWritten;
         
