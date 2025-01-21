@@ -60,3 +60,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+---
+fcm:
+  firebase_config_path: firebase/firebase_service_key.json
