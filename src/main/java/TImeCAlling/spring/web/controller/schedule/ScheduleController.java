@@ -74,8 +74,10 @@ public class ScheduleController {
     
     @Operation(summary = "준비중 일정 조회 API", description = "일정 id로 조회시 해당 일정의 준비중 상태를 조회합니다.")
     @GetMapping("/{scheduleId}/status")
-    public ApiResponse<ScheduleResponseDTO.ScheduleStatusDTO> getScheduleStatus(@PathVariable @ExistSchedule Long scheduleId,
-                                                                                @AuthenticationPrincipal User user) {
+    public ApiResponse<ScheduleResponseDTO.ScheduleStatusDTO> getScheduleStatus(
+            @Parameter(description = "준비중 상태인 일정 id를 입력하세요.")
+            @PathVariable @ExistSchedule Long scheduleId,
+            @AuthenticationPrincipal User user) {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule));
     }
