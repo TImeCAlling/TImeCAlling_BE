@@ -1,4 +1,4 @@
-package TImeCAlling.spring;
+package TImeCAlling.spring.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
