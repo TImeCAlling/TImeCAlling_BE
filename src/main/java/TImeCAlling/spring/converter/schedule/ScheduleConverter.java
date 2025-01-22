@@ -163,6 +163,7 @@ public class ScheduleConverter {
                         .scheduleId(checklist.getSchedule().getId())
                         .name(checklist.getSchedule().getName())
                         .iseRepeat(checklist.getSchedule().getIsRepeat())
+                        .repeatDays(getRepeatDays(checklist))
                         .isWritten(checklist.getIsWritten())
                         .meetTime(checklist.getSchedule().getMeetTime())
                         .categories(toCategoryDTOList(checklist.getSchedule().getCategories()))
@@ -174,7 +175,7 @@ public class ScheduleConverter {
                 .schedules(schedulesByDateDTOList)
                 .build();
     }
-
+    
     public static List<ScheduleResponseDTO.SharedScheduleUserDTO> toSharedScheduleUserDTO (List<Schedule> schedules) {
         return schedules.stream()
                 .map(schedule -> ScheduleResponseDTO.SharedScheduleUserDTO.builder()
@@ -183,6 +184,12 @@ public class ScheduleConverter {
                         .profile(schedule.getUser().getProfileImage().getFileUrl())
                         .build()
                 )
+                .collect(Collectors.toList());
+    }
+    
+    private static List<String> getRepeatDays(Checklist checklist) {
+        return checklist.getSchedule().getRecurringSchedule().getRepeatDays().stream()
+                .map(Enum::toString)
                 .collect(Collectors.toList());
     }
 }
