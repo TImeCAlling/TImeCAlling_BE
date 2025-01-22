@@ -8,7 +8,6 @@ public class FcmTokenRequestDTO {
     @Builder
     @Getter
     public static class UpdateDTO {
-        private Long userId;
         private String fcmToken;
     }
 }
