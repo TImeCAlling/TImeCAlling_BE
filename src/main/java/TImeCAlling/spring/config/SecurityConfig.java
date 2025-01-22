@@ -57,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/kakao/**").permitAll()
                         .requestMatchers("/api/users/token/refresh").permitAll()
                         .requestMatchers("/api/users/test/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
 
