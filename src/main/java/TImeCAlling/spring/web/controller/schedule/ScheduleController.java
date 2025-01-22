@@ -14,6 +14,7 @@ import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.validation.annotation.ExistSchedule;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,9 +37,10 @@ public class ScheduleController {
     private final RecurringScheduleService recurringScheduleService;
     private final ChecklistCommandService checklistService;
 
+    @Operation(summary = "일정 추가", description = "새로운 일정을 추가합니다.")
     @PostMapping
-    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@AuthenticationPrincipal User user, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
+
         Schedule schedule = scheduleCommandService.createSchedule(user, request);
         if (request.getIsRepeat()) {
             recurringScheduleService.createRecurringSchedule(schedule, request);
@@ -48,23 +50,26 @@ public class ScheduleController {
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
 
+    @Operation(summary = "일정 상세 조회", description = "일정 id로 일정의 정보를 상세 조회합니다.")
     @GetMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
 
+    @Operation(summary = "일정 수정", description = "일정 id로 일정의 정보를 수정합니다. 공유하지 않은 일정은 모든 항목에 대해 수정 가능합니다.")
     @PatchMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
+
         Schedule schedule = scheduleCommandService.patchSchedule(scheduleId, user, request);
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulePatchDTO(schedule));
     }
 
+    @Operation(summary = "일정 삭제", description = "일정 id로 일정을 삭제합니다.")
     @DeleteMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
