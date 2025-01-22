@@ -188,8 +188,12 @@ public class ScheduleConverter {
     }
     
     private static List<String> getRepeatDays(Checklist checklist) {
-        return checklist.getSchedule().getRecurringSchedule().getRepeatDays().stream()
-                .map(Enum::toString)
-                .collect(Collectors.toList());
+        if (checklist.getSchedule().getIsRepeat()) {
+            return checklist.getSchedule().getRecurringSchedule().getRepeatDays().stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
     }
 }
