@@ -15,6 +15,7 @@ import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.validation.annotation.ExistSchedule;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -100,6 +101,7 @@ public class ScheduleController {
         return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
     }
     
+    @Operation(summary = "오늘 일정 목록 조회 API", description = "오늘 일정들의 제목, 메모, 시간을 조회하는 API입니다.")
     @GetMapping("/today")
     public ApiResponse<ScheduleResponseDTO.TodaySchedulesDTO> getTodaySchedules(
             @AuthenticationPrincipal User user) {
