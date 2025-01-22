@@ -205,8 +205,11 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public UserResponseDTO.UserSignUpResultDTO refreshToken(UserRequestDTO.refreshTokenDTO request) {
 
+        String accessToken = request.getAccessToken();
         String refreshToken = request.getRefreshToken();
 
+        if (jwtUtil.validateToken(accessToken))
+            throw new UserHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED);
         jwtUtil.validateToken(refreshToken);
 
         Long userId = jwtUtil.getUserId(refreshToken);
