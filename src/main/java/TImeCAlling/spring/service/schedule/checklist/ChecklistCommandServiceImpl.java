@@ -129,12 +129,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
 
         return checklists;
     }
-
     
-    @Override
-    public List<Checklist> getCheckListByDateAndUser(LocalDate date, User user) {
-        return checklistRepository.findChecklistsBySchedule_User_IdAndDate(user.getId(), date);
-    }
     
     private List<LocalDate> calculateRepeatDates(LocalDate start, LocalDate end, java.util.List<RepeatDay> repeatDays) {
         List<LocalDate> repeatDates = new ArrayList<>();
@@ -160,6 +155,8 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
 
         return checklist.getId();
     }
+    
+    
 
     @Override
     @Scheduled(cron = "0 0 0 * * *")
