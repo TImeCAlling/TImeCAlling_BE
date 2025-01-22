@@ -24,10 +24,11 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 2 * 1000L; // access 2시간
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 60 * 60 * 24 * 14 * 1000L; // refresh 14일
+
     private SecretKey secretKey;
     private final UserDetailService userDetailService;
-//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
-//    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; //refresh 7일
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secretKey, UserDetailService userDetailService) {
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
@@ -35,12 +36,17 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createAccessToken(Long id, String nickname, Long expiredMs) {
+    public String createAccessToken(Long userId) {
+        return generateToken(userId, ACCESS_TOKEN_EXPIRE_TIME);
+    }
+    public String createRefreshToken(Long userId) {
+        return generateToken(userId, REFRESH_TOKEN_EXPIRE_TIME);
+    }
+    public String generateToken(Long id, long expiredTime) {
         return Jwts.builder()
                 .claim("userId", id)
-                .claim("nickname", nickname)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .expiration(new Date(System.currentTimeMillis() + expiredTime))
                 .signWith(secretKey)
                 .compact();
     }
@@ -59,10 +65,10 @@ public class JwtUtil {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new JwtExceptionHandler(ErrorStatus.WRONG_TYPE_SIGNATURE.getMessage(), e);
         } catch (ExpiredJwtException e) {
             throw new JwtExceptionHandler(ErrorStatus.TOKEN_EXPIRED.getMessage(), e);
+        } catch (SecurityException | MalformedJwtException e) {
+            throw new JwtExceptionHandler(ErrorStatus.WRONG_TYPE_SIGNATURE.getMessage(), e);
         } catch (UnsupportedJwtException e) {
             throw new JwtExceptionHandler(ErrorStatus.WRONG_TYPE_TOKEN.getMessage(), e);
         } catch (IllegalArgumentException e) {
@@ -75,10 +81,7 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, null, null);
     }
 
-    private Long getUserId(String token) {
+    public Long getUserId(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
-    }
-    private String getNickname(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
     }
 }

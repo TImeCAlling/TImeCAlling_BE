@@ -18,12 +18,14 @@ public enum ErrorStatus implements BaseErrorCode {
     
     // 유저 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "유저를 찾을 수 없습니다."),
+    USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4002", "이미 존재하는 유저입니다."),
 
     // 토큰 관련 에러
-    NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "MEMBER4020", "유효하지 않은 토큰입니다."),
-    WRONG_TYPE_SIGNATURE(HttpStatus.UNAUTHORIZED, "MEMBER4021", "잘못된 JWT 서명입니다."),
-    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "MEMBER4022", "토큰이 만료되었습니다."),
-    WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "MEMBER4023", "지원되지 않는 JWT 토큰입니다."),
+    NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN4001", "유효하지 않은 토큰입니다."),
+    WRONG_TYPE_SIGNATURE(HttpStatus.UNAUTHORIZED, "TOKEN4002", "잘못된 JWT 서명입니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN4003", "토큰이 만료되었습니다."),
+    WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN4004", "지원되지 않는 JWT 토큰입니다."),
+    ACCESS_TOKEN_NOT_EXPIRED(HttpStatus.BAD_REQUEST, "TOKEN4005", "액세스 토큰이 만료되지 않았습니다."),
 
     // 푸시 메세지 세팅 관련 에러
     PUSH_SETTING_NOT_FOUND(HttpStatus.NOT_FOUND, "PUSHSETTING4001", "푸시 메세지 세팅을 찾을 수 없습니다."),

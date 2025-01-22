@@ -31,6 +31,8 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
+
+    private Long socialId;
     
     @Column(nullable = false)
     private Integer avgPrepTime;
@@ -41,6 +43,8 @@ public class User extends BaseEntity implements UserDetails {
     
     @Column(nullable = false)
     private String fcmToken;
+
+    private String refreshToken;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -68,6 +72,10 @@ public class User extends BaseEntity implements UserDetails {
         this.nickname = nickname;
         this.avgPrepTime = avgPrepTime;
         this.freeTime = freeTime;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @Override

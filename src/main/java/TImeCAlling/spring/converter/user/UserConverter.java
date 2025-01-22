@@ -1,11 +1,12 @@
 package TImeCAlling.spring.converter.user;
 
-import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.SocialType;
+import TImeCAlling.spring.web.dto.user.UserAuthDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
+import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 
 public class UserConverter {
     
@@ -19,7 +20,27 @@ public class UserConverter {
                 .fcmToken("기본값")
                 .build();
     }
-    
+
+    public static UserResponseDTO.UserSignUpResultDTO toUserSignUpResultDTO(User user, String accessToken, String refreshToken) {
+        return UserResponseDTO.UserSignUpResultDTO.builder()
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public static User toUser(UserAuthDTO.KaKaoUserInfoDTO userInfo, UserRequestDTO.UserSignUpDTO request) {
+
+        return User.builder()
+                .nickname(request.getNickname())
+                .socialId(userInfo.getId())
+                .socialType(SocialType.KAKAO)
+                .avgPrepTime(request.getAvgPrepTime())
+                .freeTime(FreeTime.valueOf(request.getFreeTime()))
+                .fcmToken("기본값")
+                .build();
+    }
+
     public static ScheduleResponseDTO.MyScheduleRateDTO toMyScheduleRateDTO(User user) {
         int success = user.getSuccess();
         int failed = user.getFailed();

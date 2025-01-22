@@ -1,10 +1,16 @@
 package TImeCAlling.spring.web.controller.user;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
+import TImeCAlling.spring.auth.JwtUtil;
+import TImeCAlling.spring.converter.user.UserConverter;
+import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     
     private final UserCommandService userCommandService;
+    private final JwtUtil jwtUtil;
     
     @PostMapping
     public ApiResponse<UserResponseDTO.UserCreateDTO> createUser(@RequestBody UserRequestDTO.UserCreateDTO userCreateDTO) {
@@ -21,24 +28,64 @@ public class UserController {
         return ApiResponse.onSuccess(response);
     }
     
-    @DeleteMapping("/{userId}")
-    public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@RequestParam Long userId) {
+    @DeleteMapping()
+    public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@AuthenticationPrincipal User user) {
         
-        return ApiResponse.onSuccess(userCommandService.deleteUser(userId));
+        return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
     
-    @PutMapping("/{userId}")
-    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@PathVariable Long userId,
+    @PutMapping()
+    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
                                                                  @RequestBody UserRequestDTO.UserUpdateDTO userUpdateDTO) {
         
-        return ApiResponse.onSuccess(userCommandService.updateUser(userId, userUpdateDTO));
+        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), userUpdateDTO));
     }
     
-    @GetMapping("/{userId}")
-    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@PathVariable Long userId) {
+    @GetMapping()
+    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@AuthenticationPrincipal User user) {
         
-        return ApiResponse.onSuccess(userCommandService.findMyUsers(userId));
+        return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
-    
+
+    @PostMapping("/kakao/signup")
+    @Operation(summary = "카카오 회원가입")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(request);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping("/kakao/login")
+    @Operation(summary = "카카오 로그인")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserLoginDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoLogin(request);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping("/token/refresh")
+    @Operation(summary = "토큰 재발급")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> refreshToken(@RequestBody UserRequestDTO.refreshTokenDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.refreshToken(request);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @GetMapping("/test/kakao")
+    @Operation(summary = "(테스트용) kakao accessToken 받기",
+            description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code <br><br> 주소 접속 후 리다이렉트된 url의 code를 입력하세요")
+    public ApiResponse<String> getAccessToken(String code) {
+        String token = userCommandService.getAccessToken(code);
+        return ApiResponse.onSuccess(token);
+    }
+
+    @PostMapping("/test/jwt")
+    @Operation(summary = "(테스트용) jwt 토큰 받기")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createJWT(@RequestParam Long userId) {
+        User user = (User) userCommandService.loadUserByUserId(userId);
+        String accessToken = jwtUtil.createAccessToken(userId);
+        String refreshToken = user.getRefreshToken();
+        return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken, refreshToken));
+    }
     
 }
