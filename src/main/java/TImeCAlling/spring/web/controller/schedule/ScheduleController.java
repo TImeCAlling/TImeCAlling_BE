@@ -14,11 +14,11 @@ import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.validation.annotation.ExistSchedule;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,11 +89,14 @@ public class ScheduleController {
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulesByDateDTO(checklists));
     }
 
-    /** 공유 일정 멤버 조회 컨트롤러*/
     @GetMapping("/{scheduleId}/users")
     public ApiResponse<List<ScheduleResponseDTO.SharedScheduleUserDTO>> getSharedScheduleUser(
-            @PathVariable @ExistSchedule Long scheduleId) {
-        Schedule schedule = scheduleQueryService.getSchedule(scheduleId);
+            @Parameter(description = "조회할 일정 ID", example = "101")
+            @PathVariable @ExistSchedule Long scheduleId,
+            @AuthenticationPrincipal User user) {
+
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+
         return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
     }
 }
