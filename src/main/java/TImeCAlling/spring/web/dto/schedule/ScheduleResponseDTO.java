@@ -109,4 +109,23 @@ public class ScheduleResponseDTO {
     public static class SchedulesByDateDTO {
         List<ScheduleByDateDTO> schedules;
     }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodayScheduleDTO {
+        Long scheduleId;
+        String name;
+        String body;
+        LocalTime meetTime;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodaySchedulesDTO {
+        List<TodayScheduleDTO> schedules;
+    }
 }
