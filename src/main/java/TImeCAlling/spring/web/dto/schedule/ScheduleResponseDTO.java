@@ -96,6 +96,7 @@ public class ScheduleResponseDTO {
         Long scheduleId;
         String name;
         Boolean iseRepeat;
+        List<String> repeatDays;
         List<ScheduleResponseDTO.CategoryDTO> categories;
         LocalTime meetTime;
         Boolean isWritten;
