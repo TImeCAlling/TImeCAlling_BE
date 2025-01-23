@@ -40,10 +40,13 @@ public class ScheduleController {
     private final RecurringScheduleService recurringScheduleService;
     private final ChecklistCommandService checklistCommandService;
     private final ChecklistQueryService checklistQueryService;
-    
+
+    private final ChecklistCommandService checklistService;
+
+    @Operation(summary = "일정 추가", description = "새로운 일정을 추가합니다.")
     @PostMapping
-    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@AuthenticationPrincipal User user, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
+
         Schedule schedule = scheduleCommandService.createSchedule(user, request);
         if (request.getIsRepeat()) {
             recurringScheduleService.createRecurringSchedule(schedule, request);
@@ -52,24 +55,27 @@ public class ScheduleController {
         
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
-    
+
+    @Operation(summary = "일정 상세 조회", description = "일정 id로 일정의 정보를 상세 조회합니다.")
     @GetMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
-    
+
+    @Operation(summary = "일정 수정", description = "일정 id로 일정의 정보를 수정합니다. 공유하지 않은 일정은 모든 항목에 대해 수정 가능합니다.")
     @PatchMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
+
         Schedule schedule = scheduleCommandService.patchSchedule(scheduleId, user, request);
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulePatchDTO(schedule));
     }
-    
+
+    @Operation(summary = "일정 삭제", description = "일정 id로 일정을 삭제합니다.")
     @DeleteMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
-        User user = userQueryService.findOne(userId);
+    public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
@@ -83,7 +89,7 @@ public class ScheduleController {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule));
     }
-    
+
 
     @Operation(summary = "나의 일정 현황 API", description = "나의 성공, 실패 일정 수와 총 일정 수, 성공률을 조회할 수 있습니다.")
     @GetMapping("/success-rate")
@@ -102,7 +108,7 @@ public class ScheduleController {
         
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulesByDateDTO(checklists));
     }
-    
+
     /**
      * 공유 일정 팀원 조회하여 리스트 형태로 반환
      *
@@ -124,7 +130,7 @@ public class ScheduleController {
 
         return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
     }
-    
+
     @Operation(summary = "오늘 일정 목록 조회 API", description = "오늘 일정들의 제목, 메모, 시간을 조회하는 API입니다.")
     @GetMapping("/today")
     public ApiResponse<ScheduleResponseDTO.TodaySchedulesDTO> getTodaySchedules(
