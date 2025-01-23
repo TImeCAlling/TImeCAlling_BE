@@ -164,7 +164,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             System.out.println("response body : " + result);
 
         } catch (IOException exception) {
-            throw new UserHandler(ErrorStatus.NOT_VALID_TOKEN);
+            throw new UserHandler(ErrorStatus.NOT_VALID_KAKAO_TOKEN);
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
