@@ -3,6 +3,7 @@ package TImeCAlling.spring.web.dto.user;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.validation.annotation.ValidEnum;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UserRequestDTO {
     
@@ -27,7 +28,6 @@ public class UserRequestDTO {
     public static class UserSignUpDTO {
 
         String kakaoAccessToken;
-        String profileUrl;
         String nickname;
         Integer avgPrepTime;
         @ValidEnum(enumClass = FreeTime.class)

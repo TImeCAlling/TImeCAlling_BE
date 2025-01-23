@@ -4,6 +4,7 @@ import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserCommandService {
     
@@ -16,7 +17,7 @@ public interface UserCommandService {
     UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
     UserDetails loadUserByUserId(Long id);
 
-    UserResponseDTO.UserSignUpResultDTO kakaoSignUp(UserRequestDTO.UserSignUpDTO request);
+    UserResponseDTO.UserSignUpResultDTO kakaoSignUp(MultipartFile profileImage, UserRequestDTO.UserSignUpDTO request);
     UserResponseDTO.UserSignUpResultDTO kakaoLogin(UserRequestDTO.UserLoginDTO request);
     UserResponseDTO.UserSignUpResultDTO refreshToken(UserRequestDTO.refreshTokenDTO request);
     String getAccessToken(String code);

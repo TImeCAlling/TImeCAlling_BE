@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public UserResponseDTO.UserSignUpResultDTO kakaoSignUp(UserRequestDTO.UserSignUpDTO request) {
+    public UserResponseDTO.UserSignUpResultDTO kakaoSignUp(MultipartFile profileImage, UserRequestDTO.UserSignUpDTO request) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
 
@@ -117,8 +118,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         savedUser.setRefreshToken(refreshToken);
         userRepository.save(savedUser);
 
-        ProfileImage profileImage = ProfileImageConverter.toProfileImage(savedUser, request.getProfileUrl());
-        profileImageRepository.save(profileImage);
+        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, profileImage);
+        profileImageRepository.save(savedProfileImage);
 
         return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
     }

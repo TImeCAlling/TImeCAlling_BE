@@ -10,8 +10,10 @@ import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,11 +49,11 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
 
-    @PostMapping("/kakao/signup")
+    @PostMapping(value = "/kakao/signup", consumes = "multipart/form-data")
     @Operation(summary = "카카오 회원가입")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
-
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(request);
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
+                                                                         @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
 
