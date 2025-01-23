@@ -155,8 +155,6 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
 
         return checklist.getId();
     }
-    
-    
 
     @Override
     @Scheduled(cron = "0 0 0 * * *")
