@@ -20,6 +20,6 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
     
     @Override
     public List<Checklist> getCheckListByDateAndUser(LocalDate date, User user) {
-        return checklistRepository.findChecklistsBySchedule_User_IdAndDate(user.getId(), date);
+        return checklistRepository.findChecklistsByScheduleUserIdAndDate(user.getId(), date);
     }
 }
