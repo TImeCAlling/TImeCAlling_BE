@@ -93,9 +93,10 @@ public class ScheduleResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ScheduleByDateDTO {
-        Long scheduleId;
+        Long checkListId;
         String name;
         Boolean iseRepeat;
+        List<String> repeatDays;
         List<ScheduleResponseDTO.CategoryDTO> categories;
         LocalTime meetTime;
         Boolean isWritten;
@@ -108,5 +109,24 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class SchedulesByDateDTO {
         List<ScheduleByDateDTO> schedules;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodayScheduleDTO {
+        Long checkListId;
+        String name;
+        String body;
+        LocalTime meetTime;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodaySchedulesDTO {
+        List<TodayScheduleDTO> schedules;
     }
 }

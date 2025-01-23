@@ -14,8 +14,14 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
     
     void deleteAllByScheduleId(Long scheduleId);
     
-    @EntityGraph(attributePaths = {"schedule"})
-    List<Checklist> findChecklistsBySchedule_User_IdAndDate(Long userId, LocalDate date);
+    @Query("SELECT c FROM Checklist c " +
+            "JOIN FETCH c.schedule s " +
+            "LEFT JOIN FETCH s.recurringSchedule rs " +
+            "LEFT JOIN FETCH rs.repeatDays " +
+            "WHERE s.user.id = :userId " +
+            "AND c.date = :date")
+    List<Checklist> findChecklistsByScheduleUserIdAndDate(@Param("userId") Long userId,
+                                                          @Param("date") LocalDate date);
 
     Checklist findByScheduleIdAndDate(Long scheduleId, LocalDate date);
 

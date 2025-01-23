@@ -160,9 +160,10 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.SchedulesByDateDTO toSchedulesByDateDTO(List<Checklist> checklistList) {
         List<ScheduleResponseDTO.ScheduleByDateDTO> schedulesByDateDTOList = checklistList.stream()
                 .map(checklist -> ScheduleResponseDTO.ScheduleByDateDTO.builder()
-                        .scheduleId(checklist.getSchedule().getId())
+                        .checkListId(checklist.getId())
                         .name(checklist.getSchedule().getName())
                         .iseRepeat(checklist.getSchedule().getIsRepeat())
+                        .repeatDays(getRepeatDays(checklist))
                         .isWritten(checklist.getIsWritten())
                         .meetTime(checklist.getSchedule().getMeetTime())
                         .categories(toCategoryDTOList(checklist.getSchedule().getCategories()))
@@ -174,7 +175,7 @@ public class ScheduleConverter {
                 .schedules(schedulesByDateDTOList)
                 .build();
     }
-
+    
     public static List<ScheduleResponseDTO.SharedScheduleUserDTO> toSharedScheduleUserDTO (List<Schedule> schedules) {
         return schedules.stream()
                 .map(schedule -> ScheduleResponseDTO.SharedScheduleUserDTO.builder()
@@ -184,5 +185,30 @@ public class ScheduleConverter {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+    
+    public static ScheduleResponseDTO.TodaySchedulesDTO toTodaySchedulesDTO(List<Checklist> checklists) {
+        List<ScheduleResponseDTO.TodayScheduleDTO> dtoList = checklists.stream()
+                .map(checklist -> ScheduleResponseDTO.TodayScheduleDTO.builder()
+                        .checkListId(checklist.getId())
+                        .name(checklist.getSchedule().getName())
+                        .body(checklist.getSchedule().getBody())
+                        .meetTime(checklist.getSchedule().getMeetTime())
+                        .build()
+                ).collect(Collectors.toList());
+        return ScheduleResponseDTO.TodaySchedulesDTO.builder()
+                .schedules(dtoList)
+                .build();
+    }
+    
+    
+    private static List<String> getRepeatDays(Checklist checklist) {
+        if (checklist.getSchedule().getIsRepeat()) {
+            return checklist.getSchedule().getRecurringSchedule().getRepeatDays().stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
     }
 }
