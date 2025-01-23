@@ -115,7 +115,7 @@ public class ScheduleResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TodayScheduleDTO {
-        Long scheduleId;
+        Long checkListId;
         String name;
         String body;
         LocalTime meetTime;

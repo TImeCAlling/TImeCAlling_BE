@@ -189,13 +189,12 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.TodaySchedulesDTO toTodaySchedulesDTO(List<Checklist> checklists) {
         List<ScheduleResponseDTO.TodayScheduleDTO> dtoList = checklists.stream()
                 .map(checklist -> ScheduleResponseDTO.TodayScheduleDTO.builder()
-                        .scheduleId(checklist.getSchedule().getId())
+                        .checkListId(checklist.getId())
                         .name(checklist.getSchedule().getName())
                         .body(checklist.getSchedule().getBody())
                         .meetTime(checklist.getSchedule().getMeetTime())
                         .build()
                 ).collect(Collectors.toList());
-        
         return ScheduleResponseDTO.TodaySchedulesDTO.builder()
                 .schedules(dtoList)
                 .build();
