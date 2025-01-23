@@ -187,6 +187,21 @@ public class ScheduleConverter {
                 .collect(Collectors.toList());
     }
     
+    public static ScheduleResponseDTO.TodaySchedulesDTO toTodaySchedulesDTO(List<Checklist> checklists) {
+        List<ScheduleResponseDTO.TodayScheduleDTO> dtoList = checklists.stream()
+                .map(checklist -> ScheduleResponseDTO.TodayScheduleDTO.builder()
+                        .checkListId(checklist.getId())
+                        .name(checklist.getSchedule().getName())
+                        .body(checklist.getSchedule().getBody())
+                        .meetTime(checklist.getSchedule().getMeetTime())
+                        .build()
+                ).collect(Collectors.toList());
+        return ScheduleResponseDTO.TodaySchedulesDTO.builder()
+                .schedules(dtoList)
+                .build();
+    }
+    
+    
     private static List<String> getRepeatDays(Checklist checklist) {
         if (checklist.getSchedule().getIsRepeat()) {
             return checklist.getSchedule().getRecurringSchedule().getRepeatDays().stream()

@@ -10,6 +10,7 @@ import TImeCAlling.spring.service.schedule.checklist.ChecklistCommandService;
 import TImeCAlling.spring.service.schedule.RecurringScheduleService;
 import TImeCAlling.spring.service.schedule.ScheduleCommandService;
 import TImeCAlling.spring.service.schedule.ScheduleQueryService;
+import TImeCAlling.spring.service.schedule.checklist.ChecklistQueryService;
 import TImeCAlling.spring.service.user.UserQueryService;
 import TImeCAlling.spring.validation.annotation.ExistSchedule;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
@@ -37,8 +38,9 @@ public class ScheduleController {
     private final ScheduleCommandService scheduleCommandService;
     private final ScheduleQueryService scheduleQueryService;
     private final RecurringScheduleService recurringScheduleService;
-    private final ChecklistCommandService checklistService;
-
+    private final ChecklistCommandService checklistCommandService;
+    private final ChecklistQueryService checklistQueryService;
+    
     @PostMapping
     public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
         User user = userQueryService.findOne(userId);
@@ -46,25 +48,25 @@ public class ScheduleController {
         if (request.getIsRepeat()) {
             recurringScheduleService.createRecurringSchedule(schedule, request);
         }
-        checklistService.createChecklists(schedule, request);
+        checklistCommandService.createChecklists(schedule, request);
         
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
-
+    
     @GetMapping("/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
-
+    
     @PatchMapping("/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
         User user = userQueryService.findOne(userId);
         Schedule schedule = scheduleCommandService.patchSchedule(scheduleId, user, request);
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulePatchDTO(schedule));
     }
-
+    
     @DeleteMapping("/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.ScheduleDeleteDTO> scheduleDelete(@PathVariable @ExistSchedule Long scheduleId, @RequestParam Long userId) {
         User user = userQueryService.findOne(userId);
@@ -81,6 +83,7 @@ public class ScheduleController {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule));
     }
+    
 
     @Operation(summary = "나의 일정 현황 API", description = "나의 성공, 실패 일정 수와 총 일정 수, 성공률을 조회할 수 있습니다.")
     @GetMapping("/success-rate")
@@ -95,11 +98,11 @@ public class ScheduleController {
             @Parameter(description = "YYYY-MM-DD 형식을 지켜주세요.")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal User user) {
-        List<Checklist> checklists = checklistService.getCheckListByDateAndUser(date, user);
+        List<Checklist> checklists = checklistQueryService.getCheckListByDateAndUser(date, user);
         
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulesByDateDTO(checklists));
     }
-
+    
     /**
      * 공유 일정 팀원 조회하여 리스트 형태로 반환
      *
@@ -120,5 +123,13 @@ public class ScheduleController {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
 
         return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
+    }
+    
+    @Operation(summary = "오늘 일정 목록 조회 API", description = "오늘 일정들의 제목, 메모, 시간을 조회하는 API입니다.")
+    @GetMapping("/today")
+    public ApiResponse<ScheduleResponseDTO.TodaySchedulesDTO> getTodaySchedules(
+            @AuthenticationPrincipal User user) {
+        List<Checklist> checklists = checklistQueryService.getCheckListByDateAndUser(LocalDate.now(), user);
+        return ApiResponse.onSuccess(ScheduleConverter.toTodaySchedulesDTO(checklists));
     }
 }
