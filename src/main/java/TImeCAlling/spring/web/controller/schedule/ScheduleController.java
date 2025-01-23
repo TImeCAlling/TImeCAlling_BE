@@ -100,11 +100,25 @@ public class ScheduleController {
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulesByDateDTO(checklists));
     }
 
-    /** 공유 일정 멤버 조회 컨트롤러*/
+    /**
+     * 공유 일정 팀원 조회하여 리스트 형태로 반환
+     *
+     * @param scheduleId 일정 ID
+     * @param user 인증된 사용자
+     * @return 팀원 리스트
+     */
+    @Operation(
+            summary = "공유 일정 팀원 조회",
+            description = "특정 스케줄의 팀원 목록을 반환합니다. 사용자는 해당 일정의 팀원이어야 정상적으로 작동합니다."
+    )
     @GetMapping("/{scheduleId}/users")
     public ApiResponse<List<ScheduleResponseDTO.SharedScheduleUserDTO>> getSharedScheduleUser(
-            @PathVariable @ExistSchedule Long scheduleId) {
-        Schedule schedule = scheduleQueryService.getSchedule(scheduleId);
+            @Parameter(description = "조회할 일정 ID", example = "101")
+            @PathVariable @ExistSchedule Long scheduleId,
+            @AuthenticationPrincipal User user) {
+
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+
         return ApiResponse.onSuccess(scheduleQueryService.getSharedScheduleUsers(schedule));
     }
 }
