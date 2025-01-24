@@ -91,6 +91,9 @@ public class UserCommandServiceImpl implements UserCommandService {
                 .nickname(finduser.getNickname())
                 .avgPrepTime(finduser.getAvgPrepTime())
                 .freeTime(String.valueOf(finduser.getFreeTime()))
+                .success(finduser.getSuccess())
+                .failed(finduser.getFailed())
+                .profileImage(finduser.getProfileImage().getFileUrl())
                 .build();
     }
     

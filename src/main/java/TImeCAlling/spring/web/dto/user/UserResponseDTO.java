@@ -41,6 +41,9 @@ public class UserResponseDTO {
         String nickname;
         Integer avgPrepTime;
         String freeTime;
+        Integer success;
+        Integer failed;
+        String profileImage;
     }
 
     @Builder
