@@ -93,6 +93,7 @@ public class ScheduleResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ScheduleByDateDTO {
+        Long scheduleId;
         Long checkListId;
         String name;
         Boolean iseRepeat;
@@ -116,6 +117,7 @@ public class ScheduleResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TodayScheduleDTO {
+        Long scheduleId;
         Long checkListId;
         String name;
         String body;
