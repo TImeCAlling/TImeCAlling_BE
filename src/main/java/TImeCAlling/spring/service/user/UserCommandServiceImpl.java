@@ -58,6 +58,10 @@ public class UserCommandServiceImpl implements UserCommandService {
     public UserResponseDTO.UserDeleteDTO deleteUser(Long id) {
         
         User finduser = getFinduser(id);
+
+        String imageUrl = finduser.getProfileImage().getFileUrl();
+        s3Service.deleteImageFromS3(imageUrl);
+
         userRepository.delete(finduser);
         
         return UserResponseDTO.UserDeleteDTO.builder()

@@ -49,7 +49,7 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
 
-    @PostMapping(value = "/kakao/signup", consumes = "multipart/form-data")
+    @PostMapping(value = "/kakao/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "카카오 회원가입")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
                                                                          @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
