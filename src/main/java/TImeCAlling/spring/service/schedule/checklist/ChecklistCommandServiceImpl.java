@@ -71,7 +71,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
                     .reason(null)
                     .external(null)
                     .isFit(null)
-                    .date(request.getMeetTime().toLocalDate())
+                    .date(request.getMeetDate())
                     .schedule(schedule)
                     .build();
 
@@ -120,7 +120,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
                     .reason(null)
                     .external(null)
                     .isFit(null)
-                    .date(request.getMeetTime().toLocalDate())
+                    .date(request.getMeetDate())
                     .schedule(schedule)
                     .build();
 
