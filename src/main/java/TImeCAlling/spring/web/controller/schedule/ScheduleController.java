@@ -12,6 +12,7 @@ import TImeCAlling.spring.service.schedule.ScheduleCommandService;
 import TImeCAlling.spring.service.schedule.ScheduleQueryService;
 import TImeCAlling.spring.service.schedule.checklist.ChecklistQueryService;
 import TImeCAlling.spring.service.user.UserQueryService;
+import TImeCAlling.spring.validation.annotation.ExistChecklist;
 import TImeCAlling.spring.validation.annotation.ExistSchedule;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
@@ -43,7 +44,7 @@ public class ScheduleController {
 
     private final ChecklistCommandService checklistService;
 
-    @Operation(summary = "일정 추가", description = "새로운 일정을 추가합니다.")
+    @Operation(summary = "일정 추가", description = "새로운 일정을 추가합니다. meetTime에 HH:mm 형식만 입력 가능합니다!")
     @PostMapping
     public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> scheduleCreate(@AuthenticationPrincipal User user, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
 
@@ -56,15 +57,15 @@ public class ScheduleController {
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
     }
 
-    @Operation(summary = "일정 상세 조회", description = "일정 id로 일정의 정보를 상세 조회합니다.")
-    @GetMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+    @Operation(summary = "일정 상세 조회", description = "체크리스트 id로 일정의 정보를 상세 조회합니다.")
+    @GetMapping("/{checklistId}")
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@AuthenticationPrincipal User user, @PathVariable @ExistChecklist Long checklistId) {
 
-        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+        Schedule schedule = scheduleQueryService.getScheduleWithChecklist(checklistId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
 
-    @Operation(summary = "일정 수정", description = "일정 id로 일정의 정보를 수정합니다. 공유하지 않은 일정은 모든 항목에 대해 수정 가능합니다.")
+    @Operation(summary = "일정 수정", description = "일정 id로 일정의 정보를 수정합니다. 공유하지 않은 일정은 모든 항목에 대해 수정 가능합니다. meetTime에 HH:mm 형식만 입력 가능합니다!")
     @PatchMapping("/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
 

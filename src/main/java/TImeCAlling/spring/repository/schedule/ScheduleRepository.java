@@ -11,6 +11,9 @@ import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
+    @Query("SELECT s FROM Schedule s JOIN s.checklists c WHERE c.id = :checklistId AND s.user = :user")
+    Optional<Schedule> findByChecklistIdAndUser(@Param("checklistId") Long checklistId, @Param("user") User user);
+
     @Query("SELECT s FROM Schedule s JOIN FETCH s.categories WHERE s.id = :id")
     Optional<Schedule> findByIdWithCategories(@Param("id") Long id);
 

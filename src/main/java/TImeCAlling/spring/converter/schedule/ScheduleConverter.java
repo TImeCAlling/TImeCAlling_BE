@@ -58,6 +58,7 @@ public class ScheduleConverter {
                     .toList();
             return ScheduleResponseDTO.ScheduleGetDTO.builder()
                     .name(schedule.getName())
+                    .meetDate(schedule.getChecklists().get(0).getDate())
                     .meetTime(schedule.getMeetTime())
                     .place(schedule.getPlace())
                     .repeatDays(repeatDays)
@@ -72,6 +73,7 @@ public class ScheduleConverter {
         } else {
             return ScheduleResponseDTO.ScheduleGetDTO.builder()
                     .name(schedule.getName())
+                    .meetDate(schedule.getChecklists().get(0).getDate())
                     .meetTime(schedule.getMeetTime())
                     .place(schedule.getPlace())
                     .repeatDays(null)
