@@ -4,6 +4,7 @@ import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
 import TImeCAlling.spring.repository.user.ProfileImageRepository;
+import TImeCAlling.spring.service.s3.S3Service;
 import TImeCAlling.spring.web.dto.user.UserAuthDTO;
 import com.google.gson.Gson;
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
@@ -38,6 +39,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     
     private final UserRepository userRepository;
     private final ProfileImageRepository profileImageRepository;
+    private final S3Service s3Service;
     private final JwtUtil jwtUtil;
     private final Gson gson;
     
@@ -118,7 +120,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         savedUser.setRefreshToken(refreshToken);
         userRepository.save(savedUser);
 
-        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, profileImage);
+        String imageUrl = s3Service.uploadFile(profileImage);
+        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl);
         profileImageRepository.save(savedProfileImage);
 
         return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
@@ -165,7 +168,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             System.out.println("response body : " + result);
 
         } catch (IOException exception) {
-            throw new UserHandler(ErrorStatus.NOT_VALID_KAKAO_TOKEN);
+            throw new UserHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
