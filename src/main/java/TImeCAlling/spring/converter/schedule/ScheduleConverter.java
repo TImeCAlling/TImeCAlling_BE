@@ -34,7 +34,7 @@ public class ScheduleConverter {
                 .user(user)
                 .name(request.getName())
                 .body(request.getBody())
-                .meetTime(request.getMeetTime().toLocalTime())
+                .meetTime(request.getMeetTime())
                 .place(request.getPlace())
                 .longitude(request.getLongitude())
                 .latitude(request.getLatitude())

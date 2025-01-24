@@ -69,7 +69,7 @@ public class Schedule extends BaseEntity {
     public void updateSchedule(
             String name,
             String body,
-            LocalDateTime meetTime,
+            LocalTime meetTime,
             String place,
             String longitude,
             String latitude,
@@ -81,7 +81,7 @@ public class Schedule extends BaseEntity {
     ) {
         this.name = name;
         this.body = body;
-        this.meetTime = meetTime.toLocalTime();
+        this.meetTime = meetTime;
         this.place = place;
         this.longitude = longitude;
         this.latitude = latitude;

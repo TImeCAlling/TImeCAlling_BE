@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class ScheduleRequestDTO {
@@ -38,7 +38,11 @@ public class ScheduleRequestDTO {
         @Size(max = 20)
         String body;
 
-        LocalDateTime meetTime;
+        @NotNull
+        LocalDate meetDate;
+        
+        @NotNull
+        LocalTime meetTime;
 
         @NotNull
         String place;
@@ -79,7 +83,11 @@ public class ScheduleRequestDTO {
         @Size(max = 20)
         String body;
         
-        LocalDateTime meetTime;
+        @NotNull
+        LocalTime meetTime;
+        
+        @NotNull
+        LocalDate meetDate;
         
         @NotNull
         String place;
