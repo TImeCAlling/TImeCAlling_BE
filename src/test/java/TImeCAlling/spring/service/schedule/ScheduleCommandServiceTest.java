@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ class ScheduleCommandServiceTest {
         categoryDTOS.add(category1);
         categoryDTOS.add(category2);
         ScheduleRequestDTO.SchedulePatchDTO request = new ScheduleRequestDTO.SchedulePatchDTO(
-                "테스트", "테스트용 입니다 ~", LocalDateTime.of(2025,1,19,5,35,39,698), "test", "111.111", "111.111", 30,
+                "테스트", "테스트용 입니다 ~", LocalTime.of(5,35,39,698), LocalDate.of(2025,1,19), "test", "111.111", "111.111", 30,
                 "TIGHT", true, repeatDays, LocalDate.of(2025,1,19), LocalDate.of(2025,1,19), categoryDTOS);
 
         // when
