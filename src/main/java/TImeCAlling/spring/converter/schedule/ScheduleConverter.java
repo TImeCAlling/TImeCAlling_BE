@@ -160,6 +160,7 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.SchedulesByDateDTO toSchedulesByDateDTO(List<Checklist> checklistList) {
         List<ScheduleResponseDTO.ScheduleByDateDTO> schedulesByDateDTOList = checklistList.stream()
                 .map(checklist -> ScheduleResponseDTO.ScheduleByDateDTO.builder()
+                        .scheduleId(checklist.getSchedule().getId())
                         .checkListId(checklist.getId())
                         .name(checklist.getSchedule().getName())
                         .iseRepeat(checklist.getSchedule().getIsRepeat())
@@ -190,6 +191,7 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.TodaySchedulesDTO toTodaySchedulesDTO(List<Checklist> checklists) {
         List<ScheduleResponseDTO.TodayScheduleDTO> dtoList = checklists.stream()
                 .map(checklist -> ScheduleResponseDTO.TodayScheduleDTO.builder()
+                        .scheduleId(checklist.getSchedule().getId())
                         .checkListId(checklist.getId())
                         .name(checklist.getSchedule().getName())
                         .body(checklist.getSchedule().getBody())
