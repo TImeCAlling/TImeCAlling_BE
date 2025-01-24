@@ -35,6 +35,7 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleGetDTO{
         String name;
+        LocalDate meetDate;
         LocalTime meetTime;
         String place;
         List<String> repeatDays;

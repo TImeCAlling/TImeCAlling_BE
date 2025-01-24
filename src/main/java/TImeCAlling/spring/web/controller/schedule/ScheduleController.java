@@ -12,6 +12,7 @@ import TImeCAlling.spring.service.schedule.ScheduleCommandService;
 import TImeCAlling.spring.service.schedule.ScheduleQueryService;
 import TImeCAlling.spring.service.schedule.checklist.ChecklistQueryService;
 import TImeCAlling.spring.service.user.UserQueryService;
+import TImeCAlling.spring.validation.annotation.ExistChecklist;
 import TImeCAlling.spring.validation.annotation.ExistSchedule;
 import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
@@ -57,10 +58,10 @@ public class ScheduleController {
     }
 
     @Operation(summary = "일정 상세 조회", description = "일정 id로 일정의 정보를 상세 조회합니다.")
-    @GetMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+    @GetMapping("/{checklistId}")
+    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> scheduleGet(@AuthenticationPrincipal User user, @PathVariable @ExistChecklist Long checklistId) {
 
-        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+        Schedule schedule = scheduleQueryService.getScheduleWithChecklist(checklistId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleGetDTO(schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
 

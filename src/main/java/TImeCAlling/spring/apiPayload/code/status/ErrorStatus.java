@@ -47,6 +47,7 @@ public enum ErrorStatus implements BaseErrorCode {
     EXTERNAL_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4002", "해당 값을 찾을 수 없습니다."),
     LATE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4003", "해당 값을 찾을 수 없습니다."),
     REASON_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4004", "해당 값을 찾을 수 없습니다."),
+    CHECKLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4005", "체크리스트를 찾을 수 없습니다."),
 
     ;
 
