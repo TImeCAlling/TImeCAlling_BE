@@ -1,5 +1,6 @@
 package TImeCAlling.spring.web.dto.schedule;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +37,8 @@ public class ScheduleResponseDTO {
     public static class ScheduleGetDTO{
         String name;
         LocalDate meetDate;
+
+        @JsonFormat(pattern = "HH:mm")
         LocalTime meetTime;
         String place;
         List<String> repeatDays;
