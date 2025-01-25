@@ -83,15 +83,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             s3Service.deleteImageFromS3(image.getFileUrl());
 
             String newImageUrl = s3Service.uploadFile(profileImage);
-            String fileName;
-            try {
-                URL url = new URL(newImageUrl);
-                String path = url.getPath();
-                fileName = path.substring(path.lastIndexOf("/") + 1);
-
-            } catch (MalformedURLException e) {
-                throw new S3Handler(ErrorStatus.INVALID_URL);
-            }
+            String fileName = getFileName(newImageUrl);
             image.update(newImageUrl, fileName);
         }
 
@@ -154,7 +146,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         userRepository.save(savedUser);
 
         String imageUrl = s3Service.uploadFile(profileImage);
-        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl);
+        String fileName = getFileName(imageUrl);
+        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl, fileName);
         profileImageRepository.save(savedProfileImage);
 
         return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
@@ -205,6 +198,22 @@ public class UserCommandServiceImpl implements UserCommandService {
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
+    }
+
+    private String getFileName(String imageUrl) {
+
+        String fileName;
+
+        try {
+            URL url = new URL(imageUrl);
+            String path = url.getPath();
+            fileName = path.substring(path.lastIndexOf("/") + 1);
+
+        } catch (MalformedURLException e) {
+            throw new S3Handler(ErrorStatus.INVALID_URL);
+        }
+
+        return fileName;
     }
 
     @Override
