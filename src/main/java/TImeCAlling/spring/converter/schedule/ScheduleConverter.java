@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ScheduleConverter {
@@ -42,6 +43,7 @@ public class ScheduleConverter {
                 .freeTime(freeTime)
                 .isRepeat(request.getIsRepeat())
                 .categories(categories)
+                .shareId(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -135,7 +137,43 @@ public class ScheduleConverter {
                 .scheduleId(scheduleId)
                 .build();
     }
-    
+
+    public static ScheduleResponseDTO.GetShareScheduleDTO toGetShareScheduleDTO(User user, Schedule schedule, RecurringSchedule recurringSchedule) {
+
+        if (schedule.getIsRepeat()) {
+            List<String> repeatDays = recurringSchedule.getRepeatDays().stream()
+                    .map(Enum::toString)
+                    .toList();
+            return ScheduleResponseDTO.GetShareScheduleDTO.builder()
+                    .nickname(user.getNickname())
+                    .name(schedule.getName())
+                    .meetDate(schedule.getChecklists().get(0).getDate())
+                    .meetTime(schedule.getMeetTime())
+                    .place(schedule.getPlace())
+                    .longitude(schedule.getLongitude())
+                    .latitude(schedule.getLatitude())
+                    .repeatDays(repeatDays)
+                    .isRepeat(schedule.getIsRepeat())
+                    .start(recurringSchedule.getStart())
+                    .end(recurringSchedule.getEnd())
+                    .build();
+        } else {
+            return ScheduleResponseDTO.GetShareScheduleDTO.builder()
+                    .nickname(user.getNickname())
+                    .name(schedule.getName())
+                    .meetDate(schedule.getChecklists().get(0).getDate())
+                    .meetTime(schedule.getMeetTime())
+                    .place(schedule.getPlace())
+                    .longitude(schedule.getLongitude())
+                    .latitude(schedule.getLatitude())
+                    .repeatDays(null)
+                    .isRepeat(schedule.getIsRepeat())
+                    .start(null)
+                    .end(null)
+                    .build();
+        }
+    }
+
     public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule) {
         
         Long leftTime = ChronoUnit.MINUTES.between(LocalTime.now(), schedule.getMeetTime());

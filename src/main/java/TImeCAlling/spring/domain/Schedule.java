@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -43,8 +44,8 @@ public class Schedule extends BaseEntity {
     
     @Column(nullable = false)
     private Boolean isRepeat;
-    
-    private Long shareId;
+
+    private String shareId;
     
     @Column(length = 15, nullable = false)
     private String longitude;

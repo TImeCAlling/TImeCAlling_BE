@@ -18,6 +18,7 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleCreateDTO{
         Long scheduleId;
+        String shareId;
         LocalDateTime createdAt;
     }
 
@@ -57,6 +58,26 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleDeleteDTO{
         Long scheduleId;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetShareScheduleDTO {
+        String nickname;
+        String name;
+        LocalDate meetDate;
+
+        @JsonFormat(pattern = "HH:mm")
+        LocalTime meetTime;
+        String place;
+        String longitude;
+        String latitude;
+        List<String> repeatDays;
+        Boolean isRepeat;
+        LocalDate start;
+        LocalDate end;
     }
   
     @Builder

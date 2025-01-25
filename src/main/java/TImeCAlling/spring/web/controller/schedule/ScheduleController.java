@@ -80,6 +80,14 @@ public class ScheduleController {
         Schedule schedule = scheduleCommandService.deleteSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
+
+    @Operation(summary = "공유 일정 조회", description = "일정 id로 일정의 정보를 조회합니다.")
+    @GetMapping("/share/{scheduleId}")
+    public ApiResponse<ScheduleResponseDTO.GetShareScheduleDTO> getShareSchedule(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
+
+        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+        return ApiResponse.onSuccess(ScheduleConverter.toGetShareScheduleDTO(user, schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
+    }
     
     @Operation(summary = "준비중 일정 조회 API", description = "일정 id로 조회시 해당 일정의 준비중 상태를 조회합니다.")
     @GetMapping("/{scheduleId}/status")
