@@ -6,6 +6,7 @@ import TImeCAlling.spring.service.alarmList.AlarmListCommandService;
 import TImeCAlling.spring.service.alarmList.AlarmListQueryService;
 import TImeCAlling.spring.web.dto.alarmList.AlarmListRequestDTO;
 import TImeCAlling.spring.web.dto.alarmList.AlarmListResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,10 @@ public class AlarmController {
     private final AlarmListQueryService alarmListQueryService;
 
     @PostMapping
+    @Operation(
+            summary = "Create AlarmList",
+            description = "새로운 알람 리스트를 생성합니다, 인증된 사용자가 등록해야 합니다."
+    )
     public ApiResponse<AlarmListResponseDTO.CreateDTO> createAlarmList(
             @RequestBody AlarmListRequestDTO.CreateDTO pushMessageCreateDTO,
             @AuthenticationPrincipal User user) {
@@ -39,6 +44,10 @@ public class AlarmController {
     }
 
     @GetMapping
+    @Operation(
+            summary = "Get AlarmList",
+            description = "인증된 사용자의 모든 Alarm 리스트를 조회합니다."
+    )
     public ApiResponse<List<AlarmListResponseDTO.ListDTO>> getAlarmList(
             @AuthenticationPrincipal User user) {
 
@@ -49,6 +58,10 @@ public class AlarmController {
     }
 
     @GetMapping("/{alarmId}")
+    @Operation(
+            summary = "Get AlarmDetail",
+            description = "특정 알람 리스트의 세부 정보를 조회합니다."
+    )
     public ApiResponse<AlarmListResponseDTO.DetailDTO> getDetailAlarmList(
             @PathVariable("alarmId") Long alarmId) {
 
@@ -59,6 +72,10 @@ public class AlarmController {
     }
 
     @PatchMapping("/{alarmId}/body")
+    @Operation(
+            summary = "Update AlarmList Body",
+            description = "해당 알람에 나올 메세지 내용을 수정합니다."
+    )
     public ApiResponse<AlarmListResponseDTO.UpdateBodyDTO> updateBodyAlarmList(
             @PathVariable("alarmId") Long alarmId,
             @RequestBody AlarmListRequestDTO.UpdateBodyDTO updateBodyDTO) {
@@ -70,6 +87,10 @@ public class AlarmController {
     }
 
     @PatchMapping("/{alarmId}/music")
+    @Operation(
+            summary = "Update AlarmList Music",
+            description = "해당 알람에 나올 음악 내용을 수정합니다."
+    )
     public ApiResponse<AlarmListResponseDTO.UpdateMusicDTO> updateMusicAlarmList(
             @PathVariable("alarmId") Long alarmId,
             @RequestBody AlarmListRequestDTO.UpdateMusicDTO updateMusicDTO) {
@@ -81,6 +102,10 @@ public class AlarmController {
     }
 
     @PatchMapping("/{alarmId}/activation")
+    @Operation(
+            summary = "Update AlarmList Activation",
+            description = "해당 알람의 활성화 유무를 수정합니다."
+    )
     public ApiResponse<AlarmListResponseDTO.UpdateIsActiveDTO> updateActivationAlarmList(
             @PathVariable("alarmId") Long alarmId,
             @RequestBody AlarmListRequestDTO.UpdateIsActiveDTO updateActivationDTO) {
@@ -92,6 +117,10 @@ public class AlarmController {
     }
 
     @DeleteMapping("/{alarmId}")
+    @Operation(
+            summary = "Delete AlarmList",
+            description = "지정된 알람 리스트를 삭제합니다."
+    )
     public ApiResponse<AlarmListResponseDTO.DeleteDTO> deleteAlarmList(
             @PathVariable("alarmId") Long alarmId) {
 
