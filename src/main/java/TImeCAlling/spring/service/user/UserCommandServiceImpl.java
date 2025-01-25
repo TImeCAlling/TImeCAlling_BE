@@ -1,9 +1,11 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.apiPayload.exception.handler.S3Handler;
 import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
 import TImeCAlling.spring.repository.user.ProfileImageRepository;
+import TImeCAlling.spring.service.s3.S3Service;
 import TImeCAlling.spring.web.dto.user.UserAuthDTO;
 import com.google.gson.Gson;
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
@@ -20,11 +22,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,68 +41,84 @@ public class UserCommandServiceImpl implements UserCommandService {
     
     private final UserRepository userRepository;
     private final ProfileImageRepository profileImageRepository;
+    private final S3Service s3Service;
     private final JwtUtil jwtUtil;
     private final Gson gson;
     
     @Override
-    public UserResponseDTO.UserCreateDTO createUser(UserRequestDTO.UserCreateDTO userCreateDTO) {
-        
+    public UserResponseDTO.UserSignUpResultDTO createUser(MultipartFile profileImage, UserRequestDTO.UserCreateDTO userCreateDTO) {
+
         User newUser = UserConverter.toUser(userCreateDTO);
-        User saveduser = userRepository.save(newUser);
-        
-        return UserResponseDTO.UserCreateDTO.builder()
-                .userId(saveduser.getId())
-                .build();
+        User savedUser = userRepository.save(newUser);
+
+        String accessToken = jwtUtil.createAccessToken(savedUser.getId());
+        String refreshToken = jwtUtil.createRefreshToken(savedUser.getId());
+        savedUser.setRefreshToken(refreshToken);
+        userRepository.save(savedUser);
+
+        String imageUrl = s3Service.uploadFile(profileImage);
+        String fileName = getFileName(imageUrl);
+        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl, fileName);
+        profileImageRepository.save(savedProfileImage);
+
+        return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
     }
     
     @Override
     public UserResponseDTO.UserDeleteDTO deleteUser(Long id) {
         
-        User finduser = getFinduser(id);
-        userRepository.delete(finduser);
+        User findUser = getFindUser(id);
+
+        String imageUrl = findUser.getProfileImage().getFileUrl();
+        s3Service.deleteImageFromS3(imageUrl);
+
+        userRepository.delete(findUser);
         
         return UserResponseDTO.UserDeleteDTO.builder()
-                .userId(finduser.getId())
+                .userId(findUser.getId())
                 .build();
     }
     
     @Override
-    public UserResponseDTO.UserUpdateDTO updateUser(Long id, UserRequestDTO.UserUpdateDTO updateDTO) {
+    public UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
         
-        User finduser = getFinduser(id);
-        finduser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), FreeTime.valueOf(updateDTO.getFreeTime()));
-        User saveduser = userRepository.save(finduser);
-        
-        return UserResponseDTO.UserUpdateDTO.builder()
-                .userId(saveduser.getId())
-                .build();
+        User findUser = getFindUser(id);
+
+        FreeTime freeTime = updateDTO.getFreeTime() != null ? FreeTime.valueOf(updateDTO.getFreeTime()) : null;
+
+        if (profileImage != null) {
+            ProfileImage image = findUser.getProfileImage();
+            s3Service.deleteImageFromS3(image.getFileUrl());
+
+            String newImageUrl = s3Service.uploadFile(profileImage);
+            String fileName = getFileName(newImageUrl);
+            image.update(newImageUrl, fileName);
+        }
+
+        findUser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
+
+        return UserConverter.toUserUpdateDTO(userRepository.save(findUser));
     }
     
     @Override
     public UserResponseDTO.UserMyPageDTO findMyUsers(Long id) {
         
-        User finduser = getFinduser(id);
-        
-        return UserResponseDTO.UserMyPageDTO.builder()
-                .userId(finduser.getId())
-                .nickname(finduser.getNickname())
-                .avgPrepTime(finduser.getAvgPrepTime())
-                .freeTime(String.valueOf(finduser.getFreeTime()))
-                .build();
+        User findUser = getFindUser(id);
+
+        return UserConverter.toUserMyPageDTO(findUser);
     }
     
-    private User getFinduser(Long id) {
+    private User getFindUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     @Override
     public UserDetails loadUserByUserId(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     @Override
-    public UserResponseDTO.UserSignUpResultDTO kakaoSignUp(UserRequestDTO.UserSignUpDTO request) {
+    public UserResponseDTO.UserSignUpResultDTO kakaoSignUp(MultipartFile profileImage, UserRequestDTO.UserSignUpDTO request) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
 
@@ -117,8 +137,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         savedUser.setRefreshToken(refreshToken);
         userRepository.save(savedUser);
 
-        ProfileImage profileImage = ProfileImageConverter.toProfileImage(savedUser, request.getProfileUrl());
-        profileImageRepository.save(profileImage);
+        String imageUrl = s3Service.uploadFile(profileImage);
+        String fileName = getFileName(imageUrl);
+        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl, fileName);
+        profileImageRepository.save(savedProfileImage);
 
         return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
     }
@@ -164,10 +186,26 @@ public class UserCommandServiceImpl implements UserCommandService {
             System.out.println("response body : " + result);
 
         } catch (IOException exception) {
-            throw new UserHandler(ErrorStatus.NOT_VALID_TOKEN);
+            throw new UserHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
+    }
+
+    private String getFileName(String imageUrl) {
+
+        String fileName;
+
+        try {
+            URL url = new URL(imageUrl);
+            String path = url.getPath();
+            fileName = path.substring(path.lastIndexOf("/") + 1);
+
+        } catch (MalformedURLException e) {
+            throw new S3Handler(ErrorStatus.INVALID_URL);
+        }
+
+        return fileName;
     }
 
     @Override

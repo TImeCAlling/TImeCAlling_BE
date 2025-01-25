@@ -24,6 +24,9 @@ public class ProfileImage extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    
-    
+
+    public void update(String fileUrl, String fileName) {
+        this.fileUrl = fileUrl;
+        this.fileName = fileName;
+    }
 }

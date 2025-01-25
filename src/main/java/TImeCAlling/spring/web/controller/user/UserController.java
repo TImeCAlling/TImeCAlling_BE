@@ -10,8 +10,10 @@ import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,11 +23,12 @@ public class UserController {
     private final UserCommandService userCommandService;
     private final JwtUtil jwtUtil;
     
-    @PostMapping
+    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
-    public ApiResponse<UserResponseDTO.UserCreateDTO> createUser(@RequestBody UserRequestDTO.UserCreateDTO userCreateDTO) {
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
+                                                                       @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
         
-        UserResponseDTO.UserCreateDTO response = userCommandService.createUser(userCreateDTO);
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
     
@@ -36,12 +39,13 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
     
-    @PutMapping()
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원정보 수정", description = "수정할 회원의 정보를 입력합니다.")
     public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
-                                                                 @RequestBody UserRequestDTO.UserUpdateDTO userUpdateDTO) {
+                                                                 @RequestPart(required = false) MultipartFile profileImage,
+                                                                 @RequestPart UserRequestDTO.UserUpdateDTO userUpdateDTO) {
         
-        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), userUpdateDTO));
+        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), profileImage, userUpdateDTO));
     }
     
     @GetMapping()
@@ -51,11 +55,11 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
 
-    @PostMapping("/kakao/signup")
+    @PostMapping(value = "/kakao/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
-
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(request);
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
+                                                                         @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
 

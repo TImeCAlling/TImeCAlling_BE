@@ -14,7 +14,7 @@ public class UserConverter {
         
         return User.builder()
                 .nickname(userCreateDTO.getNickname())
-                .socialType(SocialType.valueOf(userCreateDTO.getSocialType()))
+                .socialType(SocialType.KAKAO)
                 .avgPrepTime(userCreateDTO.getAvgPrepTime())
                 .freeTime(FreeTime.valueOf(userCreateDTO.getFreeTime()))
                 .fcmToken("기본값")
@@ -26,6 +26,28 @@ public class UserConverter {
                 .userId(user.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .build();
+    }
+
+    public static UserResponseDTO.UserUpdateDTO toUserUpdateDTO(User user) {
+        return UserResponseDTO.UserUpdateDTO.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .avgPrepTime(user.getAvgPrepTime())
+                .freeTime(String.valueOf(user.getFreeTime()))
+                .profileImage(user.getProfileImage().getFileUrl())
+                .build();
+    }
+
+    public static UserResponseDTO.UserMyPageDTO toUserMyPageDTO(User user) {
+        return UserResponseDTO.UserMyPageDTO.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .avgPrepTime(user.getAvgPrepTime())
+                .freeTime(String.valueOf(user.getFreeTime()))
+                .success(user.getSuccess())
+                .failed(user.getFailed())
+                .profileImage(user.getProfileImage().getFileUrl())
                 .build();
     }
 

@@ -5,13 +5,11 @@ import TImeCAlling.spring.domain.User;
 
 public class ProfileImageConverter {
 
-    public static ProfileImage toProfileImage(User user, String profileUrl) {
-        Long userId = user.getId();
-        String fileName = userId + "_profile.jpg";
+    public static ProfileImage toProfileImage(User user, String imageUrl, String fileName) {
 
         return ProfileImage.builder()
                 .fileName(fileName)
-                .fileUrl(profileUrl)
+                .fileUrl(imageUrl)
                 .user(user)
                 .build();
     }

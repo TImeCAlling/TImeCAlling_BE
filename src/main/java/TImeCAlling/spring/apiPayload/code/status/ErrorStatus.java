@@ -26,6 +26,7 @@ public enum ErrorStatus implements BaseErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN4003", "토큰이 만료되었습니다."),
     WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN4004", "지원되지 않는 JWT 토큰입니다."),
     ACCESS_TOKEN_NOT_EXPIRED(HttpStatus.BAD_REQUEST, "TOKEN4005", "액세스 토큰이 만료되지 않았습니다."),
+    INVALID_KAKAO_TOKEN(HttpStatus.BAD_REQUEST, "TOKEN4006", "카카오 액세스 토큰이 유효하지 않습니다."),
 
     // 푸시 메세지 세팅 관련 에러
     PUSH_SETTING_NOT_FOUND(HttpStatus.NOT_FOUND, "PUSHSETTING4001", "푸시 메세지 세팅을 찾을 수 없습니다."),
@@ -35,6 +36,7 @@ public enum ErrorStatus implements BaseErrorCode {
     FILE_IS_EMPTY(HttpStatus.BAD_REQUEST, "S34002", "파일이 비어있습니다."),
     FILE_NOT_IMAGE(HttpStatus.BAD_REQUEST, "S34003", "이미지 파일만 업로드 가능합니다."),
     IO_EXCEPTION_ON_IMAGE_DELETE(HttpStatus.BAD_REQUEST, "S34004", "삭제 중 에러가 발생했습니다."),
+    INVALID_URL(HttpStatus.BAD_REQUEST, "S34005", "유효하지 않은 url입니다."),
 
     // 일정 관련 에러
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4001", "일정을 찾을 수 없습니다."),
