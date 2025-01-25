@@ -3,7 +3,6 @@ package TImeCAlling.spring.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class PushMessageSetting {
+public class AlarmList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +36,8 @@ public class PushMessageSetting {
     @JoinColumn(name = "user_id")
     private User user;
     
-    @OneToMany(mappedBy = "pushMessageSetting", cascade = CascadeType.ALL)
-    private List<PushMessage> pushMessages = new ArrayList<>();
+    @OneToMany(mappedBy = "alarmList", cascade = CascadeType.ALL)
+    private List<Alarm> alarms = new ArrayList<>();
 
     public void update(Integer offset, String body, String music, String musicUrl) {
         if (offset != null) {

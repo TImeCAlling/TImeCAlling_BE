@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class PushMessage {
+public class  Alarm {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,6 @@ public class PushMessage {
     private Boolean isRepeat;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "push_message_setting_id")
-    private PushMessageSetting pushMessageSetting;
+    @JoinColumn(name = "alarmlist_id")
+    private AlarmList alarmList;
 }
