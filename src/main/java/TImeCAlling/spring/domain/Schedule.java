@@ -96,4 +96,8 @@ public class Schedule extends BaseEntity {
     public void setRecurringSchedule(RecurringSchedule recurringSchedule) {
         this.recurringSchedule = recurringSchedule;
     }
+
+    public void setShareId(String shareId) {
+        this.shareId = shareId;
+    }
 }

@@ -81,14 +81,27 @@ public class ScheduleController {
         return ApiResponse.onSuccess(ScheduleConverter.toScheduleCommandDTO(scheduleId));
     }
 
-    @Operation(summary = "공유 일정 조회", description = "일정 id로 일정의 정보를 조회합니다.")
+    @Operation(summary = "공유 일정 조회", description = "일정 id로 공유 일정의 정보를 조회합니다.")
     @GetMapping("/share/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.GetShareScheduleDTO> getShareSchedule(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
 
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toGetShareScheduleDTO(user, schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
-    
+
+    @Operation(summary = "공유 일정 추가", description = "공유 일정을 추가합니다. meetTime에 HH:mm 형식만 입력 가능합니다!")
+    @PostMapping("/share/{scheduleId}")
+    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> createShareSchedule(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId, @RequestBody @Valid ScheduleRequestDTO.ScheduleCreateDTO request) {
+
+        Schedule schedule = scheduleCommandService.createShareSchedule(user, scheduleId, request);
+        if (request.getIsRepeat()) {
+            recurringScheduleService.createRecurringSchedule(schedule, request);
+        }
+        checklistCommandService.createChecklists(schedule, request);
+
+        return ApiResponse.onSuccess(ScheduleConverter.toScheduleCreateDTO(schedule));
+    }
+
     @Operation(summary = "준비중 일정 조회 API", description = "일정 id로 조회시 해당 일정의 준비중 상태를 조회합니다.")
     @GetMapping("/{scheduleId}/status")
     public ApiResponse<ScheduleResponseDTO.ScheduleStatusDTO> getScheduleStatus(

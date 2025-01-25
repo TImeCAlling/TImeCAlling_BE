@@ -14,9 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,7 +121,20 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         }
         return schedule;
     }
-    
+
+    @Override
+    public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCreateDTO request) {
+
+        Optional<Schedule> shareSchedule = scheduleRepository.findById(scheduleId);
+        String shareId = shareSchedule
+                .map(schedule -> schedule.getShareId() != null ? schedule.getShareId() : UUID.randomUUID().toString()
+                )
+                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+
+        Schedule newSchedule = ScheduleConverter.toShareSchedule(user, request, shareId);
+        return scheduleRepository.save(newSchedule);
+    }
+
     // 두 리스트 값 비교 메서드
     
     private static boolean areListsEqual(List<?> list1, List<?> list2) {

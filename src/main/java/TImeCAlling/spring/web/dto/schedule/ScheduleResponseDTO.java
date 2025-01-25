@@ -50,6 +50,7 @@ public class ScheduleResponseDTO {
         LocalDate start;
         LocalDate end;
         List<CategoryDTO> categories;
+        String shareId;
     }
     
     @Builder

@@ -16,6 +16,7 @@ public class ScheduleConverter {
     public static ScheduleResponseDTO.ScheduleCreateDTO toScheduleCreateDTO(Schedule schedule) {
         return ScheduleResponseDTO.ScheduleCreateDTO.builder()
                 .scheduleId(schedule.getId())
+                .shareId(schedule.getShareId())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
@@ -43,7 +44,6 @@ public class ScheduleConverter {
                 .freeTime(freeTime)
                 .isRepeat(request.getIsRepeat())
                 .categories(categories)
-                .shareId(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -71,6 +71,7 @@ public class ScheduleConverter {
                     .start(recurringSchedule.getStart())
                     .end(recurringSchedule.getEnd())
                     .categories(categoryDTOS)
+                    .shareId(schedule.getShareId())
                     .build();
         } else {
             return ScheduleResponseDTO.ScheduleGetDTO.builder()
@@ -86,6 +87,7 @@ public class ScheduleConverter {
                     .start(null)
                     .end(null)
                     .categories(categoryDTOS)
+                    .shareId(schedule.getShareId())
                     .build();
         }
     }
@@ -114,6 +116,7 @@ public class ScheduleConverter {
                     .start(schedule.getRecurringSchedule().getStart())
                     .end(schedule.getRecurringSchedule().getEnd())
                     .categories(categoryDTOS)
+                    .shareId(schedule.getShareId())
                     .build();
         } else {
             return ScheduleResponseDTO.ScheduleGetDTO.builder()
@@ -128,6 +131,7 @@ public class ScheduleConverter {
                     .start(null)
                     .end(null)
                     .categories(categoryDTOS)
+                    .shareId(schedule.getShareId())
                     .build();
         }
     }
@@ -172,6 +176,33 @@ public class ScheduleConverter {
                     .end(null)
                     .build();
         }
+    }
+
+    public static Schedule toShareSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request, String shareId){
+
+        FreeTime freeTime = FreeTime.valueOf(request.getFreeTime());
+
+        List<Category> categories = request.getCategories().stream()
+                .map(categoryDTO -> Category.builder()
+                        .name(categoryDTO.getCategoryName())
+                        .color(categoryDTO.getColor())
+                        .build())
+                .collect(Collectors.toList());
+
+        return Schedule.builder()
+                .user(user)
+                .name(request.getName())
+                .body(request.getBody())
+                .meetTime(request.getMeetTime())
+                .place(request.getPlace())
+                .longitude(request.getLongitude())
+                .latitude(request.getLatitude())
+                .moveTime(request.getMoveTime())
+                .freeTime(freeTime)
+                .isRepeat(request.getIsRepeat())
+                .categories(categories)
+                .shareId(shareId)
+                .build();
     }
 
     public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule) {
