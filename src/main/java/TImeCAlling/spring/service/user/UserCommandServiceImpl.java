@@ -1,5 +1,6 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.apiPayload.exception.handler.S3Handler;
 import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
@@ -27,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,14 +72,38 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     @Override
-    public UserResponseDTO.UserUpdateDTO updateUser(Long id, UserRequestDTO.UserUpdateDTO updateDTO) {
+    public UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
         
         User finduser = getFinduser(id);
-        finduser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), FreeTime.valueOf(updateDTO.getFreeTime()));
+
+        FreeTime freeTime = updateDTO.getFreeTime() != null ? FreeTime.valueOf(updateDTO.getFreeTime()) : null;
+
+        if (profileImage != null) {
+            ProfileImage image = finduser.getProfileImage();
+            s3Service.deleteImageFromS3(image.getFileUrl());
+
+            String newImageUrl = s3Service.uploadFile(profileImage);
+            String fileName;
+            try {
+                URL url = new URL(newImageUrl);
+                String path = url.getPath();
+                fileName = path.substring(path.lastIndexOf("/") + 1);
+
+            } catch (MalformedURLException e) {
+                throw new S3Handler(ErrorStatus.INVALID_URL);
+            }
+            image.update(newImageUrl, fileName);
+        }
+
+        finduser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
         User saveduser = userRepository.save(finduser);
-        
+
         return UserResponseDTO.UserUpdateDTO.builder()
                 .userId(saveduser.getId())
+                .nickname(saveduser.getNickname())
+                .avgPrepTime(saveduser.getAvgPrepTime())
+                .freeTime(String.valueOf(saveduser.getFreeTime()))
+                .profileImage(saveduser.getProfileImage().getFileUrl())
                 .build();
     }
     

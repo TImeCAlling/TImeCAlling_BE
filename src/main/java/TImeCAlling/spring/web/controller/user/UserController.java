@@ -36,11 +36,12 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
     
-    @PutMapping()
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
-                                                                 @RequestBody UserRequestDTO.UserUpdateDTO userUpdateDTO) {
+                                                                 @RequestPart(required = false) MultipartFile profileImage,
+                                                                 @RequestPart UserRequestDTO.UserUpdateDTO userUpdateDTO) {
         
-        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), userUpdateDTO));
+        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), profileImage, userUpdateDTO));
     }
     
     @GetMapping()

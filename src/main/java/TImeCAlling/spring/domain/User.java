@@ -69,9 +69,9 @@ public class User extends BaseEntity implements UserDetails {
     private List<PushMessageSetting> pushMessageSettings = new ArrayList<>();
 
     public void update(String nickname, Integer avgPrepTime, FreeTime freeTime) {
-        this.nickname = nickname;
-        this.avgPrepTime = avgPrepTime;
-        this.freeTime = freeTime;
+        if (nickname != null) this.nickname = nickname;
+        if (avgPrepTime != null) this.avgPrepTime = avgPrepTime;
+        if (freeTime != null) this.freeTime = freeTime;
     }
 
     public void setRefreshToken(String refreshToken) {

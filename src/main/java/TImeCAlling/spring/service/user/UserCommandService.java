@@ -12,7 +12,7 @@ public interface UserCommandService {
     
     UserResponseDTO.UserDeleteDTO deleteUser(Long id);
     
-    UserResponseDTO.UserUpdateDTO updateUser(Long id, UserRequestDTO.UserUpdateDTO updateDTO);
+    UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO);
     
     UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
     UserDetails loadUserByUserId(Long id);
