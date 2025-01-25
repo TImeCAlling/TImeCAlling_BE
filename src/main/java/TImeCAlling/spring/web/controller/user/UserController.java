@@ -22,6 +22,7 @@ public class UserController {
     private final JwtUtil jwtUtil;
     
     @PostMapping
+    @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
     public ApiResponse<UserResponseDTO.UserCreateDTO> createUser(@RequestBody UserRequestDTO.UserCreateDTO userCreateDTO) {
         
         UserResponseDTO.UserCreateDTO response = userCommandService.createUser(userCreateDTO);
@@ -29,12 +30,14 @@ public class UserController {
     }
     
     @DeleteMapping()
+    @Operation(summary = "회원 탈퇴")
     public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@AuthenticationPrincipal User user) {
         
         return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
     
     @PutMapping()
+    @Operation(summary = "회원정보 수정", description = "수정할 회원의 정보를 입력합니다.")
     public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
                                                                  @RequestBody UserRequestDTO.UserUpdateDTO userUpdateDTO) {
         
@@ -42,13 +45,14 @@ public class UserController {
     }
     
     @GetMapping()
+    @Operation(summary = "회원 조회", description = "로그인한 회원의 정보를 조회합니다.")
     public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@AuthenticationPrincipal User user) {
         
         return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
 
     @PostMapping("/kakao/signup")
-    @Operation(summary = "카카오 회원가입")
+    @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestBody @Valid UserRequestDTO.UserSignUpDTO request) {
 
         UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(request);
@@ -56,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/kakao/login")
-    @Operation(summary = "카카오 로그인")
+    @Operation(summary = "카카오 로그인", description = "카카오 액세스 토큰을 입력하세요.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserLoginDTO request) {
 
         UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoLogin(request);
@@ -64,9 +68,8 @@ public class UserController {
     }
 
     @PostMapping("/token/refresh")
-    @Operation(summary = "토큰 재발급")
+    @Operation(summary = "액세스 토큰 재발급", description = "만료된 accessToken과 해당 회원의 refreshToken을 입력하세요.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> refreshToken(@RequestBody UserRequestDTO.refreshTokenDTO request) {
-
         UserResponseDTO.UserSignUpResultDTO response = userCommandService.refreshToken(request);
         return ApiResponse.onSuccess(response);
     }
@@ -80,7 +83,7 @@ public class UserController {
     }
 
     @PostMapping("/test/jwt")
-    @Operation(summary = "(테스트용) jwt 토큰 받기")
+    @Operation(summary = "(테스트용) jwt 토큰 받기", description = "유저 id로 해당 유저의 토큰을 발급합니다.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createJWT(@RequestParam Long userId) {
         User user = (User) userCommandService.loadUserByUserId(userId);
         String accessToken = jwtUtil.createAccessToken(userId);
