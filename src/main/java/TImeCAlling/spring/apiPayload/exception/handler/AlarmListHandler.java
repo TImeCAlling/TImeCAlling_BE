@@ -3,9 +3,9 @@ package TImeCAlling.spring.apiPayload.exception.handler;
 import TImeCAlling.spring.apiPayload.BaseErrorCode;
 import TImeCAlling.spring.apiPayload.exception.GeneralException;
 
-public class PushMessageSettingHandler extends GeneralException {
+public class AlarmListHandler extends GeneralException {
 
-    public PushMessageSettingHandler(BaseErrorCode errorCode) {
+    public AlarmListHandler(BaseErrorCode errorCode) {
         super(errorCode);
     }
 }

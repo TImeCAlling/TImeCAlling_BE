@@ -28,7 +28,7 @@ public enum ErrorStatus implements BaseErrorCode {
     ACCESS_TOKEN_NOT_EXPIRED(HttpStatus.BAD_REQUEST, "TOKEN4005", "액세스 토큰이 만료되지 않았습니다."),
 
     // 푸시 메세지 세팅 관련 에러
-    PUSH_SETTING_NOT_FOUND(HttpStatus.NOT_FOUND, "PUSHSETTING4001", "푸시 메세지 세팅을 찾을 수 없습니다."),
+    ALARM_LIST_NOT_FOUND(HttpStatus.NOT_FOUND, "ALARMLIST4001", "알람 리스트를 찾을 수 없습니다."),
 
     // S3 이미지 업로드 관련
     FILE_NOT_UPLOADED(HttpStatus.BAD_REQUEST, "S34001", "이미지를 업로드 할 수 없습니다."),
