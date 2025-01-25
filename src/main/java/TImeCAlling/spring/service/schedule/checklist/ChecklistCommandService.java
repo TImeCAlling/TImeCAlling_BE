@@ -17,7 +17,5 @@ public interface ChecklistCommandService {
 
     Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.UpdateDTO request);
     
-    List<Checklist> getCheckListByDateAndUser(LocalDate date, User user);
-    
     void deleteExpiredChecklists();
 }

@@ -12,6 +12,10 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Table(
+        name = "checklist",
+        indexes = @Index(name = "idx_date_is_written", columnList = "date, is_written")
+)
 public class Checklist extends BaseEntity {
     
     @Id

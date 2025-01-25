@@ -3,12 +3,13 @@ package TImeCAlling.spring.web.dto.schedule;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.validation.annotation.ValidEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class ScheduleRequestDTO {
@@ -38,7 +39,12 @@ public class ScheduleRequestDTO {
         @Size(max = 20)
         String body;
 
-        LocalDateTime meetTime;
+        @NotNull
+        LocalDate meetDate;
+
+        @JsonFormat(pattern = "HH:mm")
+        @NotNull
+        LocalTime meetTime;
 
         @NotNull
         String place;
@@ -78,8 +84,13 @@ public class ScheduleRequestDTO {
         
         @Size(max = 20)
         String body;
-        
-        LocalDateTime meetTime;
+
+        @NotNull
+        LocalDate meetDate;
+
+        @JsonFormat(pattern = "HH:mm")
+        @NotNull
+        LocalTime meetTime;
         
         @NotNull
         String place;

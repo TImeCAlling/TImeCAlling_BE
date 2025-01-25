@@ -21,6 +21,12 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     private final ScheduleRepository scheduleRepository;
 
     @Override
+    public Schedule getScheduleWithChecklist(Long checklistId, User user) {
+
+        return scheduleRepository.findByChecklistIdAndUser(checklistId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+    }
+
+    @Override
     @ExistSchedule
     public Schedule getSchedule(Long scheduleId, User user) {
         

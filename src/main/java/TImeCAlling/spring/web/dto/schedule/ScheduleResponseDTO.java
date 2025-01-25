@@ -1,5 +1,6 @@
 package TImeCAlling.spring.web.dto.schedule;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +36,9 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleGetDTO{
         String name;
+        LocalDate meetDate;
+
+        @JsonFormat(pattern = "HH:mm")
         LocalTime meetTime;
         String place;
         List<String> repeatDays;
@@ -94,8 +98,10 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleByDateDTO {
         Long scheduleId;
+        Long checkListId;
         String name;
         Boolean iseRepeat;
+        List<String> repeatDays;
         List<ScheduleResponseDTO.CategoryDTO> categories;
         LocalTime meetTime;
         Boolean isWritten;
@@ -108,5 +114,25 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class SchedulesByDateDTO {
         List<ScheduleByDateDTO> schedules;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodayScheduleDTO {
+        Long scheduleId;
+        Long checkListId;
+        String name;
+        String body;
+        LocalTime meetTime;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TodaySchedulesDTO {
+        List<TodayScheduleDTO> schedules;
     }
 }
