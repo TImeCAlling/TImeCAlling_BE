@@ -1,11 +1,11 @@
 package TImeCAlling.spring.repository;
 
 import TImeCAlling.spring.apiPayload.exception.handler.UserHandler;
-import TImeCAlling.spring.domain.PushMessageSetting;
+import TImeCAlling.spring.domain.AlarmList;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.SocialType;
-import TImeCAlling.spring.repository.pushMessageSetting.PushMessageSettingRepository;
+import TImeCAlling.spring.repository.alarmList.AlarmListRepository;
 import TImeCAlling.spring.repository.user.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
-public class PushMessageSettingRepositoryTest {
+public class AlarmListRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private PushMessageSettingRepository pushMessageSettingRepository;
+    private AlarmListRepository alarmListRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -52,7 +52,7 @@ public class PushMessageSettingRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        PushMessageSetting pushMessageSetting1 = PushMessageSetting.builder()
+        AlarmList alarmList1 = AlarmList.builder()
                 .offset(30)
                 .body("example body")
                 .music("example music")
@@ -61,7 +61,7 @@ public class PushMessageSettingRepositoryTest {
                 .user(user)
                 .build();
 
-        PushMessageSetting pushMessageSetting2 = PushMessageSetting.builder()
+        AlarmList alarmList2 = AlarmList.builder()
                 .offset(20)
                 .body("example body2")
                 .music("example music")
@@ -70,13 +70,13 @@ public class PushMessageSettingRepositoryTest {
                 .user(user)
                 .build();
 
-        pushMessageSettingRepository.save(pushMessageSetting1);
-        pushMessageSettingRepository.save(pushMessageSetting2);
+        alarmListRepository.save(alarmList1);
+        alarmListRepository.save(alarmList2);
         entityManager.flush();
         entityManager.clear();
 
         // when
-        List<PushMessageSetting> result = pushMessageSettingRepository.findByUserIdOrThrow(user.getId());
+        List<AlarmList> result = alarmListRepository.findByUserIdOrThrow(user.getId());
 
         // then
         assertThat(result).isNotEmpty();
@@ -102,7 +102,7 @@ public class PushMessageSettingRepositoryTest {
         entityManager.clear();
 
         // when
-        List<PushMessageSetting> result = pushMessageSettingRepository.findByUserIdOrThrow(user.getId());
+        List<AlarmList> result = alarmListRepository.findByUserIdOrThrow(user.getId());
 
         // then
         assertThat(result).isEmpty(); // 푸시 메시지 설정이 없으므로 결과는 빈 리스트
@@ -117,9 +117,8 @@ public class PushMessageSettingRepositoryTest {
         Long nonExistentUserId = 9999L; // 존재하지 않는 유저 ID
 
         // when & then
-        assertThrows(UserHandler.class, () -> {
-            pushMessageSettingRepository.findByUserIdOrThrow(nonExistentUserId);
-        }); // 존재하지 않는 유저에 대해 UserHandler 예외 발생
+        assertThrows(UserHandler.class, () ->
+                alarmListRepository.findByUserIdOrThrow(nonExistentUserId)); // 존재하지 않는 유저에 대해 UserHandler 예외 발생
     }
 
 }
