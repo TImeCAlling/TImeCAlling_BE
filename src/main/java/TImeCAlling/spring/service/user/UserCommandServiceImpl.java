@@ -59,27 +59,27 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public UserResponseDTO.UserDeleteDTO deleteUser(Long id) {
         
-        User finduser = getFinduser(id);
+        User findUser = getFindUser(id);
 
-        String imageUrl = finduser.getProfileImage().getFileUrl();
+        String imageUrl = findUser.getProfileImage().getFileUrl();
         s3Service.deleteImageFromS3(imageUrl);
 
-        userRepository.delete(finduser);
+        userRepository.delete(findUser);
         
         return UserResponseDTO.UserDeleteDTO.builder()
-                .userId(finduser.getId())
+                .userId(findUser.getId())
                 .build();
     }
     
     @Override
     public UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
         
-        User finduser = getFinduser(id);
+        User findUser = getFindUser(id);
 
         FreeTime freeTime = updateDTO.getFreeTime() != null ? FreeTime.valueOf(updateDTO.getFreeTime()) : null;
 
         if (profileImage != null) {
-            ProfileImage image = finduser.getProfileImage();
+            ProfileImage image = findUser.getProfileImage();
             s3Service.deleteImageFromS3(image.getFileUrl());
 
             String newImageUrl = s3Service.uploadFile(profileImage);
@@ -87,42 +87,26 @@ public class UserCommandServiceImpl implements UserCommandService {
             image.update(newImageUrl, fileName);
         }
 
-        finduser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
-        User saveduser = userRepository.save(finduser);
+        findUser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
 
-        return UserResponseDTO.UserUpdateDTO.builder()
-                .userId(saveduser.getId())
-                .nickname(saveduser.getNickname())
-                .avgPrepTime(saveduser.getAvgPrepTime())
-                .freeTime(String.valueOf(saveduser.getFreeTime()))
-                .profileImage(saveduser.getProfileImage().getFileUrl())
-                .build();
+        return UserConverter.toUserUpdateDTO(userRepository.save(findUser));
     }
     
     @Override
     public UserResponseDTO.UserMyPageDTO findMyUsers(Long id) {
         
-        User finduser = getFinduser(id);
-        
-        return UserResponseDTO.UserMyPageDTO.builder()
-                .userId(finduser.getId())
-                .nickname(finduser.getNickname())
-                .avgPrepTime(finduser.getAvgPrepTime())
-                .freeTime(String.valueOf(finduser.getFreeTime()))
-                .success(finduser.getSuccess())
-                .failed(finduser.getFailed())
-                .profileImage(finduser.getProfileImage().getFileUrl())
-                .build();
+        User findUser = getFindUser(id);
+
+        return UserConverter.toUserMyPageDTO(findUser);
     }
     
-    private User getFinduser(Long id) {
+    private User getFindUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     @Override
     public UserDetails loadUserByUserId(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     @Override

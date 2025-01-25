@@ -29,6 +29,28 @@ public class UserConverter {
                 .build();
     }
 
+    public static UserResponseDTO.UserUpdateDTO toUserUpdateDTO(User user) {
+        return UserResponseDTO.UserUpdateDTO.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .avgPrepTime(user.getAvgPrepTime())
+                .freeTime(String.valueOf(user.getFreeTime()))
+                .profileImage(user.getProfileImage().getFileUrl())
+                .build();
+    }
+
+    public static UserResponseDTO.UserMyPageDTO toUserMyPageDTO(User user) {
+        return UserResponseDTO.UserMyPageDTO.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .avgPrepTime(user.getAvgPrepTime())
+                .freeTime(String.valueOf(user.getFreeTime()))
+                .success(user.getSuccess())
+                .failed(user.getFailed())
+                .profileImage(user.getProfileImage().getFileUrl())
+                .build();
+    }
+
     public static User toUser(UserAuthDTO.KaKaoUserInfoDTO userInfo, UserRequestDTO.UserSignUpDTO request) {
 
         return User.builder()
