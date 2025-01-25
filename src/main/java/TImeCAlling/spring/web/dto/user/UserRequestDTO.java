@@ -11,8 +11,8 @@ public class UserRequestDTO {
     public static class UserCreateDTO {
         
         String nickname;
-        String socialType;
         Integer avgPrepTime;
+        @ValidEnum(enumClass = FreeTime.class)
         String freeTime;
     }
     

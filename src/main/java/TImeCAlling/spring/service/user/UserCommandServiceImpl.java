@@ -46,14 +46,22 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final Gson gson;
     
     @Override
-    public UserResponseDTO.UserCreateDTO createUser(UserRequestDTO.UserCreateDTO userCreateDTO) {
-        
+    public UserResponseDTO.UserSignUpResultDTO createUser(MultipartFile profileImage, UserRequestDTO.UserCreateDTO userCreateDTO) {
+
         User newUser = UserConverter.toUser(userCreateDTO);
-        User saveduser = userRepository.save(newUser);
-        
-        return UserResponseDTO.UserCreateDTO.builder()
-                .userId(saveduser.getId())
-                .build();
+        User savedUser = userRepository.save(newUser);
+
+        String accessToken = jwtUtil.createAccessToken(savedUser.getId());
+        String refreshToken = jwtUtil.createRefreshToken(savedUser.getId());
+        savedUser.setRefreshToken(refreshToken);
+        userRepository.save(savedUser);
+
+        String imageUrl = s3Service.uploadFile(profileImage);
+        String fileName = getFileName(imageUrl);
+        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl, fileName);
+        profileImageRepository.save(savedProfileImage);
+
+        return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
     }
     
     @Override

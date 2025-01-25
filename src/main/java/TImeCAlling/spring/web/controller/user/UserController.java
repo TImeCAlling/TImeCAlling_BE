@@ -23,11 +23,12 @@ public class UserController {
     private final UserCommandService userCommandService;
     private final JwtUtil jwtUtil;
     
-    @PostMapping
+    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
-    public ApiResponse<UserResponseDTO.UserCreateDTO> createUser(@RequestBody UserRequestDTO.UserCreateDTO userCreateDTO) {
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
+                                                                       @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
         
-        UserResponseDTO.UserCreateDTO response = userCommandService.createUser(userCreateDTO);
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
     

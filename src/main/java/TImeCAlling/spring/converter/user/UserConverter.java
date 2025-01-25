@@ -14,7 +14,7 @@ public class UserConverter {
         
         return User.builder()
                 .nickname(userCreateDTO.getNickname())
-                .socialType(SocialType.valueOf(userCreateDTO.getSocialType()))
+                .socialType(SocialType.KAKAO)
                 .avgPrepTime(userCreateDTO.getAvgPrepTime())
                 .freeTime(FreeTime.valueOf(userCreateDTO.getFreeTime()))
                 .fcmToken("기본값")
