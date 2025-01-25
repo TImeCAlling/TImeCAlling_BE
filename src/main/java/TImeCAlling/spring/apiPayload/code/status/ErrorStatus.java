@@ -41,6 +41,7 @@ public enum ErrorStatus implements BaseErrorCode {
     SCHEDULE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULE4002", "일정 삭제에 실패했습니다."),
     RECURRING_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4003", "반복 일정 정보가 정상적으로 저장되지 않았습니다."),
     SCHEDULE_SHARE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4004", "일정의 공유 ID를 찾을 수 업습니다."),
+    SCHEDULE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "SCHEDULE4005", "이미 존재하는 공유 일정입니다."),
 
     // 체크리스트 관련 에러
     SPARE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4001", "해당 값을 찾을 수 없습니다."),

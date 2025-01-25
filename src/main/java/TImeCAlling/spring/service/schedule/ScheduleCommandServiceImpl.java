@@ -126,10 +126,21 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCreateDTO request) {
 
         Optional<Schedule> shareSchedule = scheduleRepository.findById(scheduleId);
+
+        shareSchedule.ifPresent(schedule -> {
+            if (schedule.getShareId() == null) {
+                String shareId = UUID.randomUUID().toString();
+                schedule.setShareId(shareId);
+                scheduleRepository.save(schedule);
+            }
+        });
         String shareId = shareSchedule
-                .map(schedule -> schedule.getShareId() != null ? schedule.getShareId() : UUID.randomUUID().toString()
-                )
+                .map(Schedule::getShareId)
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+
+        if (scheduleRepository.existsByShareIdAndUser(shareId, user)) {
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_ALREADY_EXIST);
+        }
 
         Schedule newSchedule = ScheduleConverter.toShareSchedule(user, request, shareId);
         return scheduleRepository.save(newSchedule);
