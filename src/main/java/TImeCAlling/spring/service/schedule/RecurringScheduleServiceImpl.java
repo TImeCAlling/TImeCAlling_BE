@@ -40,13 +40,16 @@ public class RecurringScheduleServiceImpl implements RecurringScheduleService {
                 .map(RepeatDay::valueOf)
                 .collect(Collectors.toSet());
 
-        if (!shareRepeatDays.equals(requestRepeatDays))
+        if (!shareRepeatDays.equals(requestRepeatDays)) {
+            scheduleRepository.delete(schedule);
             throw new ScheduleHandler(ErrorStatus.REPEAT_DAYS_MISMATCH);
-        else if (!shareSchedule.getIsRepeat().equals(request.getIsRepeat()) ||
+        } else if (!shareSchedule.getIsRepeat().equals(request.getIsRepeat()) ||
                 !shareSchedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
-                !shareSchedule.getRecurringSchedule().getEnd().equals(request.getEnd()))
+                !shareSchedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {
+            scheduleRepository.delete(schedule);
             throw new ScheduleHandler(ErrorStatus.RECURRING_MISMATCH);
-
+        }
+        
         RecurringSchedule recurringSchedule = RecurringScheduleConverter.toRecurringSchedule(schedule, request);
         recurringScheduleRepository.save(recurringSchedule);
     }
