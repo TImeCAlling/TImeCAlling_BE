@@ -28,6 +28,6 @@ public class  Alarm {
     private Boolean isRepeat;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "alarmlist_id")
+    @JoinColumn(name = "alarm_list_id")
     private AlarmList alarmList;
 }
