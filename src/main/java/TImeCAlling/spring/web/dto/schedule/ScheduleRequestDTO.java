@@ -4,6 +4,7 @@ import TImeCAlling.spring.domain.enums.FreeTime;
 import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.validation.annotation.ValidEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class ScheduleRequestDTO {
         LocalDate meetDate;
 
         @JsonFormat(pattern = "HH:mm")
+        @Schema(type = "string", example = "00:00")
         @NotNull
         LocalTime meetTime;
 
@@ -58,10 +60,12 @@ public class ScheduleRequestDTO {
         @NotNull
         Integer moveTime;
 
+        @Schema(example = "TIGHT")
         @NotNull
         @ValidEnum(enumClass = FreeTime.class)
         String freeTime;
-        
+
+        @Schema(example = "[\"MONDAY\", \"TUESDAY\"]")
         @ValidEnum(enumClass = RepeatDay.class)
         List<String> repeatDays;
 
@@ -89,6 +93,7 @@ public class ScheduleRequestDTO {
         LocalDate meetDate;
 
         @JsonFormat(pattern = "HH:mm")
+        @Schema(type = "string", example = "00:00")
         @NotNull
         LocalTime meetTime;
         
@@ -104,13 +109,15 @@ public class ScheduleRequestDTO {
         @NotNull
         Integer moveTime;
 
+        @Schema(example = "TIGHT")
         @NotNull
         @ValidEnum(enumClass = FreeTime.class)
         String freeTime;
 
         @NotNull
         Boolean isRepeat;
-        
+
+        @Schema(example = "[\"MONDAY\", \"TUESDAY\"]")
         @ValidEnum(enumClass = RepeatDay.class)
         List<String> repeatDays;
         
