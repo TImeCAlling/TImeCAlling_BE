@@ -6,4 +6,5 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleRequestDTO;
 public interface RecurringScheduleService {
     
     void createRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request);
+    void createShareRecurringSchedule(Long scheduleId, Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request);
 }

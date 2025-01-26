@@ -95,7 +95,7 @@ public class ScheduleController {
 
         Schedule schedule = scheduleCommandService.createShareSchedule(user, scheduleId, request);
         if (request.getIsRepeat()) {
-            recurringScheduleService.createRecurringSchedule(schedule, request);
+            recurringScheduleService.createShareRecurringSchedule(scheduleId, schedule, request);
         }
         checklistCommandService.createChecklists(schedule, request);
 
