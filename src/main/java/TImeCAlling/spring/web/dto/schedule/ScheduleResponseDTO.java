@@ -36,6 +36,7 @@ public class ScheduleResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ScheduleGetDTO{
+        Long scheduleId;
         String name;
         LocalDate meetDate;
 

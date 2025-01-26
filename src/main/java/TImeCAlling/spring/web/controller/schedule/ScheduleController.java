@@ -85,7 +85,7 @@ public class ScheduleController {
     @GetMapping("/share/{scheduleId}")
     public ApiResponse<ScheduleResponseDTO.GetShareScheduleDTO> getShareSchedule(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
 
-        Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
+        Schedule schedule = scheduleQueryService.getShareSchedule(scheduleId, user);
         return ApiResponse.onSuccess(ScheduleConverter.toGetShareScheduleDTO(user, schedule, schedule.getRecurringSchedule() == null ? null : schedule.getRecurringSchedule()));
     }
 

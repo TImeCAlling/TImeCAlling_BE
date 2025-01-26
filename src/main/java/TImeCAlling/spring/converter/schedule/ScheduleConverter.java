@@ -59,6 +59,7 @@ public class ScheduleConverter {
                     .map(Enum::toString)
                     .toList();
             return ScheduleResponseDTO.ScheduleGetDTO.builder()
+                    .scheduleId(schedule.getId())
                     .name(schedule.getName())
                     .meetDate(schedule.getChecklists().get(0).getDate())
                     .meetTime(schedule.getMeetTime())
@@ -75,6 +76,7 @@ public class ScheduleConverter {
                     .build();
         } else {
             return ScheduleResponseDTO.ScheduleGetDTO.builder()
+                    .scheduleId(schedule.getId())
                     .name(schedule.getName())
                     .meetDate(schedule.getChecklists().get(0).getDate())
                     .meetTime(schedule.getMeetTime())

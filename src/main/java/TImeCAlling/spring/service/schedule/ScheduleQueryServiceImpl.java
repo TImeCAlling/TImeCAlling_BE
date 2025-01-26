@@ -30,7 +30,19 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     @ExistSchedule
     public Schedule getSchedule(Long scheduleId, User user) {
         
-        return scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+        return scheduleRepository.findByIdAndUser(scheduleId, user)
+                .orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+    }
+
+    @Override
+    public Schedule getShareSchedule(Long scheduleId, User user) {
+
+        if (scheduleRepository.existsByIdAndUser(scheduleId, user)) {
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_ALREADY_EXIST);
+        }
+
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
     }
 
     @Override
