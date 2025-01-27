@@ -1,4 +1,4 @@
-package TImeCAlling.spring.web.dto.pushMessageSetting;
+package TImeCAlling.spring.web.dto.alarmList;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,14 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class PushMessageSettingResponseDTO {
+public class AlarmListResponseDTO {
 
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
     public static class CreateDTO {
-        private Long id;
+        private Long alarmId;
         private Long userId;
     }
 
@@ -22,7 +22,7 @@ public class PushMessageSettingResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class ListDTO {
-        private Long id;
+        private Long alarmId;
         private Long userId;
         private Integer offset;
         private Boolean isActive;
@@ -33,7 +33,7 @@ public class PushMessageSettingResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class DetailDTO {
-        private Long id;
+        private Long alarmId;
         private Long userId;
         private Integer offset;
         private String body;
@@ -47,7 +47,7 @@ public class PushMessageSettingResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class UpdateBodyDTO {
-        private Long id;
+        private Long alarmId;
         private String body;
     }
 
@@ -56,7 +56,7 @@ public class PushMessageSettingResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class UpdateMusicDTO {
-        private Long id;
+        private Long alarmId;
         private String music;
         private String musicUrl;
     }
@@ -66,7 +66,7 @@ public class PushMessageSettingResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class UpdateIsActiveDTO {
-        private Long id;
+        private Long alarmId;
         private Boolean isActive;
     }
 
@@ -75,6 +75,6 @@ public class PushMessageSettingResponseDTO {
     @AllArgsConstructor
     @Getter
     public static class DeleteDTO {
-        private Long id;
+        private Long alarmId;
     }
 }

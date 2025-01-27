@@ -1,20 +1,20 @@
-package TImeCAlling.spring.repository.pushMessageSetting;
+package TImeCAlling.spring.repository.alarmList;
 
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
 import TImeCAlling.spring.apiPayload.exception.handler.UserHandler;
-import TImeCAlling.spring.domain.PushMessageSetting;
+import TImeCAlling.spring.domain.AlarmList;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
-public class PushMessageSettingRepositoryCustomImpl implements PushMessageSettingRepositoryCustom {
+public class AlarmListRepositoryCustomImpl implements AlarmListRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public List<PushMessageSetting> findByUserIdOrThrow(Long userId) {
+    public List<AlarmList> findByUserIdOrThrow(Long userId) {
 
 //        유저의 존재 여부 확인
         Long userCount = entityManager
@@ -26,8 +26,8 @@ public class PushMessageSettingRepositoryCustomImpl implements PushMessageSettin
             throw new UserHandler(ErrorStatus.USER_NOT_FOUND);
         }
 
-        List<PushMessageSetting> settings = entityManager
-                .createQuery("SELECT p FROM PushMessageSetting p JOIN p.user u WHERE u.id = :userId", PushMessageSetting.class)
+        return entityManager
+                .createQuery("SELECT p FROM AlarmList p JOIN p.user u WHERE u.id = :userId", AlarmList.class)
                 .setParameter("userId", userId)
                 .getResultList();
 
@@ -35,7 +35,5 @@ public class PushMessageSettingRepositoryCustomImpl implements PushMessageSettin
 //        if (settings.isEmpty()) {
 //            throw new PushMessageSettingHandler(ErrorStatus.PUSH_SETTING_NOT_FOUND);
 //        }
-
-        return settings;
     }
 }
