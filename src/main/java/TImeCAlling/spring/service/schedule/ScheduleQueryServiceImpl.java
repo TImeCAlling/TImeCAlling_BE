@@ -41,8 +41,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
             throw new ScheduleHandler(ErrorStatus.SCHEDULE_ALREADY_EXIST);
         }
 
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+        return scheduleRepository.findById(scheduleId).get();
     }
 
     @Override

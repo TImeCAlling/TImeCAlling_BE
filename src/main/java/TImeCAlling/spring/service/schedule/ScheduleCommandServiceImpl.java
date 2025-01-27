@@ -125,8 +125,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     @Override
     public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCreateDTO request) {
 
-        Schedule shareSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+        Schedule shareSchedule = scheduleRepository.findById(scheduleId).get();
 
         // 공유 일정과 기본 정보 일치하는지 확인
         if (!shareSchedule.getName().equals(request.getName()))

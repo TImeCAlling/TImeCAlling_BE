@@ -32,8 +32,7 @@ public class RecurringScheduleServiceImpl implements RecurringScheduleService {
     @Override
     public void createShareRecurringSchedule(Long scheduleId, Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request) {
 
-        Schedule shareSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+        Schedule shareSchedule = scheduleRepository.findById(scheduleId).get();
 
         Set<RepeatDay> shareRepeatDays = new HashSet<>(shareSchedule.getRecurringSchedule().getRepeatDays());
         Set<RepeatDay> requestRepeatDays = request.getRepeatDays().stream()
