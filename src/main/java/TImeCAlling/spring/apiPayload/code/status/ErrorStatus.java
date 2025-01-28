@@ -43,6 +43,15 @@ public enum ErrorStatus implements BaseErrorCode {
     SCHEDULE_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULE4002", "일정 삭제에 실패했습니다."),
     RECURRING_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4003", "반복 일정 정보가 정상적으로 저장되지 않았습니다."),
     SCHEDULE_SHARE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4004", "일정의 공유 ID를 찾을 수 업습니다."),
+    SCHEDULE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "SCHEDULE4005", "이미 존재하는 일정입니다."),
+    SCHEDULE_NAME_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4006", "공유 일정은 이름을 수정할 수 없습니다."),
+    SCHEDULE_DATE_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4007", "공유 일정은 날짜를 수정할 수 없습니다."),
+    SCHEDULE_TIME_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4008", "공유 일정은 시간을 수정할 수 없습니다."),
+    SCHEDULE_PLACE_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4009", "공유 일정은 장소를 수정할 수 없습니다."),
+    SCHEDULE_LONGITUDE_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4010", "공유 일정은 경도를 수정할 수 없습니다."),
+    SCHEDULE_LATITUDE_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4011", "공유 일정은 위도를 수정할 수 없습니다."),
+    REPEAT_DAYS_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4012", "공유 일정은 반복 요일을 수정할 수 없습니다."),
+    RECURRING_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4013", "공유 일정은 반복 설정을 수정할 수 없습니다."),
 
     // 체크리스트 관련 에러
     SPARE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4001", "해당 값을 찾을 수 없습니다."),

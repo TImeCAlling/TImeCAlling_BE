@@ -14,9 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,7 +121,45 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         }
         return schedule;
     }
-    
+
+    @Override
+    public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCreateDTO request) {
+
+        Schedule shareSchedule = scheduleRepository.findById(scheduleId).get();
+
+        // 공유 일정과 기본 정보 일치하는지 확인
+        if (!shareSchedule.getName().equals(request.getName()))
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_NAME_MISMATCH);
+        else if (!shareSchedule.getChecklists().get(0).getDate().equals(request.getMeetDate()))
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_DATE_MISMATCH);
+        else if (!shareSchedule.getMeetTime().equals(request.getMeetTime()))
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_TIME_MISMATCH);
+        else if (!shareSchedule.getPlace().equals(request.getPlace()))
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_PLACE_MISMATCH);
+        else if (!shareSchedule.getLongitude().equals(request.getLongitude()))
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_LONGITUDE_MISMATCH);
+        else if (!shareSchedule.getLatitude().equals(request.getLatitude()))
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_LATITUDE_MISMATCH);
+
+        // 공유 id 생성
+        String shareId = getShareId(shareSchedule);
+        if (scheduleRepository.existsByShareIdAndUser(shareId, user)) {
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_ALREADY_EXIST);
+        }
+
+        Schedule newSchedule = ScheduleConverter.toShareSchedule(user, request, shareId);
+        return scheduleRepository.save(newSchedule);
+    }
+
+    private String getShareId(Schedule schedule) {
+        if (schedule.getShareId() == null) {
+            String shareId = UUID.randomUUID().toString();
+            schedule.setShareId(shareId);
+            scheduleRepository.save(schedule);
+        }
+        return schedule.getShareId();
+    }
+
     // 두 리스트 값 비교 메서드
     
     private static boolean areListsEqual(List<?> list1, List<?> list2) {
