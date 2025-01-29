@@ -67,7 +67,7 @@ public class ScheduleController {
 
     @Operation(summary = "일정 수정", description = "일정 id로 일정의 정보를 수정합니다. 공유하지 않은 일정은 모든 항목에 대해 수정 가능합니다. meetTime에 HH:mm 형식만 입력 가능합니다!")
     @PatchMapping("/{scheduleId}")
-    public ApiResponse<ScheduleResponseDTO.ScheduleGetDTO> schedulePatch(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
+    public ApiResponse<ScheduleResponseDTO.ScheduleCreateDTO> schedulePatch(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId, @RequestBody @Valid ScheduleRequestDTO.SchedulePatchDTO request) {
 
         Schedule schedule = scheduleCommandService.patchSchedule(scheduleId, user, request);
         return ApiResponse.onSuccess(ScheduleConverter.toSchedulePatchDTO(schedule));
