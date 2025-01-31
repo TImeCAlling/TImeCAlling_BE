@@ -18,8 +18,6 @@ public class ScheduleResponseDTO {
     @AllArgsConstructor
     public static class ScheduleCreateDTO{
         Long scheduleId;
-        String shareId;
-        LocalDateTime createdAt;
     }
 
     @Builder
