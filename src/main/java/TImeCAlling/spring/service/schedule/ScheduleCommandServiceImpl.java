@@ -47,7 +47,10 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                     !findSchedule.getMeetTime().equals(request.getMeetTime()) ||
                     !findSchedule.getPlace().equals(request.getPlace()) ||
                     !findSchedule.getLongitude().equals(request.getLongitude()) ||
-                    !findSchedule.getLatitude().equals(request.getLatitude()))
+                    !findSchedule.getLatitude().equals(request.getLatitude()) ||
+                    !findSchedule.getIsRepeat().equals(request.getIsRepeat()) ||
+                    !findSchedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
+                    !findSchedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {}
                 throw new ScheduleHandler(ErrorStatus.SCHEDULE_MISMATCH);
         }
 
