@@ -36,10 +36,20 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     @Override
     @Transactional
     public Schedule patchSchedule(Long scheduleId, User user, ScheduleRequestDTO.SchedulePatchDTO request) {
-        Schedule findSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+
+        Schedule findSchedule = scheduleRepository.findById(scheduleId).get();
         scheduleRepository.findByIdAndUser(scheduleId, user)
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+
+        if (findSchedule.getShareId() != null) {
+            if (!findSchedule.getName().equals(request.getName()) ||
+                    !findSchedule.getChecklists().get(0).getDate().equals(request.getMeetDate()) ||
+                    !findSchedule.getMeetTime().equals(request.getMeetTime()) ||
+                    !findSchedule.getPlace().equals(request.getPlace()) ||
+                    !findSchedule.getLongitude().equals(request.getLongitude()) ||
+                    !findSchedule.getLatitude().equals(request.getLatitude()))
+                throw new ScheduleHandler(ErrorStatus.SCHEDULE_MISMATCH);
+        }
 
         List<Category> categories = request.getCategories().stream()
                 .map(categoryDTO -> Category.builder()
@@ -106,7 +116,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                     categories,
                     checklists);
         }
-        
+
         return scheduleRepository.save(findSchedule);
     }
     

@@ -52,6 +52,7 @@ public enum ErrorStatus implements BaseErrorCode {
     SCHEDULE_LATITUDE_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4011", "공유 일정은 위도를 수정할 수 없습니다."),
     REPEAT_DAYS_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4012", "공유 일정은 반복 요일을 수정할 수 없습니다."),
     RECURRING_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4013", "공유 일정은 반복 설정을 수정할 수 없습니다."),
+    SCHEDULE_MISMATCH(HttpStatus.BAD_REQUEST, "SCHEDULE4014", "공유 일정은 기본 정보를 수정할 수 없습니다."),
 
     // 체크리스트 관련 에러
     SPARE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST4001", "해당 값을 찾을 수 없습니다."),
