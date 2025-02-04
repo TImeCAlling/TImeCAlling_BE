@@ -1,6 +1,7 @@
 package TImeCAlling.spring.auth;
 
 import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
+import TImeCAlling.spring.apiPayload.exception.handler.TokenHandler;
 import TImeCAlling.spring.auth.Handler.JwtExceptionHandler;
 import TImeCAlling.spring.service.user.UserDetailService;
 import io.jsonwebtoken.*;
@@ -93,7 +94,7 @@ public class JwtUtil {
         } catch (ExpiredJwtException e) {
             return true;
         } catch (JwtException e) {
-            throw new JwtExceptionHandler(ErrorStatus.NOT_VALID_TOKEN.getMessage(), e);
+            throw new TokenHandler(ErrorStatus.NOT_VALID_TOKEN);
         }
     }
 }

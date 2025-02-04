@@ -1,7 +1,7 @@
 package TImeCAlling.spring.service.user;
 
 import TImeCAlling.spring.apiPayload.exception.handler.S3Handler;
-import TImeCAlling.spring.auth.Handler.JwtExceptionHandler;
+import TImeCAlling.spring.apiPayload.exception.handler.TokenHandler;
 import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
@@ -187,7 +187,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             System.out.println("response body : " + result);
 
         } catch (IOException exception) {
-            throw new UserHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
+            throw new TokenHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
@@ -248,16 +248,16 @@ public class UserCommandServiceImpl implements UserCommandService {
         String refreshToken = request.getRefreshToken();
 
         if (!jwtUtil.isExpired(accessToken))
-            throw new JwtExceptionHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED.getMessage());
+            throw new TokenHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED);
         if (jwtUtil.isExpired(refreshToken))
-            throw new JwtExceptionHandler(ErrorStatus.REFRESH_TOKEN_EXPIRED.getMessage());
+            throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_EXPIRED);
 
         Long userId = jwtUtil.getUserId(refreshToken);
-        User findUser = userRepository.findByRefreshToken(refreshToken).orElseThrow(
-                () -> new UserHandler(ErrorStatus.NOT_VALID_TOKEN));
+        User findUser = userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new TokenHandler(ErrorStatus.NOT_VALID_TOKEN));
 
         if (!Objects.equals(findUser.getId(), userId))
-            throw new UserHandler(ErrorStatus.NOT_VALID_TOKEN);
+            throw new TokenHandler(ErrorStatus.NOT_VALID_TOKEN);
 
         String newAccessToken = jwtUtil.createAccessToken(findUser.getId());
         String newRefreshToken = jwtUtil.createRefreshToken(findUser.getId());
