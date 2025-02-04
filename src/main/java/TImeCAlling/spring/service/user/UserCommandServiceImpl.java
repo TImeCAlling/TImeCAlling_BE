@@ -268,7 +268,7 @@ public class UserCommandServiceImpl implements UserCommandService {
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         String accessToken = jwtUtil.createAccessToken(userId);
-        String refreshToken = jwtUtil.createRefreshToken(findUser.getId());
+        String refreshToken = jwtUtil.createRefreshToken(userId);
         findUser.setRefreshToken(refreshToken);
         userRepository.save(findUser);
 
