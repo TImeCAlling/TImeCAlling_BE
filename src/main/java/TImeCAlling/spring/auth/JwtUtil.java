@@ -84,4 +84,16 @@ public class JwtUtil {
     public Long getUserId(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
     }
+
+    // 토큰의 만료 여부 반환
+    public boolean isExpired(String token) {
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (IllegalArgumentException e) {
+            throw new JwtExceptionHandler(ErrorStatus.NOT_VALID_TOKEN.getMessage(), e);
+        }
+    }
 }

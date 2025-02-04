@@ -1,6 +1,7 @@
 package TImeCAlling.spring.service.user;
 
 import TImeCAlling.spring.apiPayload.exception.handler.S3Handler;
+import TImeCAlling.spring.auth.Handler.JwtExceptionHandler;
 import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
@@ -246,9 +247,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         String accessToken = request.getAccessToken();
         String refreshToken = request.getRefreshToken();
 
-        if (jwtUtil.validateToken(accessToken))
-            throw new UserHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED);
-        jwtUtil.validateToken(refreshToken);
+        if (!jwtUtil.isExpired(accessToken))
+            throw new JwtExceptionHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED.getMessage());
+        if (jwtUtil.isExpired(refreshToken))
+            throw new JwtExceptionHandler(ErrorStatus.REFRESH_TOKEN_EXPIRED.getMessage());
 
         Long userId = jwtUtil.getUserId(refreshToken);
         User findUser = userRepository.findByRefreshToken(refreshToken).orElseThrow(
