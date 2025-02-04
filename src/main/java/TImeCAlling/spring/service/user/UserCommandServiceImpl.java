@@ -242,28 +242,28 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public UserResponseDTO.UserSignUpResultDTO refreshToken(UserRequestDTO.refreshTokenDTO request) {
+    public UserResponseDTO.RefreshTokenResultDTO refreshToken(UserRequestDTO.RefreshTokenDTO request) {
 
         String accessToken = request.getAccessToken();
         String refreshToken = request.getRefreshToken();
 
+        // accessToken: 만료, refreshToken: 유효 인지 확인
         if (!jwtUtil.isExpired(accessToken))
             throw new TokenHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED);
         if (jwtUtil.isExpired(refreshToken))
             throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_EXPIRED);
 
+        // DB의 리프레시 토큰과 일치하는지 확인
         Long userId = jwtUtil.getUserId(refreshToken);
-        User findUser = userRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new TokenHandler(ErrorStatus.NOT_VALID_TOKEN));
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        if (!Objects.equals(findUser.getId(), userId))
-            throw new TokenHandler(ErrorStatus.NOT_VALID_TOKEN);
+        if (!Objects.equals(findUser.getRefreshToken(), refreshToken))
+            throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_MISMATCH);
 
+        // accessToken 재발급
         String newAccessToken = jwtUtil.createAccessToken(findUser.getId());
-        String newRefreshToken = jwtUtil.createRefreshToken(findUser.getId());
-        findUser.setRefreshToken(newRefreshToken);
-        userRepository.save(findUser);
 
-        return UserConverter.toUserSignUpResultDTO(findUser, newAccessToken, newRefreshToken);
+        return UserConverter.toRefreshTokenResultDTO(findUser, newAccessToken);
     }
 }

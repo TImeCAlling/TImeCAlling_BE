@@ -73,8 +73,8 @@ public class UserController {
 
     @PostMapping("/token/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "만료된 accessToken과 해당 회원의 refreshToken을 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> refreshToken(@RequestBody UserRequestDTO.refreshTokenDTO request) {
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.refreshToken(request);
+    public ApiResponse<UserResponseDTO.RefreshTokenResultDTO> refreshToken(@RequestBody UserRequestDTO.RefreshTokenDTO request) {
+        UserResponseDTO.RefreshTokenResultDTO response = userCommandService.refreshToken(request);
         return ApiResponse.onSuccess(response);
     }
 
