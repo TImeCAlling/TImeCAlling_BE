@@ -1,8 +1,6 @@
 package TImeCAlling.spring.web.controller.user;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
-import TImeCAlling.spring.auth.JwtUtil;
-import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
@@ -21,13 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     
     private final UserCommandService userCommandService;
-    private final JwtUtil jwtUtil;
-    
+
     @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
                                                                        @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
-        
+
         UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
@@ -35,7 +32,7 @@ public class UserController {
     @DeleteMapping()
     @Operation(summary = "회원 탈퇴")
     public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@AuthenticationPrincipal User user) {
-        
+
         return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
     
@@ -59,6 +56,7 @@ public class UserController {
     @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
                                                                          @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
+
         UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
@@ -74,6 +72,7 @@ public class UserController {
     @PostMapping("/token/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "만료된 accessToken과 해당 회원의 refreshToken을 입력하세요.")
     public ApiResponse<UserResponseDTO.RefreshTokenResultDTO> refreshToken(@RequestBody UserRequestDTO.RefreshTokenDTO request) {
+
         UserResponseDTO.RefreshTokenResultDTO response = userCommandService.refreshToken(request);
         return ApiResponse.onSuccess(response);
     }
@@ -82,17 +81,17 @@ public class UserController {
     @Operation(summary = "(테스트용) kakao accessToken 받기",
             description = "https://kauth.kakao.com/oauth/authorize?client_id=594ea4c05c1c31d5b7d8071cec4b8373&redirect_uri=http://localhost:8080/oauth&response_type=code <br><br> 주소 접속 후 리다이렉트된 url의 code를 입력하세요")
     public ApiResponse<String> getAccessToken(String code) {
+
         String token = userCommandService.getAccessToken(code);
         return ApiResponse.onSuccess(token);
     }
 
     @PostMapping("/test/jwt")
-    @Operation(summary = "(테스트용) jwt 토큰 받기", description = "유저 id로 해당 유저의 토큰을 발급합니다.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createJWT(@RequestParam Long userId) {
-        User user = (User) userCommandService.loadUserByUserId(userId);
-        String accessToken = jwtUtil.createAccessToken(userId);
-        String refreshToken = user.getRefreshToken();
-        return ApiResponse.onSuccess(UserConverter.toUserSignUpResultDTO(user, accessToken, refreshToken));
+    @Operation(summary = "(테스트용) jwt 토큰 받기", description = "유저 id로 해당 유저의 accessToken과 refreshToken을 새로 발급합니다.")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createJwt(@RequestParam Long userId) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createToken(userId);
+        return ApiResponse.onSuccess(response);
     }
     
 }

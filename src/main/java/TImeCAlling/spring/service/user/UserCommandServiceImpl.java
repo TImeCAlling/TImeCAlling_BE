@@ -20,7 +20,6 @@ import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,11 +109,6 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     private User getFindUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-    }
-
-    @Override
-    public UserDetails loadUserByUserId(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
@@ -265,5 +259,19 @@ public class UserCommandServiceImpl implements UserCommandService {
         String newAccessToken = jwtUtil.createAccessToken(findUser.getId());
 
         return UserConverter.toRefreshTokenResultDTO(findUser, newAccessToken);
+    }
+
+    @Override
+    public UserResponseDTO.UserSignUpResultDTO createToken(Long userId) {
+
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        String accessToken = jwtUtil.createAccessToken(userId);
+        String refreshToken = jwtUtil.createRefreshToken(findUser.getId());
+        findUser.setRefreshToken(refreshToken);
+        userRepository.save(findUser);
+
+        return UserConverter.toUserSignUpResultDTO(findUser, accessToken, refreshToken);
     }
 }
