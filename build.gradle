@@ -52,6 +52,9 @@ dependencies {
 
 	//fcm
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+	// Google Auth Library
+	implementation 'com.google.auth:google-auth-library-oauth2-http:1.16.0'
 }
 
 tasks.named('test') {
