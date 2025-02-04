@@ -92,7 +92,7 @@ public class JwtUtil {
             return false;
         } catch (ExpiredJwtException e) {
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (JwtException e) {
             throw new JwtExceptionHandler(ErrorStatus.NOT_VALID_TOKEN.getMessage(), e);
         }
     }
