@@ -76,4 +76,11 @@ public class UserConverter {
                 .successRate(percentage)
                 .build();
     }
+
+    public static UserResponseDTO.RefreshTokenResultDTO toRefreshTokenResultDTO(User user, String accessToken) {
+        return UserResponseDTO.RefreshTokenResultDTO.builder()
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .build();
+    }
 }

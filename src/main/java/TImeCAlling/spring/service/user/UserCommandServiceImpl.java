@@ -1,6 +1,7 @@
 package TImeCAlling.spring.service.user;
 
 import TImeCAlling.spring.apiPayload.exception.handler.S3Handler;
+import TImeCAlling.spring.apiPayload.exception.handler.TokenHandler;
 import TImeCAlling.spring.auth.JwtUtil;
 import TImeCAlling.spring.converter.user.ProfileImageConverter;
 import TImeCAlling.spring.domain.ProfileImage;
@@ -19,7 +20,6 @@ import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -113,11 +113,6 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public UserDetails loadUserByUserId(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-    }
-
-    @Override
     public UserResponseDTO.UserSignUpResultDTO kakaoSignUp(MultipartFile profileImage, UserRequestDTO.UserSignUpDTO request) {
 
         UserAuthDTO.KaKaoUserInfoDTO userInfo = getUserInfo(request.getKakaoAccessToken());
@@ -186,7 +181,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             System.out.println("response body : " + result);
 
         } catch (IOException exception) {
-            throw new UserHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
+            throw new TokenHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
         }
 
         return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
@@ -241,27 +236,42 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public UserResponseDTO.UserSignUpResultDTO refreshToken(UserRequestDTO.refreshTokenDTO request) {
+    public UserResponseDTO.RefreshTokenResultDTO refreshToken(UserRequestDTO.RefreshTokenDTO request) {
 
         String accessToken = request.getAccessToken();
         String refreshToken = request.getRefreshToken();
 
-        if (jwtUtil.validateToken(accessToken))
-            throw new UserHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED);
-        jwtUtil.validateToken(refreshToken);
+        // accessToken: 만료, refreshToken: 유효 인지 확인
+        if (!jwtUtil.isExpired(accessToken))
+            throw new TokenHandler(ErrorStatus.ACCESS_TOKEN_NOT_EXPIRED);
+        if (jwtUtil.isExpired(refreshToken))
+            throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_EXPIRED);
 
+        // DB의 리프레시 토큰과 일치하는지 확인
         Long userId = jwtUtil.getUserId(refreshToken);
-        User findUser = userRepository.findByRefreshToken(refreshToken).orElseThrow(
-                () -> new UserHandler(ErrorStatus.NOT_VALID_TOKEN));
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        if (!Objects.equals(findUser.getId(), userId))
-            throw new UserHandler(ErrorStatus.NOT_VALID_TOKEN);
+        if (!Objects.equals(findUser.getRefreshToken(), refreshToken))
+            throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_MISMATCH);
 
+        // accessToken 재발급
         String newAccessToken = jwtUtil.createAccessToken(findUser.getId());
-        String newRefreshToken = jwtUtil.createRefreshToken(findUser.getId());
-        findUser.setRefreshToken(newRefreshToken);
+
+        return UserConverter.toRefreshTokenResultDTO(findUser, newAccessToken);
+    }
+
+    @Override
+    public UserResponseDTO.UserSignUpResultDTO createToken(Long userId) {
+
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        String accessToken = jwtUtil.createAccessToken(userId);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+        findUser.setRefreshToken(refreshToken);
         userRepository.save(findUser);
 
-        return UserConverter.toUserSignUpResultDTO(findUser, newAccessToken, newRefreshToken);
+        return UserConverter.toUserSignUpResultDTO(findUser, accessToken, refreshToken);
     }
 }
