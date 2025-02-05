@@ -29,8 +29,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     public void setErrorResponse(HttpStatus status, HttpServletRequest req,
                                  HttpServletResponse res, Throwable ex) throws IOException {
-        ApiResponse<Object> apiResponse =
-                ApiResponse.onFailure(HttpStatus.UNAUTHORIZED.name(), "COMMON401", ex.getMessage());
+        ApiResponse<Object> apiResponse = ApiResponse.onFailure("COMMON401", HttpStatus.UNAUTHORIZED.name(), ex.getMessage());
         String responseBody = new ObjectMapper().writeValueAsString(apiResponse);
         res.setStatus(status.value());
         res.setContentType("application/json");

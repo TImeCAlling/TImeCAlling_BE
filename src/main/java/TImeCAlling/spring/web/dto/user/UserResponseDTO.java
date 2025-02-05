@@ -61,4 +61,14 @@ public class UserResponseDTO {
         String refreshToken;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class RefreshTokenResultDTO {
+
+        Long userId;
+        String accessToken;
+    }
+
 }

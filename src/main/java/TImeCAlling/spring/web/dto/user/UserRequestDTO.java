@@ -41,7 +41,7 @@ public class UserRequestDTO {
     }
 
     @Getter
-    public static class refreshTokenDTO {
+    public static class RefreshTokenDTO {
 
         String accessToken;
         String refreshToken;

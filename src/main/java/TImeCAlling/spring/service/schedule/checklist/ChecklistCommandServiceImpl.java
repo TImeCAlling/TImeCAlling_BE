@@ -133,7 +133,10 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
     private List<LocalDate> calculateRepeatDates(LocalDate start, LocalDate end, java.util.List<RepeatDay> repeatDays) {
         List<LocalDate> repeatDates = new ArrayList<>();
 
-        for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+        // 시작날은 무조건 포함하기.
+        repeatDates.add(start);
+
+        for (LocalDate date = start.plusDays(1); !date.isAfter(end); date = date.plusDays(1)) {
             DayOfWeek currentDay = date.getDayOfWeek();
             if (repeatDays.stream().anyMatch(repeatDay -> repeatDay.getDayOfWeek() == currentDay)) {
                 repeatDates.add(date);

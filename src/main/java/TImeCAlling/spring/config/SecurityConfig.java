@@ -1,6 +1,5 @@
 package TImeCAlling.spring.config;
 
-import TImeCAlling.spring.auth.Handler.JwtAccessDeniedHandler;
 import TImeCAlling.spring.auth.Handler.JwtAuthenticationEntryPoint;
 import TImeCAlling.spring.auth.filter.JwtAuthenticationFilter;
 import TImeCAlling.spring.auth.filter.JwtExceptionHandlerFilter;
@@ -18,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -50,8 +48,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .exceptionHandling((exception) -> exception
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(jwtAccessDeniedHandler))
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/users/kakao/**").permitAll()

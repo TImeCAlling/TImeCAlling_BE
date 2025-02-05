@@ -28,4 +28,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Optional<Schedule> findByShareId(String shareId);
 
     Integer countByShareId(String shareId);
+
+    Optional<Schedule> findByShareIdAndUser(String shareId, User user);
 }

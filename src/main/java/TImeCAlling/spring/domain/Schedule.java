@@ -4,6 +4,7 @@ import TImeCAlling.spring.domain.base.BaseEntity;
 import TImeCAlling.spring.domain.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,6 +60,7 @@ public class Schedule extends BaseEntity {
     
     @ElementCollection
     @CollectionTable(name = "category", joinColumns = @JoinColumn(name = "schedule_id"))
+    @BatchSize(size = 20)
     private List<Category> categories = new ArrayList<>();
     
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
