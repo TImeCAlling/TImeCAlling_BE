@@ -1,7 +1,5 @@
 package TImeCAlling.spring.service.user;
 
-import TImeCAlling.spring.apiPayload.code.status.ErrorStatus;
-import TImeCAlling.spring.apiPayload.exception.handler.UserHandler;
 import TImeCAlling.spring.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +19,12 @@ public class UserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String nickname) {
 
         return userRepository.findByNickname(nickname).orElseThrow(
-                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
     }
 
     public UserDetails loadUserByUserId(Long id) throws UsernameNotFoundException {
 
         return userRepository.findById(id).orElseThrow(
-                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다. userId: " + id));
     }
 }
