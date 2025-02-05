@@ -68,7 +68,8 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         return scheduleRepository.save(findSchedule);
     }
 
-    private List<Checklist> handleRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
+    @Transactional
+    protected List<Checklist> handleRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
 
         // 반복 일정이 아닌 경우 RecurringSchedule 제거
         if (!request.getIsRepeat()) {
@@ -117,18 +118,19 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     }
 
     @Override
+    @Transactional
     public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCommandDTO request) {
 
         Schedule shareSchedule = scheduleRepository.findById(scheduleId).get();
-
-        // 공유 일정 검증
-        validateShareSchedule(shareSchedule, request);
-
+        
         // 공유 id 생성
         String shareId = getShareId(shareSchedule);
         if (scheduleRepository.existsByShareIdAndUser(shareId, user)) {
             throw new ScheduleHandler(ErrorStatus.SCHEDULE_ALREADY_EXIST);
         }
+
+        // 공유 일정 검증
+        validateShareSchedule(shareSchedule, request);
 
         Schedule newSchedule = ScheduleConverter.toShareSchedule(user, request, shareId);
         return scheduleRepository.save(newSchedule);
