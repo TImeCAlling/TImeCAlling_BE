@@ -11,7 +11,6 @@ import TImeCAlling.spring.web.dto.schedule.ScheduleResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
             return Collections.emptyList();
         }
 
-        List<Schedule> users = scheduleRepository.findByShareId(schedule.getShareId())
+        List<Schedule> users = scheduleRepository.findAllByShareId(schedule.getShareId())
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_SHARE_ID_NOT_FOUND));
 
         return ScheduleConverter.toSharedScheduleUserDTO(users);

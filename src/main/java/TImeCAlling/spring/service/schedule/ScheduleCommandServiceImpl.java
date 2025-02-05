@@ -50,8 +50,9 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                     !findSchedule.getLatitude().equals(request.getLatitude()) ||
                     !findSchedule.getIsRepeat().equals(request.getIsRepeat()) ||
                     !findSchedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
-                    !findSchedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {}
+                    !findSchedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {
                 throw new ScheduleHandler(ErrorStatus.SCHEDULE_MISMATCH);
+                }
         }
 
         List<Category> categories = request.getCategories().stream()
@@ -128,9 +129,14 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     public Schedule deleteSchedule(Long scheduleId, User user) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
         scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+        String shareId = schedule.getShareId();
         scheduleRepository.delete(schedule);
         if (scheduleRepository.existsById(scheduleId)) {
             throw new ScheduleHandler(ErrorStatus.SCHEDULE_DELETE_FAIL);
+        }
+        if (scheduleRepository.countByShareId(shareId) == 1) {
+            Schedule findSchedule = scheduleRepository.findByShareId(shareId).get();
+            findSchedule.setShareId(null);
         }
         return schedule;
     }
