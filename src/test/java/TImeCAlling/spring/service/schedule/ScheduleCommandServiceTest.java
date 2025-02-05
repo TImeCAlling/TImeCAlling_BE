@@ -40,8 +40,8 @@ class ScheduleCommandServiceTest {
         List<ScheduleRequestDTO.CategoryDTO> categoryDTOS = new ArrayList<>();
         categoryDTOS.add(category1);
         categoryDTOS.add(category2);
-        ScheduleRequestDTO.SchedulePatchDTO request = new ScheduleRequestDTO.SchedulePatchDTO(
-                "테스트", "테스트용 입니다 ~", LocalTime.of(5,35,39,698), LocalDate.of(2025,1,19), "test", "111.111", "111.111", 30,
+        ScheduleRequestDTO.ScheduleCommandDTO request = new ScheduleRequestDTO.ScheduleCommandDTO(
+                "테스트", "테스트용 입니다 ~", LocalDate.of(2025,1,19), LocalTime.of(5,35,39,698), "test", "111.111", "111.111", 30,
                 "TIGHT", true, repeatDays, LocalDate.of(2025,1,19), LocalDate.of(2025,1,19), categoryDTOS);
 
         // when
