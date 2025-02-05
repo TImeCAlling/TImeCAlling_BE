@@ -19,22 +19,16 @@ public class SwaggerConfig {
                 .description("TImeCAlling API 명세서")
                 .version("1.0.0");
 
-        String accessTokenSchemeName = "accessToken";
-        String refreshTokenSchemeName = "refreshToken";
+        String jwtSchemeName = "Authorization";
 
         // API 요청헤더에 인증정보 포함
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList(accessTokenSchemeName);
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
 
         // SecuritySchemes 등록
         Components components = new Components()
-                .addSecuritySchemes(accessTokenSchemeName, new SecurityScheme()
-                        .name("accessToken")
+                .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
+                        .name(jwtSchemeName)
                         .type(SecurityScheme.Type.HTTP) // HTTP 방식
-                        .scheme("bearer")
-                        .bearerFormat("JWT"))
-                .addSecuritySchemes(refreshTokenSchemeName, new SecurityScheme()
-                        .name("refreshToken")
-                        .type(SecurityScheme.Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT"));
         
