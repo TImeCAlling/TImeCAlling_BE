@@ -20,18 +20,32 @@ public class UserController {
     
     private final UserCommandService userCommandService;
 
-    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
-                                                                       @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
+    @PostMapping(value = "/kakao/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
+                                                                         @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
 
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(profileImage, request);
         return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping("/kakao/login")
+    @Operation(summary = "카카오 로그인", description = "카카오 액세스 토큰을 입력하세요.")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserLoginDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoLogin(request);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping
+    @Operation(summary = "로그아웃")
+    public ApiResponse<UserResponseDTO.UserIdDTO> logout(@AuthenticationPrincipal User user) {
+        return null;
     }
     
     @DeleteMapping()
     @Operation(summary = "회원 탈퇴")
-    public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@AuthenticationPrincipal User user) {
+    public ApiResponse<UserResponseDTO.UserIdDTO> deleteUser(@AuthenticationPrincipal User user) {
 
         return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
     }
@@ -52,28 +66,20 @@ public class UserController {
         return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
     }
 
-    @PostMapping(value = "/kakao/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
-                                                                         @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
-
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(profileImage, request);
-        return ApiResponse.onSuccess(response);
-    }
-
-    @PostMapping("/kakao/login")
-    @Operation(summary = "카카오 로그인", description = "카카오 액세스 토큰을 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoLogin (@RequestBody @Valid UserRequestDTO.UserLoginDTO request) {
-
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoLogin(request);
-        return ApiResponse.onSuccess(response);
-    }
-
     @PostMapping("/token/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "만료된 accessToken과 해당 회원의 refreshToken을 입력하세요.")
     public ApiResponse<UserResponseDTO.RefreshTokenResultDTO> refreshToken(@RequestBody UserRequestDTO.RefreshTokenDTO request) {
 
         UserResponseDTO.RefreshTokenResultDTO response = userCommandService.refreshToken(request);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
+                                                                       @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
 

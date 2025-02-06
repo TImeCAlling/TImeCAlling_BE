@@ -65,7 +65,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     @Override
-    public UserResponseDTO.UserDeleteDTO deleteUser(Long id) {
+    public UserResponseDTO.UserIdDTO deleteUser(Long id) {
         
         User findUser = getFindUser(id);
 
@@ -74,7 +74,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         userRepository.delete(findUser);
         
-        return UserResponseDTO.UserDeleteDTO.builder()
+        return UserResponseDTO.UserIdDTO.builder()
                 .userId(findUser.getId())
                 .build();
     }

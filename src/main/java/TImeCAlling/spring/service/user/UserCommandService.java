@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserCommandService {
     
     UserResponseDTO.UserSignUpResultDTO createUser(MultipartFile profileImage, UserRequestDTO.UserCreateDTO userCreateDTO);
-    UserResponseDTO.UserDeleteDTO deleteUser(Long id);
+    UserResponseDTO.UserIdDTO deleteUser(Long id);
     UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO);
     UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
     UserResponseDTO.UserSignUpResultDTO kakaoSignUp(MultipartFile profileImage, UserRequestDTO.UserSignUpDTO request);
