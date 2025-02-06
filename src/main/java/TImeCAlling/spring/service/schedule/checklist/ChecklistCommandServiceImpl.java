@@ -7,7 +7,6 @@ import TImeCAlling.spring.domain.RecurringSchedule;
 import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.*;
-import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.domain.enums.RepeatDay;
 import TImeCAlling.spring.repository.schedule.ChecklistRepository;
 import TImeCAlling.spring.repository.schedule.RecurringScheduleRepository;
@@ -33,7 +32,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
     private final UserQueryService userQueryService;
 
     @Override
-    public void createChecklists(Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request) {
+    public void createChecklists(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
 
         List<Checklist> checklists = new ArrayList<>();
 
@@ -81,7 +80,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
     }
 
     @Override
-    public List<Checklist> patchChecklists(Schedule schedule, ScheduleRequestDTO.SchedulePatchDTO request) {
+    public List<Checklist> patchChecklists(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
         checklistRepository.deleteAllByScheduleId(schedule.getId());
 
         List<Checklist> checklists = new ArrayList<>();

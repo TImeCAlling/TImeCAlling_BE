@@ -23,7 +23,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     boolean existsByShareIdAndUser(String shareId, User user);
 
-    Optional<List<Schedule>> findByShareId(String shareId);
+    Optional<List<Schedule>> findAllByShareId(String shareId);
+
+    Optional<Schedule> findByShareId(String shareId);
+
+    Integer countByShareId(String shareId);
 
     Optional<Schedule> findByShareIdAndUser(String shareId, User user);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class RecurringScheduleConverter {
     
-    public static RecurringSchedule toRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request) {
+    public static RecurringSchedule toRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
         
         List<RepeatDay> repeatDays = request.getRepeatDays().stream()
                 .map(RepeatDay::valueOf)
