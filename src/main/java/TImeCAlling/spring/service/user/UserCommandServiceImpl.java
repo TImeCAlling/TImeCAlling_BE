@@ -274,4 +274,13 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         return UserConverter.toUserSignUpResultDTO(findUser, accessToken, refreshToken);
     }
+
+    @Override
+    public User logout(User user) {
+
+        // DB에 저장된 refreshToken 삭제
+        user.setRefreshToken(null);
+
+        return userRepository.save(user);
+    }
 }

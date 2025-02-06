@@ -1,5 +1,6 @@
 package TImeCAlling.spring.service.user;
 
+import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
 import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,4 +16,5 @@ public interface UserCommandService {
     UserResponseDTO.RefreshTokenResultDTO refreshToken(UserRequestDTO.RefreshTokenDTO request);
     UserResponseDTO.UserSignUpResultDTO createToken(Long userId);
     String getAccessToken(String code);
+    User logout(User user);
 }

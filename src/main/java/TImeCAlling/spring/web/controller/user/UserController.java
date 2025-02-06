@@ -1,6 +1,7 @@
 package TImeCAlling.spring.web.controller.user;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
+import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
@@ -37,10 +38,12 @@ public class UserController {
         return ApiResponse.onSuccess(response);
     }
 
-    @PostMapping
-    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃할 유저의 accessToken을 헤더로 넘겨주세요.")
     public ApiResponse<UserResponseDTO.UserIdDTO> logout(@AuthenticationPrincipal User user) {
-        return null;
+
+        User loggedOutUser = userCommandService.logout(user);
+        return ApiResponse.onSuccess(UserConverter.toUserIdDTO(loggedOutUser));
     }
     
     @DeleteMapping()
