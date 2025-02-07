@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "로그아웃할 유저의 accessToken을 헤더로 넘겨주세요.")
+    @Operation(summary = "로그아웃", description = "헤더에 로그아웃할 유저의 accessToken을 입력하세요.")
     public ApiResponse<UserResponseDTO.UserIdDTO> logout(@AuthenticationPrincipal User user) {
 
         User loggedOutUser = userCommandService.logout(user);
@@ -50,7 +50,7 @@ public class UserController {
     @Operation(summary = "회원 탈퇴")
     public ApiResponse<UserResponseDTO.UserIdDTO> deleteUser(@AuthenticationPrincipal User user) {
 
-        return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
+        return ApiResponse.onSuccess(userCommandService.deleteUser(user));
     }
     
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
