@@ -252,6 +252,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
+        if (findUser.getRefreshToken() == null)
+            throw new UserHandler(ErrorStatus.LOGGED_OUT_USER);
         if (!Objects.equals(findUser.getRefreshToken(), refreshToken))
             throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_MISMATCH);
 
