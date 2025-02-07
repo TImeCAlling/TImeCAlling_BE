@@ -82,14 +82,12 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     @Override
-    public UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
-        
-        User findUser = getFindUser(id);
+    public UserResponseDTO.UserUpdateDTO updateUser(User user, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
 
         FreeTime freeTime = updateDTO.getFreeTime() != null ? FreeTime.valueOf(updateDTO.getFreeTime()) : null;
 
         if (profileImage != null) {
-            ProfileImage image = findUser.getProfileImage();
+            ProfileImage image = user.getProfileImage();
             s3Service.deleteImageFromS3(image.getFileUrl());
 
             String newImageUrl = s3Service.uploadFile(profileImage);
@@ -97,21 +95,9 @@ public class UserCommandServiceImpl implements UserCommandService {
             image.update(newImageUrl, fileName);
         }
 
-        findUser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
+        user.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
 
-        return UserConverter.toUserUpdateDTO(userRepository.save(findUser));
-    }
-    
-    @Override
-    public UserResponseDTO.UserMyPageDTO findMyUsers(Long id) {
-        
-        User findUser = getFindUser(id);
-
-        return UserConverter.toUserMyPageDTO(findUser);
-    }
-    
-    private User getFindUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        return UserConverter.toUserUpdateDTO(userRepository.save(user));
     }
 
     @Override

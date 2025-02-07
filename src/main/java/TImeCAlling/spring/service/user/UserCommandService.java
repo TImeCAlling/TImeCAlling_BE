@@ -9,8 +9,7 @@ public interface UserCommandService {
     
     UserResponseDTO.UserSignUpResultDTO createUser(MultipartFile profileImage, UserRequestDTO.UserCreateDTO userCreateDTO);
     UserResponseDTO.UserIdDTO deleteUser(User user);
-    UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO);
-    UserResponseDTO.UserMyPageDTO findMyUsers(Long id);
+    UserResponseDTO.UserUpdateDTO updateUser(User user, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO);
     UserResponseDTO.UserSignUpResultDTO kakaoSignUp(MultipartFile profileImage, UserRequestDTO.UserSignUpDTO request);
     UserResponseDTO.UserSignUpResultDTO kakaoLogin(UserRequestDTO.UserLoginDTO request);
     UserResponseDTO.RefreshTokenResultDTO refreshToken(UserRequestDTO.RefreshTokenDTO request);

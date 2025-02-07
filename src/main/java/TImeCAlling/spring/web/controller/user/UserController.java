@@ -59,14 +59,14 @@ public class UserController {
                                                                  @RequestPart(required = false) MultipartFile profileImage,
                                                                  @RequestPart UserRequestDTO.UserUpdateDTO userUpdateDTO) {
         
-        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), profileImage, userUpdateDTO));
+        return ApiResponse.onSuccess(userCommandService.updateUser(user, profileImage, userUpdateDTO));
     }
     
     @GetMapping()
     @Operation(summary = "회원 조회", description = "로그인한 회원의 정보를 조회합니다.")
     public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@AuthenticationPrincipal User user) {
         
-        return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
+        return ApiResponse.onSuccess(UserConverter.toUserMyPageDTO(user));
     }
 
     @PostMapping("/token/refresh")
