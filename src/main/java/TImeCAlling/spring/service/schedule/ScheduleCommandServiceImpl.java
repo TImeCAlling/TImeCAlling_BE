@@ -26,20 +26,21 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     @Override
     @Transactional
-    public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCreateDTO request) {
-        Schedule newSchedule = ScheduleConverter.toSchedule(user, request);
-        Schedule savedSchedule = scheduleRepository.save(newSchedule);
+    public Schedule createSchedule(User user, ScheduleRequestDTO.ScheduleCommandDTO request) {
 
-        return savedSchedule;
+        Schedule newSchedule = ScheduleConverter.toSchedule(user, request);
+        return scheduleRepository.save(newSchedule);
     }
     
     @Override
     @Transactional
-    public Schedule patchSchedule(Long scheduleId, User user, ScheduleRequestDTO.SchedulePatchDTO request) {
-        Schedule findSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
-        scheduleRepository.findByIdAndUser(scheduleId, user)
+    public Schedule patchSchedule(Long scheduleId, User user, ScheduleRequestDTO.ScheduleCommandDTO request) {
+
+        Schedule findSchedule = scheduleRepository.findByIdAndUser(scheduleId, user)
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+
+        // 공유 일정 검증
+        validateShareSchedule(findSchedule, request);
 
         List<Category> categories = request.getCategories().stream()
                 .map(categoryDTO -> Category.builder()
@@ -47,67 +48,56 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                         .color(categoryDTO.getColor())
                         .build())
                 .collect(Collectors.toList());
-        
-        List<Checklist> checklists = findSchedule.getChecklists();
-        
-        if (request.getIsRepeat()) {
-            List<RepeatDay> repeatDays = request.getRepeatDays().stream()
-                    .map(RepeatDay::valueOf)
-                    .collect(Collectors.toList());
-            
-            // 기존에 RecurringSchedule이 없는 경우 새로 생성
-            if (findSchedule.getRecurringSchedule() == null) {
-                RecurringSchedule newRecurringSchedule = RecurringSchedule.builder()
-                        .start(request.getStart())
-                        .end(request.getEnd())
-                        .repeatDays(repeatDays)
-                        .schedule(findSchedule)
-                        .build();
-                
-                findSchedule.setRecurringSchedule(newRecurringSchedule);
-            } else {
-                // 기존 RecurringSchedule 업데이트
-                if (isChanged(request, findSchedule, repeatDays)) {
-                    findSchedule.getRecurringSchedule().update(request.getStart(), request.getEnd(), repeatDays);
-                    checklists = checklistService.patchChecklists(findSchedule, request);
-                }
-            }
-            
-            if (isChanged(request, findSchedule, repeatDays)) {
-                findSchedule.getRecurringSchedule().update(request.getStart(), request.getEnd(), repeatDays);
-                checklists = checklistService.patchChecklists(findSchedule, request);
-            }
-            // 일정 업데이트
-            findSchedule.updateSchedule(request.getName(),
-                    request.getBody(),
-                    request.getMeetTime(),
-                    request.getPlace(),
-                    request.getLongitude(),
-                    request.getLatitude(),
-                    request.getMoveTime(),
-                    FreeTime.valueOf(request.getFreeTime()),
-                    request.getIsRepeat(),
-                    categories,
-                    checklists);
-        } else {
-            // 반복 일정이 아닌 경우 RecurringSchedule 제거
-            findSchedule.setRecurringSchedule(null);
-            checklists = checklistService.patchChecklists(findSchedule, request);
-            
-            findSchedule.updateSchedule(request.getName(),
-                    request.getBody(),
-                    request.getMeetTime(),
-                    request.getPlace(),
-                    request.getLongitude(),
-                    request.getLatitude(),
-                    request.getMoveTime(),
-                    FreeTime.valueOf(request.getFreeTime()),
-                    request.getIsRepeat(),
-                    categories,
-                    checklists);
-        }
-        
+
+        List<Checklist> checklists = handleRecurringSchedule(findSchedule, request);
+
+        // 일정 업데이트
+        findSchedule.updateSchedule(
+                request.getName(),
+                request.getBody(),
+                request.getMeetTime(),
+                request.getPlace(),
+                request.getLongitude(),
+                request.getLatitude(),
+                request.getMoveTime(),
+                FreeTime.valueOf(request.getFreeTime()),
+                request.getIsRepeat(),
+                categories,
+                checklists
+        );
         return scheduleRepository.save(findSchedule);
+    }
+
+    @Transactional
+    protected List<Checklist> handleRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
+
+        // 반복 일정이 아닌 경우 RecurringSchedule 제거
+        if (!request.getIsRepeat()) {
+            schedule.setRecurringSchedule(null);
+            return checklistService.patchChecklists(schedule, request);
+        }
+
+        List<RepeatDay> repeatDays = request.getRepeatDays().stream()
+                .map(RepeatDay::valueOf)
+                .collect(Collectors.toList());
+
+        // 기존에 RecurringSchedule이 없는 경우 새로 생성
+        if (schedule.getRecurringSchedule() == null) {
+            RecurringSchedule newRecurringSchedule = RecurringSchedule.builder()
+                    .start(request.getStart())
+                    .end(request.getEnd())
+                    .repeatDays(repeatDays)
+                    .schedule(schedule)
+                    .build();
+
+            schedule.setRecurringSchedule(newRecurringSchedule);
+        } else {
+            // 기존 RecurringSchedule 업데이트
+            if (isChanged(request, schedule, repeatDays)) {
+                schedule.getRecurringSchedule().update(request.getStart(), request.getEnd(), repeatDays);
+            }
+        }
+        return checklistService.patchChecklists(schedule, request);
     }
     
     @Override
@@ -115,40 +105,60 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     public Schedule deleteSchedule(Long scheduleId, User user) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
         scheduleRepository.findByIdAndUser(scheduleId, user).orElseThrow(() -> new ScheduleHandler(ErrorStatus._BAD_REQUEST));
+        String shareId = schedule.getShareId();
         scheduleRepository.delete(schedule);
         if (scheduleRepository.existsById(scheduleId)) {
             throw new ScheduleHandler(ErrorStatus.SCHEDULE_DELETE_FAIL);
+        }
+        if (scheduleRepository.countByShareId(shareId) == 1) {
+            Schedule findSchedule = scheduleRepository.findByShareId(shareId).get();
+            findSchedule.setShareId(null);
         }
         return schedule;
     }
 
     @Override
-    public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCreateDTO request) {
+    @Transactional
+    public Schedule createShareSchedule(User user, Long scheduleId, ScheduleRequestDTO.ScheduleCommandDTO request) {
 
         Schedule shareSchedule = scheduleRepository.findById(scheduleId).get();
-
-        // 공유 일정과 기본 정보 일치하는지 확인
-        if (!shareSchedule.getName().equals(request.getName()))
-            throw new ScheduleHandler(ErrorStatus.SCHEDULE_NAME_MISMATCH);
-        else if (!shareSchedule.getChecklists().get(0).getDate().equals(request.getMeetDate()))
-            throw new ScheduleHandler(ErrorStatus.SCHEDULE_DATE_MISMATCH);
-        else if (!shareSchedule.getMeetTime().equals(request.getMeetTime()))
-            throw new ScheduleHandler(ErrorStatus.SCHEDULE_TIME_MISMATCH);
-        else if (!shareSchedule.getPlace().equals(request.getPlace()))
-            throw new ScheduleHandler(ErrorStatus.SCHEDULE_PLACE_MISMATCH);
-        else if (!shareSchedule.getLongitude().equals(request.getLongitude()))
-            throw new ScheduleHandler(ErrorStatus.SCHEDULE_LONGITUDE_MISMATCH);
-        else if (!shareSchedule.getLatitude().equals(request.getLatitude()))
-            throw new ScheduleHandler(ErrorStatus.SCHEDULE_LATITUDE_MISMATCH);
-
+        
         // 공유 id 생성
         String shareId = getShareId(shareSchedule);
         if (scheduleRepository.existsByShareIdAndUser(shareId, user)) {
             throw new ScheduleHandler(ErrorStatus.SCHEDULE_ALREADY_EXIST);
         }
 
+        // 공유 일정 검증
+        validateShareSchedule(shareSchedule, request);
+
         Schedule newSchedule = ScheduleConverter.toShareSchedule(user, request, shareId);
         return scheduleRepository.save(newSchedule);
+    }
+
+    private void validateShareSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
+
+        if (schedule.getShareId() == null)
+            return;
+
+        // 반복 요일 순서 상관없이 검증
+        Set<RepeatDay> repeatDays = new HashSet<>(schedule.getRecurringSchedule().getRepeatDays());
+        Set<RepeatDay> requestRepeatDays = request.getRepeatDays().stream()
+                .map(RepeatDay::valueOf)
+                .collect(Collectors.toSet());
+
+        if (!schedule.getName().equals(request.getName()) ||
+                !schedule.getChecklists().get(0).getDate().equals(request.getMeetDate()) ||
+                !schedule.getMeetTime().equals(request.getMeetTime()) ||
+                !schedule.getPlace().equals(request.getPlace()) ||
+                !schedule.getLongitude().equals(request.getLongitude()) ||
+                !schedule.getLatitude().equals(request.getLatitude()) ||
+                !schedule.getIsRepeat().equals(request.getIsRepeat()) ||
+                !repeatDays.equals(requestRepeatDays) ||
+                !schedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
+                !schedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {
+            throw new ScheduleHandler(ErrorStatus.SCHEDULE_MISMATCH);
+        }
     }
 
     private String getShareId(Schedule schedule) {
@@ -172,7 +182,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         return Objects.equals(new HashSet<>(list1), new HashSet<>(list2));
     }
     
-    private static boolean isChanged(ScheduleRequestDTO.SchedulePatchDTO request, Schedule findSchedule, List<RepeatDay> repeatDays) {
+    private static boolean isChanged(ScheduleRequestDTO.ScheduleCommandDTO request, Schedule findSchedule, List<RepeatDay> repeatDays) {
         return findSchedule.getRecurringSchedule().getStart() != request.getStart() || findSchedule.getRecurringSchedule().getEnd() != request.getEnd() || !areListsEqual(findSchedule.getRecurringSchedule().getRepeatDays(), repeatDays);
     }
 }

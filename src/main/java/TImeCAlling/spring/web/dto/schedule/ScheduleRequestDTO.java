@@ -31,58 +31,10 @@ public class ScheduleRequestDTO {
     }
 
     @Getter
-    public static class ScheduleCreateDTO {
+    @AllArgsConstructor
+    public static class ScheduleCommandDTO {
 
         @NotBlank
-        @Size(max = 10)
-        String name;
-
-        @Size(max = 20)
-        String body;
-
-        @NotNull
-        LocalDate meetDate;
-
-        @JsonFormat(pattern = "HH:mm")
-        @Schema(type = "string", example = "00:00")
-        @NotNull
-        LocalTime meetTime;
-
-        @NotNull
-        String place;
-
-        @NotNull
-        String longitude;
-
-        @NotNull
-        String latitude;
-
-        @NotNull
-        Integer moveTime;
-
-        @Schema(example = "TIGHT")
-        @NotNull
-        @ValidEnum(enumClass = FreeTime.class)
-        String freeTime;
-
-        @Schema(example = "[\"MONDAY\", \"TUESDAY\"]")
-        @ValidEnum(enumClass = RepeatDay.class)
-        List<String> repeatDays;
-
-        @NotNull
-        Boolean isRepeat;
-        
-        LocalDate start;
-        
-        LocalDate end;
-
-        List<CategoryDTO> categories;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public static class SchedulePatchDTO {
-        
         @Size(max = 10)
         String name;
         

@@ -24,31 +24,7 @@ public class RecurringScheduleServiceImpl implements RecurringScheduleService {
     private final ScheduleRepository scheduleRepository;
     
     @Override
-    public void createRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request) {
-        RecurringSchedule recurringSchedule = RecurringScheduleConverter.toRecurringSchedule(schedule, request);
-        recurringScheduleRepository.save(recurringSchedule);
-    }
-
-    @Override
-    public void createShareRecurringSchedule(Long scheduleId, Schedule schedule, ScheduleRequestDTO.ScheduleCreateDTO request) {
-
-        Schedule shareSchedule = scheduleRepository.findById(scheduleId).get();
-
-        Set<RepeatDay> shareRepeatDays = new HashSet<>(shareSchedule.getRecurringSchedule().getRepeatDays());
-        Set<RepeatDay> requestRepeatDays = request.getRepeatDays().stream()
-                .map(RepeatDay::valueOf)
-                .collect(Collectors.toSet());
-
-        if (!shareRepeatDays.equals(requestRepeatDays)) {
-            scheduleRepository.delete(schedule);
-            throw new ScheduleHandler(ErrorStatus.REPEAT_DAYS_MISMATCH);
-        } else if (!shareSchedule.getIsRepeat().equals(request.getIsRepeat()) ||
-                !shareSchedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
-                !shareSchedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {
-            scheduleRepository.delete(schedule);
-            throw new ScheduleHandler(ErrorStatus.RECURRING_MISMATCH);
-        }
-        
+    public void createRecurringSchedule(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request) {
         RecurringSchedule recurringSchedule = RecurringScheduleConverter.toRecurringSchedule(schedule, request);
         recurringScheduleRepository.save(recurringSchedule);
     }
