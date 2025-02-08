@@ -1,6 +1,7 @@
 package TImeCAlling.spring.web.controller.user;
 
 import TImeCAlling.spring.apiPayload.ApiResponse;
+import TImeCAlling.spring.converter.user.UserConverter;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.service.user.UserCommandService;
 import TImeCAlling.spring.web.dto.user.UserRequestDTO;
@@ -20,38 +21,6 @@ public class UserController {
     
     private final UserCommandService userCommandService;
 
-    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
-                                                                       @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
-
-        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
-        return ApiResponse.onSuccess(response);
-    }
-    
-    @DeleteMapping()
-    @Operation(summary = "회원 탈퇴")
-    public ApiResponse<UserResponseDTO.UserDeleteDTO> deleteUser(@AuthenticationPrincipal User user) {
-
-        return ApiResponse.onSuccess(userCommandService.deleteUser(user.getId()));
-    }
-    
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "회원정보 수정", description = "수정할 회원의 정보를 입력합니다.")
-    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
-                                                                 @RequestPart(required = false) MultipartFile profileImage,
-                                                                 @RequestPart UserRequestDTO.UserUpdateDTO userUpdateDTO) {
-        
-        return ApiResponse.onSuccess(userCommandService.updateUser(user.getId(), profileImage, userUpdateDTO));
-    }
-    
-    @GetMapping()
-    @Operation(summary = "회원 조회", description = "로그인한 회원의 정보를 조회합니다.")
-    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@AuthenticationPrincipal User user) {
-        
-        return ApiResponse.onSuccess(userCommandService.findMyUsers(user.getId()));
-    }
-
     @PostMapping(value = "/kakao/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
     public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
@@ -69,11 +38,51 @@ public class UserController {
         return ApiResponse.onSuccess(response);
     }
 
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "헤더에 로그아웃할 유저의 accessToken을 입력하세요.")
+    public ApiResponse<UserResponseDTO.UserIdDTO> logout(@AuthenticationPrincipal User user) {
+
+        User loggedOutUser = userCommandService.logout(user);
+        return ApiResponse.onSuccess(UserConverter.toUserIdDTO(loggedOutUser));
+    }
+    
+    @DeleteMapping()
+    @Operation(summary = "회원 탈퇴")
+    public ApiResponse<UserResponseDTO.UserIdDTO> deleteUser(@AuthenticationPrincipal User user) {
+
+        return ApiResponse.onSuccess(userCommandService.deleteUser(user));
+    }
+    
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "회원정보 수정", description = "수정할 회원의 정보를 입력합니다.")
+    public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
+                                                                 @RequestPart(required = false) MultipartFile profileImage,
+                                                                 @RequestPart UserRequestDTO.UserUpdateDTO userUpdateDTO) {
+        
+        return ApiResponse.onSuccess(userCommandService.updateUser(user, profileImage, userUpdateDTO));
+    }
+    
+    @GetMapping()
+    @Operation(summary = "회원 조회", description = "로그인한 회원의 정보를 조회합니다.")
+    public ApiResponse<UserResponseDTO.UserMyPageDTO> getUserMyPage(@AuthenticationPrincipal User user) {
+        
+        return ApiResponse.onSuccess(UserConverter.toUserMyPageDTO(user));
+    }
+
     @PostMapping("/token/refresh")
     @Operation(summary = "액세스 토큰 재발급", description = "만료된 accessToken과 해당 회원의 refreshToken을 입력하세요.")
     public ApiResponse<UserResponseDTO.RefreshTokenResultDTO> refreshToken(@RequestBody UserRequestDTO.RefreshTokenDTO request) {
 
         UserResponseDTO.RefreshTokenResultDTO response = userCommandService.refreshToken(request);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "(테스트용) 회원 생성", description = "회원 정보를 입력하여 새 회원을 생성합니다.")
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> createUser(@RequestPart MultipartFile profileImage,
+                                                                       @RequestPart @Valid UserRequestDTO.UserCreateDTO request) {
+
+        UserResponseDTO.UserSignUpResultDTO response = userCommandService.createUser(profileImage, request);
         return ApiResponse.onSuccess(response);
     }
 

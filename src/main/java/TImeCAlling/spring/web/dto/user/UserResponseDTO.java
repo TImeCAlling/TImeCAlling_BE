@@ -8,20 +8,11 @@ public class UserResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     @Getter
-    public static class UserCreateDTO{
+    public static class UserIdDTO {
 
         Long userId;
     }
-    
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
-    @Getter
-    public static class UserDeleteDTO {
-        
-        Long userId;
-    }
-    
+
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor

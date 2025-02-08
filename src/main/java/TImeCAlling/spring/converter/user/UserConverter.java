@@ -83,4 +83,10 @@ public class UserConverter {
                 .accessToken(accessToken)
                 .build();
     }
+
+    public static UserResponseDTO.UserIdDTO toUserIdDTO(User user) {
+        return UserResponseDTO.UserIdDTO.builder()
+                .userId(user.getId())
+                .build();
+    }
 }

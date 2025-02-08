@@ -20,11 +20,13 @@ import TImeCAlling.spring.web.dto.user.UserResponseDTO;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -44,6 +46,8 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final S3Service s3Service;
     private final JwtUtil jwtUtil;
     private final Gson gson;
+    @Value("${spring.kakao.admin-key}")
+    private String adminKey;
     
     @Override
     public UserResponseDTO.UserSignUpResultDTO createUser(MultipartFile profileImage, UserRequestDTO.UserCreateDTO userCreateDTO) {
@@ -65,29 +69,25 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     @Override
-    public UserResponseDTO.UserDeleteDTO deleteUser(Long id) {
-        
-        User findUser = getFindUser(id);
+    public UserResponseDTO.UserIdDTO deleteUser(User user) {
 
-        String imageUrl = findUser.getProfileImage().getFileUrl();
+        String imageUrl = user.getProfileImage().getFileUrl();
         s3Service.deleteImageFromS3(imageUrl);
 
-        userRepository.delete(findUser);
+        unlinkKakaoAccount(user.getSocialId());
+
+        userRepository.delete(user);
         
-        return UserResponseDTO.UserDeleteDTO.builder()
-                .userId(findUser.getId())
-                .build();
+        return UserConverter.toUserIdDTO(user);
     }
     
     @Override
-    public UserResponseDTO.UserUpdateDTO updateUser(Long id, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
-        
-        User findUser = getFindUser(id);
+    public UserResponseDTO.UserUpdateDTO updateUser(User user, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
 
         FreeTime freeTime = updateDTO.getFreeTime() != null ? FreeTime.valueOf(updateDTO.getFreeTime()) : null;
 
         if (profileImage != null) {
-            ProfileImage image = findUser.getProfileImage();
+            ProfileImage image = user.getProfileImage();
             s3Service.deleteImageFromS3(image.getFileUrl());
 
             String newImageUrl = s3Service.uploadFile(profileImage);
@@ -95,21 +95,9 @@ public class UserCommandServiceImpl implements UserCommandService {
             image.update(newImageUrl, fileName);
         }
 
-        findUser.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
+        user.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
 
-        return UserConverter.toUserUpdateDTO(userRepository.save(findUser));
-    }
-    
-    @Override
-    public UserResponseDTO.UserMyPageDTO findMyUsers(Long id) {
-        
-        User findUser = getFindUser(id);
-
-        return UserConverter.toUserMyPageDTO(findUser);
-    }
-    
-    private User getFindUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        return UserConverter.toUserUpdateDTO(userRepository.save(user));
     }
 
     @Override
@@ -155,52 +143,6 @@ public class UserCommandServiceImpl implements UserCommandService {
         userRepository.save(findUser);
 
         return UserConverter.toUserSignUpResultDTO(findUser, accessToken, refreshToken);
-    }
-
-    private UserAuthDTO.KaKaoUserInfoDTO getUserInfo(String accessToken) {
-
-        String getURL = "https://kapi.kakao.com/v2/user/me";
-        StringBuilder result;
-
-        try {
-            URL url = new URL(getURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-
-            int responseCode = conn.getResponseCode();  // 응답 코드
-            System.out.println("responseCode : " + responseCode);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            result = new StringBuilder();
-
-            while ((line = br.readLine()) != null) {
-                result.append(line);
-            }
-            System.out.println("response body : " + result);
-
-        } catch (IOException exception) {
-            throw new TokenHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
-        }
-
-        return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
-    }
-
-    private String getFileName(String imageUrl) {
-
-        String fileName;
-
-        try {
-            URL url = new URL(imageUrl);
-            String path = url.getPath();
-            fileName = path.substring(path.lastIndexOf("/") + 1);
-
-        } catch (MalformedURLException e) {
-            throw new S3Handler(ErrorStatus.INVALID_URL);
-        }
-
-        return fileName;
     }
 
     @Override
@@ -252,6 +194,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
+        if (findUser.getRefreshToken() == null)
+            throw new UserHandler(ErrorStatus.LOGGED_OUT_USER);
         if (!Objects.equals(findUser.getRefreshToken(), refreshToken))
             throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_MISMATCH);
 
@@ -273,5 +217,89 @@ public class UserCommandServiceImpl implements UserCommandService {
         userRepository.save(findUser);
 
         return UserConverter.toUserSignUpResultDTO(findUser, accessToken, refreshToken);
+    }
+
+    @Override
+    public User logout(User user) {
+
+        // DB에 저장된 refreshToken 삭제
+        user.setRefreshToken(null);
+
+        return userRepository.save(user);
+    }
+
+    private UserAuthDTO.KaKaoUserInfoDTO getUserInfo(String accessToken) {
+
+        String getURL = "https://kapi.kakao.com/v2/user/me";
+        StringBuilder result;
+
+        try {
+            URL url = new URL(getURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            int responseCode = conn.getResponseCode();  // 응답 코드
+            System.out.println("responseCode : " + responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            result = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+            System.out.println("response body : " + result);
+
+        } catch (IOException exception) {
+            throw new TokenHandler(ErrorStatus.INVALID_KAKAO_TOKEN);
+        }
+
+        return gson.fromJson(result.toString(), UserAuthDTO.KaKaoUserInfoDTO.class);
+    }
+
+    private String getFileName(String imageUrl) {
+
+        String fileName;
+
+        try {
+            URL url = new URL(imageUrl);
+            String path = url.getPath();
+            fileName = path.substring(path.lastIndexOf("/") + 1);
+
+        } catch (MalformedURLException e) {
+            throw new S3Handler(ErrorStatus.INVALID_URL);
+        }
+
+        return fileName;
+    }
+
+    private void unlinkKakaoAccount(Long socialId) {
+        String postURL = "https://kapi.kakao.com/v1/user/unlink";
+        StringBuilder result;
+        try {
+            URL url = new URL(postURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "KakaoAK " + adminKey);
+            conn.setDoOutput(true);
+            String postParams = "target_id_type=user_id&target_id=" + socialId;
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                wr.writeBytes(postParams);
+                wr.flush();
+            }
+            int responseCode = conn.getResponseCode();  // 응답 코드
+            System.out.println("responseCode : " + responseCode);
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            result = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+            br.close();
+            System.out.println("response body : " + result);
+        } catch (IOException ex) {
+            throw new RuntimeException("카카오 계정의 연결을 끊는데 실패하였습니다.", ex);
+        }
     }
 }
