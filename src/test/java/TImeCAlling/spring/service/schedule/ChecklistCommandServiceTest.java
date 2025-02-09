@@ -29,7 +29,7 @@ class ChecklistCommandServiceTest {
     public void 체크리스트_값_추가() {
         /** id가 3번 일정 1/20일에 대한 체크리스트 값 추가해보기 **/
         // given
-        ChecklistRequestDTO.UpdateDTO request = ChecklistRequestDTO.UpdateDTO.builder()
+        ChecklistRequestDTO.ChecklistUpdateDTO request = ChecklistRequestDTO.ChecklistUpdateDTO.builder()
                 .isSuccess(true)
                 .isFit(true)
                 .spare("10분 이상")

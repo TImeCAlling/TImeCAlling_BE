@@ -13,7 +13,7 @@ public interface ChecklistCommandService {
 
     List<Checklist> patchChecklists(Schedule schedule, ScheduleRequestDTO.ScheduleCommandDTO request);
 
-    Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.UpdateDTO request);
+    Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.ChecklistUpdateDTO request);
     
     void deleteExpiredChecklists();
 }

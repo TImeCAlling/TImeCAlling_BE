@@ -148,7 +148,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
 
     @Override
     @Transactional
-    public Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.UpdateDTO request) {
+    public Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.ChecklistUpdateDTO request) {
         Checklist checklist = checklistRepository.findByScheduleIdAndDate(scheduleId, request.getDate());
         checklist.updateChecklist(request.getIsSuccess(), Spare.fromDescription(request.getSpare()), Late.fromDescription(request.getLate()), Reason.fromDescription(request.getReason()), External.fromDescription(request.getExternal()), request.getIsFit());
 
