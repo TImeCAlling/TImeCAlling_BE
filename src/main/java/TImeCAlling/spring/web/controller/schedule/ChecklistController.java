@@ -18,7 +18,7 @@ public class ChecklistController {
 
     @PatchMapping("/api/checklist/{schedule_id}")
     @Operation(summary = "체크리스트 작성 API", description = "체크리스트 각 항목에 enum으로 정해진 값만 넣어서 주세요 !!")
-    public ApiResponse<ChecklistResponseDTO.UpdateResultDTO> update(@PathVariable("schedule_id") Long scheduleId, @AuthenticationPrincipal User user, @RequestBody ChecklistRequestDTO.UpdateDTO request) {
+    public ApiResponse<ChecklistResponseDTO.UpdateResultDTO> update(@PathVariable("schedule_id") Long scheduleId, @AuthenticationPrincipal User user, @RequestBody ChecklistRequestDTO.ChecklistUpdateDTO request) {
         Long resultId = checklistCommandService.updateChecklist(scheduleId, user.getId(), request);
 
         return ApiResponse.onSuccess(ChecklistConverter.toUpdateResultDTO(resultId));
