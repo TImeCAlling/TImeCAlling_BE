@@ -95,7 +95,7 @@ public class ScheduleConverter {
                     .map(Enum::toString)
                     .toList();
             return ScheduleResponseDTO.GetShareScheduleDTO.builder()
-                    .nickname(user.getNickname())
+                    .nickname(schedule.getUser().getNickname())
                     .name(schedule.getName())
                     .meetDate(schedule.getChecklists().get(0).getDate())
                     .meetTime(schedule.getMeetTime())
@@ -109,7 +109,7 @@ public class ScheduleConverter {
                     .build();
         } else {
             return ScheduleResponseDTO.GetShareScheduleDTO.builder()
-                    .nickname(user.getNickname())
+                    .nickname(schedule.getUser().getNickname())
                     .name(schedule.getName())
                     .meetDate(schedule.getChecklists().get(0).getDate())
                     .meetTime(schedule.getMeetTime())
