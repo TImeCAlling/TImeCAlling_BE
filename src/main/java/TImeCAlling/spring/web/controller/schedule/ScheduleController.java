@@ -86,7 +86,7 @@ public class ScheduleController {
     public ApiResponse<ScheduleResponseDTO.GetShareScheduleDTO> getShareSchedule(@AuthenticationPrincipal User user, @PathVariable @ExistSchedule Long scheduleId) {
 
         Schedule schedule = scheduleQueryService.getShareSchedule(scheduleId, user);
-        return ApiResponse.onSuccess(ScheduleConverter.toGetShareScheduleDTO(user, schedule, schedule.getRecurringSchedule()));
+        return ApiResponse.onSuccess(ScheduleConverter.toGetShareScheduleDTO(schedule, schedule.getRecurringSchedule()));
     }
 
     @Operation(summary = "공유 일정 추가", description = "공유 일정을 추가합니다. meetTime에 HH:mm 형식만 입력 가능합니다!")

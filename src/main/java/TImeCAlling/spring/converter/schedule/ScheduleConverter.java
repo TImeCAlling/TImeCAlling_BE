@@ -88,40 +88,27 @@ public class ScheduleConverter {
                 .build();
     }
 
-    public static ScheduleResponseDTO.GetShareScheduleDTO toGetShareScheduleDTO(User user, Schedule schedule, RecurringSchedule recurringSchedule) {
+    public static ScheduleResponseDTO.GetShareScheduleDTO toGetShareScheduleDTO(Schedule schedule, RecurringSchedule recurringSchedule) {
 
-        if (schedule.getIsRepeat()) {
-            List<String> repeatDays = recurringSchedule.getRepeatDays().stream()
-                    .map(Enum::toString)
-                    .toList();
-            return ScheduleResponseDTO.GetShareScheduleDTO.builder()
-                    .nickname(user.getNickname())
-                    .name(schedule.getName())
-                    .meetDate(schedule.getChecklists().get(0).getDate())
-                    .meetTime(schedule.getMeetTime())
-                    .place(schedule.getPlace())
-                    .longitude(schedule.getLongitude())
-                    .latitude(schedule.getLatitude())
-                    .repeatDays(repeatDays)
-                    .isRepeat(schedule.getIsRepeat())
-                    .start(recurringSchedule.getStart())
-                    .end(recurringSchedule.getEnd())
-                    .build();
-        } else {
-            return ScheduleResponseDTO.GetShareScheduleDTO.builder()
-                    .nickname(user.getNickname())
-                    .name(schedule.getName())
-                    .meetDate(schedule.getChecklists().get(0).getDate())
-                    .meetTime(schedule.getMeetTime())
-                    .place(schedule.getPlace())
-                    .longitude(schedule.getLongitude())
-                    .latitude(schedule.getLatitude())
-                    .repeatDays(null)
-                    .isRepeat(schedule.getIsRepeat())
-                    .start(null)
-                    .end(null)
-                    .build();
-        }
+        List<String> repeatDays = schedule.getIsRepeat()
+                ? recurringSchedule.getRepeatDays().stream()
+                .map(Enum::toString)
+                .toList()
+                : null;
+
+        return ScheduleResponseDTO.GetShareScheduleDTO.builder()
+                .nickname(schedule.getUser().getNickname())
+                .name(schedule.getName())
+                .meetDate(schedule.getChecklists().get(0).getDate())
+                .meetTime(schedule.getMeetTime())
+                .place(schedule.getPlace())
+                .longitude(schedule.getLongitude())
+                .latitude(schedule.getLatitude())
+                .repeatDays(repeatDays)
+                .isRepeat(schedule.getIsRepeat())
+                .start(schedule.getIsRepeat() ? recurringSchedule.getStart() : null)
+                .end(schedule.getIsRepeat() ? recurringSchedule.getEnd() : null)
+                .build();
     }
 
     public static Schedule toShareSchedule(User user, ScheduleRequestDTO.ScheduleCommandDTO request, String shareId){
