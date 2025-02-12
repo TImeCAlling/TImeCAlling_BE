@@ -8,6 +8,6 @@ public class PushNotificationRequestDTO {
     public static class NotificationDetails {
         private Long receiverId;
         private String shareId;
-        private String body;
+        private String scheduledDate;
     }
 }
