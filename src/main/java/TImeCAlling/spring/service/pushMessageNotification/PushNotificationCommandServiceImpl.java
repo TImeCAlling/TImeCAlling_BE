@@ -31,7 +31,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
@@ -129,16 +132,26 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        String body = String.format("%s님이 %s라고 하셨어!", user.getNickname(), notificationDTO.getBody());
+        int randomIndex = ThreadLocalRandom.current().nextInt(0, PushDefaultMessage.values().length);
+        String defaultMessage = PushDefaultMessage.fromIndex(randomIndex)
+                .orElse(PushDefaultMessage.PUSH_DEFAULT_MESSAGE0.getBody());
 
+        Map<String, String> data = new HashMap<>();
+        data.put("title", schedule.getName());
+        data.put("body", defaultMessage);
+        data.put("scheduledDate", notificationDTO.getScheduledDate());
+        data.put("senderNickname", user.getNickname());
+
+        /*body 부분 notificationDTO.getBody() -> defaultMessage 랜덤 메세지로 수정*/
         FcmMessageDTO fcmMessageDTO = FcmMessageDTO.builder()
                 .message(FcmMessageDTO.Message.builder()
                         .token(receiverFcmToken)
-                        .notification(FcmMessageDTO.Notification.builder()
-                                .title(schedule.getName())
-                                .body(body)
-                                .build()
-                        ).build()).validateOnly(false).build();
+                        .data(data)
+                        .android(FcmMessageDTO.AndroidConfig.builder()
+                                .ttl("0s")
+                                .priority("high")
+                                .build())
+                        .build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessageDTO);
     }

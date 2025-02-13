@@ -53,8 +53,8 @@ public class PushMessageNotificationController {
      */
     @Operation(
             summary = "같은 일정을 공유하는 팀원에게 FCM 알람이 가도록합니다.",
-            description = "수신자의 id와 공유하고 싶은 스케줄은 'shareId'를 통해 보내주세요. body 같은 내용 추가 부분도" +
-            "확장성을 고려하여 미리 추가하였습니다. 없으시면 기본 메세지로 json을 날려주세요!"
+            description = "수신자의 id와 공유하고 싶은 스케줄은 'shareId'를 통해 보내주세요. body 부분은 랜덤 기본 메세지로" +
+            "수정되었습니다 추가적으로, 스케줄 날짜를 scheduledDate로 보내주세요(2025-02-12)!"
     )
     @PostMapping()
     public ApiResponse<PushNotificationResponseDTO.NotificationDetails> userWakeUp(
