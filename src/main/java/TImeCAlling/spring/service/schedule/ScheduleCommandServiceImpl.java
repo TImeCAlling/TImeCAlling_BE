@@ -141,23 +141,28 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         if (schedule.getShareId() == null)
             return;
 
-        // 반복 요일 순서 상관없이 검증
-        Set<RepeatDay> repeatDays = new HashSet<>(schedule.getRecurringSchedule().getRepeatDays());
-        Set<RepeatDay> requestRepeatDays = request.getRepeatDays().stream()
-                .map(RepeatDay::valueOf)
-                .collect(Collectors.toSet());
-
         if (!schedule.getName().equals(request.getName()) ||
                 !schedule.getChecklists().get(0).getDate().equals(request.getMeetDate()) ||
                 !schedule.getMeetTime().equals(request.getMeetTime()) ||
                 !schedule.getPlace().equals(request.getPlace()) ||
                 !schedule.getLongitude().equals(request.getLongitude()) ||
                 !schedule.getLatitude().equals(request.getLatitude()) ||
-                !schedule.getIsRepeat().equals(request.getIsRepeat()) ||
-                !repeatDays.equals(requestRepeatDays) ||
-                !schedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
-                !schedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {
+                !schedule.getIsRepeat().equals(request.getIsRepeat())) {
             throw new ScheduleHandler(ErrorStatus.SCHEDULE_MISMATCH);
+        }
+
+        // isRepeat가 true일 때, 반복 일정 검증
+        if (schedule.getIsRepeat()) {
+            Set<RepeatDay> repeatDays = new HashSet<>(schedule.getRecurringSchedule().getRepeatDays());
+            Set<RepeatDay> requestRepeatDays = request.getRepeatDays().stream()
+                    .map(RepeatDay::valueOf)
+                    .collect(Collectors.toSet());
+
+            if (!repeatDays.equals(requestRepeatDays) ||
+                    !schedule.getRecurringSchedule().getStart().equals(request.getStart()) ||
+                    !schedule.getRecurringSchedule().getEnd().equals(request.getEnd())) {
+                throw new ScheduleHandler(ErrorStatus.SCHEDULE_MISMATCH);
+            }
         }
     }
 

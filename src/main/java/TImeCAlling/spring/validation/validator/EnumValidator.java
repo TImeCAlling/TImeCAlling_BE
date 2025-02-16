@@ -14,7 +14,12 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, Object> {
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        
+
+        // 요청값이 null일 경우 true
+        if (value == null) {
+            return true;
+        }
+
         // Enum 값 목록
         Enum<?>[] enumValues = this.annotation.enumClass().getEnumConstants();
         if (enumValues == null) {
