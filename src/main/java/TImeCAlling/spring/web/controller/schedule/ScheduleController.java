@@ -109,7 +109,7 @@ public class ScheduleController {
             @PathVariable @ExistSchedule Long scheduleId,
             @AuthenticationPrincipal User user) {
         Schedule schedule = scheduleQueryService.getSchedule(scheduleId, user);
-        return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule));
+        return ApiResponse.onSuccess(ScheduleConverter.toScheduleStatusDTO(schedule, user));
     }
 
 
