@@ -12,9 +12,9 @@ import TImeCAlling.spring.web.dto.fcm.FcmMessageDTO;
 import TImeCAlling.spring.web.dto.fcm.FcmTokenResponseDTO;
 import TImeCAlling.spring.web.dto.pushMessageNotification.PushNotificationRequestDTO;
 import TImeCAlling.spring.web.dto.pushMessageNotification.PushNotificationResponseDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -85,6 +85,9 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
 
         ResponseEntity<String> response = restTemplate.exchange(fcmApiUrl, HttpMethod.POST, entity, String.class);
 
+        //응답 체크용
+//        System.out.println("response body : " + response.getBody());
+
         if (response.getStatusCode() == HttpStatus.OK) {
             return PushNotificationResponseDTO.NotificationDetails.builder()
                     .receiverId(notificationDTO.getReceiverId())
@@ -127,10 +130,10 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
      * @param user 발신자 정보
      * @return String
      */
-    private String makeMessage(String receiverFcmToken, Schedule schedule,
-           PushNotificationRequestDTO.NotificationDetails notificationDTO, User user) throws JsonProcessingException {
+    public String makeMessage(String receiverFcmToken, Schedule schedule,
+           PushNotificationRequestDTO.NotificationDetails notificationDTO, User user) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        Gson gson = new GsonBuilder().setLenient().create();
 
         int randomIndex = ThreadLocalRandom.current().nextInt(0, PushDefaultMessage.values().length);
         String defaultMessage = PushDefaultMessage.fromIndex(randomIndex)
@@ -153,7 +156,9 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
                                 .build())
                         .build()).validateOnly(false).build();
 
-        return objectMapper.writeValueAsString(fcmMessageDTO);
+        //gson 정상 json인지 확인
+//        System.out.println(gson.toJson(fcmMessageDTO));
+        return gson.toJson(fcmMessageDTO);
     }
 
 }
