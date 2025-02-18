@@ -68,7 +68,7 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
         String receiverFcmToken = userRepository.findFcmTokenByUserId(notificationDTO.getReceiverId())
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        Schedule schedule = scheduleRepository.findByShareIdAndUser(notificationDTO.getShareId(), user)
+        Schedule schedule = scheduleRepository.findFirstByShareIdAndUser(notificationDTO.getShareId(), user)
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
 
         String message = makeMessage(receiverFcmToken, schedule, notificationDTO, user);
@@ -140,10 +140,10 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
                 .orElse(PushDefaultMessage.PUSH_DEFAULT_MESSAGE0.getBody());
 
         Map<String, String> data = new HashMap<>();
-        data.put("title", schedule.getName());
+        data.put("title", schedule.getName() != null ? schedule.getName() : "스케줄 제목 없음");
         data.put("body", defaultMessage);
-        data.put("scheduledDate", notificationDTO.getScheduledDate());
-        data.put("senderNickname", user.getNickname());
+        data.put("scheduledDate", notificationDTO.getScheduledDate() != null ? notificationDTO.getScheduledDate() : "N/A");
+        data.put("senderNickname", user.getNickname() != null ? user.getNickname() : "기본 이름");
 
         /*body 부분 notificationDTO.getBody() -> defaultMessage 랜덤 메세지로 수정*/
         FcmMessageDTO fcmMessageDTO = FcmMessageDTO.builder()
