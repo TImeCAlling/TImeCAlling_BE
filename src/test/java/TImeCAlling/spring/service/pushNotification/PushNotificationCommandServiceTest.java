@@ -1,9 +1,12 @@
 package TImeCAlling.spring.service.pushNotification;
 
+import TImeCAlling.spring.domain.Schedule;
 import TImeCAlling.spring.domain.User;
 import TImeCAlling.spring.repository.user.UserRepository;
 import TImeCAlling.spring.service.pushMessageNotification.PushNotificationCommandServiceImpl;
 import TImeCAlling.spring.web.dto.fcm.FcmTokenResponseDTO;
+import TImeCAlling.spring.web.dto.pushMessageNotification.PushNotificationRequestDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,5 +53,30 @@ public class PushNotificationCommandServiceTest {
 
         //메서드 호출 횟수 검증
         verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    @DisplayName("JSON 확인")
+    void makeMessageTest() throws JsonProcessingException {
+
+        String receiverFcmToken = "e_Ts6fPFR72YT9h4DSJV6y:APA91bHvNUdr8uOgjX0WnmF6LvC-TZKm98NyKRI4Seh7XT6YtlAi4NsKN4w9mtBWdsfE0l4ADy5-Om_TWblTvT_vGmcFUEx_SO9MiQqchsgbvcn1OvEeWqg";
+        User user = User.builder()
+                .id(1L)
+                .nickname("모리테스터")
+                .build();
+
+        Schedule schedule = Schedule.builder()
+                .name("테스트")
+                .build();
+
+        PushNotificationRequestDTO.NotificationDetails notificationDTO =
+                PushNotificationRequestDTO.NotificationDetails.builder()
+                .shareId("test-test-test")
+                .receiverId(5L)
+                .scheduledDate("2024-02-19")
+                .build();
+
+        String jsonMessage = pushNotificationCommandService.makeMessage(receiverFcmToken, schedule, notificationDTO, user);
+        System.out.println("Generated JSON Message: " + jsonMessage);
     }
 }
