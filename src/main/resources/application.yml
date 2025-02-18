@@ -73,6 +73,6 @@ spring:
       ddl-auto: none
 ---
 fcm:
-  firebase_config_path: firebase_service_key.json
+  firebase_config_path: firebase/firebase_service_key.json
   api_url: https://fcm.googleapis.com/v1/projects/timecalling-2025/messages:send
 
