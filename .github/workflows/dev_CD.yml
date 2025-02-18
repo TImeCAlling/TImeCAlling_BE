@@ -26,14 +26,15 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-dev.yml
         shell: bash
 
+      - name: Create firebase directory
+        run: mkdir -p ./src/main/resources/firebase
+
       - name: Make firebase_service_key.json
         uses: jsdaniell/create-json@v1.2.2
         with:
           name: "firebase_service_key.json"
           json: ${{ secrets.FIREBASE_SERVICE_KEY }}
-
-      - name: Move firebase_service_key.json to the desired directory
-        run: mv firebase_service_key.json src/main/resources/
+          dir: 'src/main/resources/firebase/'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
