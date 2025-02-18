@@ -29,5 +29,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Integer countByShareId(String shareId);
 
-    Optional<Schedule> findByShareIdAndUser(String shareId, User user);
+    @Query("SELECT s FROM Schedule s WHERE s.shareId = :shareId AND s.user = :user")
+    Optional<Schedule> findFirstByShareIdAndUser(@Param("shareId") String shareId, @Param("user") User user);
 }
