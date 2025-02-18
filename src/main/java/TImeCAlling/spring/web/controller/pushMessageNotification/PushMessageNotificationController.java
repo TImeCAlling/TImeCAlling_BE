@@ -35,7 +35,8 @@ public class PushMessageNotificationController {
      */
     @Operation(
             summary = "FCM 토큰 업데이트",
-            description = "사용자의 FCM 토큰을 업데이트합니다. 클라이언트가 새 FCM 토큰을 전달해야 합니다."
+            description = "사용자의 FCM 토큰을 업데이트합니다. 클라이언트가 새 FCM 토큰을 전달해야 합니다. " +
+                    "스웨거에 응답 바디 오류가 있으니 꼭 노션으로 확인해주세요!"
     )
     @PatchMapping("/fcm-token")
     public ApiResponse<FcmTokenResponseDTO.UpdateDTO> updateFcmToken(
