@@ -7,7 +7,8 @@ public enum External {
     WEATHER("날씨"),
     TRAFFIC_CONDITIONS("교통상황"),
     UNEXPECTED_PERSONAL_ISSUE("예상치 못한 개인 사정"),
-    OTHER("기타");
+    OTHER("기타"),
+    EMPTY("없음");
 
     private final String description;
 

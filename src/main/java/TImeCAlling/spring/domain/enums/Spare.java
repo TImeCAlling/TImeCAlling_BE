@@ -6,7 +6,8 @@ import TImeCAlling.spring.apiPayload.exception.handler.ChecklistHandler;
 public enum Spare {
     MORE_THAN_10_MIN("10분 이상"),
     FIVE_TO_TEN_MIN("5분 ~ 10분"),
-    ON_TIME("거의 정시");
+    ON_TIME("거의 정시"),
+    EMPTY("없음");
     
     private final String description;
     
