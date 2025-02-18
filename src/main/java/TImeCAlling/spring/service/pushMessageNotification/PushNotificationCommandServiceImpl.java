@@ -12,9 +12,9 @@ import TImeCAlling.spring.web.dto.fcm.FcmMessageDTO;
 import TImeCAlling.spring.web.dto.fcm.FcmTokenResponseDTO;
 import TImeCAlling.spring.web.dto.pushMessageNotification.PushNotificationRequestDTO;
 import TImeCAlling.spring.web.dto.pushMessageNotification.PushNotificationResponseDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -68,7 +68,7 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
         String receiverFcmToken = userRepository.findFcmTokenByUserId(notificationDTO.getReceiverId())
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        Schedule schedule = scheduleRepository.findByShareIdAndUser(notificationDTO.getShareId(), user)
+        Schedule schedule = scheduleRepository.findFirstByShareIdAndUser(notificationDTO.getShareId(), user)
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
 
         String message = makeMessage(receiverFcmToken, schedule, notificationDTO, user);
@@ -84,6 +84,9 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
         HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(fcmApiUrl, HttpMethod.POST, entity, String.class);
+
+        //응답 체크용
+//        System.out.println("response body : " + response.getBody());
 
         if (response.getStatusCode() == HttpStatus.OK) {
             return PushNotificationResponseDTO.NotificationDetails.builder()
@@ -127,20 +130,20 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
      * @param user 발신자 정보
      * @return String
      */
-    private String makeMessage(String receiverFcmToken, Schedule schedule,
-           PushNotificationRequestDTO.NotificationDetails notificationDTO, User user) throws JsonProcessingException {
+    public String makeMessage(String receiverFcmToken, Schedule schedule,
+           PushNotificationRequestDTO.NotificationDetails notificationDTO, User user) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        Gson gson = new GsonBuilder().setLenient().create();
 
         int randomIndex = ThreadLocalRandom.current().nextInt(0, PushDefaultMessage.values().length);
         String defaultMessage = PushDefaultMessage.fromIndex(randomIndex)
                 .orElse(PushDefaultMessage.PUSH_DEFAULT_MESSAGE0.getBody());
 
         Map<String, String> data = new HashMap<>();
-        data.put("title", schedule.getName());
+        data.put("title", schedule.getName() != null ? schedule.getName() : "스케줄 제목 없음");
         data.put("body", defaultMessage);
-        data.put("scheduledDate", notificationDTO.getScheduledDate());
-        data.put("senderNickname", user.getNickname());
+        data.put("scheduledDate", notificationDTO.getScheduledDate() != null ? notificationDTO.getScheduledDate() : "N/A");
+        data.put("senderNickname", user.getNickname() != null ? user.getNickname() : "기본 이름");
 
         /*body 부분 notificationDTO.getBody() -> defaultMessage 랜덤 메세지로 수정*/
         FcmMessageDTO fcmMessageDTO = FcmMessageDTO.builder()
@@ -153,7 +156,9 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
                                 .build())
                         .build()).validateOnly(false).build();
 
-        return objectMapper.writeValueAsString(fcmMessageDTO);
+        //gson 정상 json인지 확인
+//        System.out.println(gson.toJson(fcmMessageDTO));
+        return gson.toJson(fcmMessageDTO);
     }
 
 }
