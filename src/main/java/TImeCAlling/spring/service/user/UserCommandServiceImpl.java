@@ -86,7 +86,9 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         FreeTime freeTime = request.getFreeTime() != null ? FreeTime.valueOf(request.getFreeTime()) : null;
 
-        if (profileImage != null) {
+        // 프로필 이미지 변경
+        if (!s3Service.isFileExists(profileImage)) {
+
             ProfileImage image = user.getProfileImage();
             s3Service.deleteImageFromS3(image.getFileUrl());
 
