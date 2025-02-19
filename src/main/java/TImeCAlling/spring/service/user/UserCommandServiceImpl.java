@@ -82,9 +82,9 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
     
     @Override
-    public UserResponseDTO.UserUpdateDTO updateUser(User user, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO updateDTO) {
+    public UserResponseDTO.UserUpdateDTO updateUser(User user, MultipartFile profileImage, UserRequestDTO.UserUpdateDTO request) {
 
-        FreeTime freeTime = updateDTO.getFreeTime() != null ? FreeTime.valueOf(updateDTO.getFreeTime()) : null;
+        FreeTime freeTime = request.getFreeTime() != null ? FreeTime.valueOf(request.getFreeTime()) : null;
 
         if (profileImage != null) {
             ProfileImage image = user.getProfileImage();
@@ -95,7 +95,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             image.update(newImageUrl, fileName);
         }
 
-        user.update(updateDTO.getNickname(), updateDTO.getAvgPrepTime(), freeTime);
+        user.update(request.getNickname(), request.getAvgPrepTime(), freeTime);
 
         return UserConverter.toUserUpdateDTO(userRepository.save(user));
     }
@@ -120,10 +120,12 @@ public class UserCommandServiceImpl implements UserCommandService {
         savedUser.setRefreshToken(refreshToken);
         userRepository.save(savedUser);
 
-        String imageUrl = s3Service.uploadFile(profileImage);
-        String fileName = getFileName(imageUrl);
-        ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl, fileName);
-        profileImageRepository.save(savedProfileImage);
+        if (profileImage != null) {
+            String imageUrl = s3Service.uploadFile(profileImage);
+            String fileName = getFileName(imageUrl);
+            ProfileImage savedProfileImage = ProfileImageConverter.toProfileImage(savedUser, imageUrl, fileName);
+            profileImageRepository.save(savedProfileImage);
+        }
 
         return UserConverter.toUserSignUpResultDTO(savedUser, accessToken, refreshToken);
     }

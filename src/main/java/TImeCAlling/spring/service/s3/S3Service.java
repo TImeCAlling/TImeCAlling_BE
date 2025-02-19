@@ -49,7 +49,7 @@ public class S3Service {
     }
 
     private void validateFile(MultipartFile file) {
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             throw new S3Handler(ErrorStatus.FILE_IS_EMPTY);
         }
 

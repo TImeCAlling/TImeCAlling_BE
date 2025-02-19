@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping(value = "/kakao/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "카카오 회원가입", description = "카카오 엑세스 토큰과 가입할 회원의 정보를 입력하세요.")
-    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart MultipartFile profileImage,
+    public ApiResponse<UserResponseDTO.UserSignUpResultDTO> kakaoSignUp (@RequestPart(required = false) MultipartFile profileImage,
                                                                          @RequestPart @Valid UserRequestDTO.UserSignUpDTO request) {
 
         UserResponseDTO.UserSignUpResultDTO response = userCommandService.kakaoSignUp(profileImage, request);
@@ -58,7 +58,6 @@ public class UserController {
     public ApiResponse<UserResponseDTO.UserUpdateDTO> updateUser(@AuthenticationPrincipal User user,
                                                                  @RequestPart(required = false) MultipartFile profileImage,
                                                                  @RequestPart UserRequestDTO.UserUpdateDTO userUpdateDTO) {
-        
         return ApiResponse.onSuccess(userCommandService.updateUser(user, profileImage, userUpdateDTO));
     }
     
