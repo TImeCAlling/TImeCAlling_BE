@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
@@ -24,7 +25,16 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
                                                           @Param("date") LocalDate date);
 
     Checklist findByScheduleIdAndDate(Long scheduleId, LocalDate date);
-
+    
+    @Query("""
+            select c from Checklist c
+            JOIN fetch c.schedule s
+            where c.isWritten = false
+            and ( c.date < :today OR (c.date = :today AND s.meetTime < :nowTime))
+            and s.user.id = :userId
+            """)
+    List<Checklist> findPastChecklists(LocalDate today, LocalTime nowTime, Long userId);
+    
     @Modifying
     @Query(
             value = "DELETE from Checklist where date < :date and is_written = true",

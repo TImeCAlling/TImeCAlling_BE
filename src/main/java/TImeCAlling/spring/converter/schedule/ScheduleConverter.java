@@ -227,6 +227,22 @@ public class ScheduleConverter {
                 .build();
     }
     
+    public static ScheduleResponseDTO.PastCheckListsDTO toPastCheckListsDTO(List<Checklist> checklists) {
+        List<ScheduleResponseDTO.PastCheckListDTO> dtoList = checklists.stream()
+                .map(checklist -> ScheduleResponseDTO.PastCheckListDTO.builder()
+                        .scheduleId(checklist.getSchedule().getId())
+                        .checkListId(checklist.getId())
+                        .date(checklist.getDate())
+                        .name(checklist.getSchedule().getName())
+                        .body(checklist.getSchedule().getBody())
+                        .meetTime(checklist.getSchedule().getMeetTime())
+                        .build()
+                ).collect(Collectors.toList());
+        return ScheduleResponseDTO.PastCheckListsDTO.builder()
+                .checkLists(dtoList)
+                .build();
+    }
+    
     
     private static List<String> getRepeatDays(Checklist checklist) {
         if (checklist.getSchedule().getIsRepeat()) {
