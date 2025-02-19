@@ -27,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -160,4 +161,13 @@ public class ScheduleController {
         List<Checklist> checklists = checklistQueryService.getCheckListByDateAndUser(LocalDate.now(), user);
         return ApiResponse.onSuccess(ScheduleConverter.toTodaySchedulesDTO(checklists));
     }
+    
+    @Operation(summary = "지난 미작성 체크리스트 조회 API", description = "지난 일정 중 체크리스트 작성을 안한 일정을 조회하는 API입니다.")
+    @GetMapping("/past")
+    public ApiResponse<ScheduleResponseDTO.PastCheckListsDTO> getPastCheckLists(
+            @AuthenticationPrincipal User user) {
+        List<Checklist> checklists = checklistQueryService.getPastCheckList(LocalDateTime.now(), user);
+        return ApiResponse.onSuccess(ScheduleConverter.toPastCheckListsDTO(checklists));
+    }
+    
 }

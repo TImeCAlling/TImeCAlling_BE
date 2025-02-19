@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,5 +22,10 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
     @Override
     public List<Checklist> getCheckListByDateAndUser(LocalDate date, User user) {
         return checklistRepository.findChecklistsByScheduleUserIdAndDate(user.getId(), date);
+    }
+    
+    @Override
+    public List<Checklist> getPastCheckList(LocalDateTime dateTime, User user) {
+        return checklistRepository.findPastChecklists(dateTime.toLocalDate(), dateTime.toLocalTime(), user.getId());
     }
 }

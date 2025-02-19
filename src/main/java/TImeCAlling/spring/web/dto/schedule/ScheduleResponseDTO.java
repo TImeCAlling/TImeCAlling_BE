@@ -156,4 +156,25 @@ public class ScheduleResponseDTO {
     public static class TodaySchedulesDTO {
         List<TodayScheduleDTO> schedules;
     }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PastCheckListsDTO {
+        List<PastCheckListDTO> checkLists;
+    }
+    
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PastCheckListDTO {
+        Long scheduleId;
+        Long checkListId;
+        String name;
+        String body;
+        LocalTime meetTime;
+        LocalDate date;
+    }
 }
