@@ -71,7 +71,7 @@ public class UserConverter {
         
         return ScheduleResponseDTO.MyScheduleRateDTO.builder()
                 .total(success + failed)
-                .failed(success)
+                .failed(failed)
                 .success(success)
                 .successRate(percentage)
                 .build();
