@@ -9,7 +9,8 @@ public enum Reason {
     WRONG_DIRECTION("길을 잘못 찾음"),
     EARLY_DEPARTURE("일찍 출발"),
     SMOOTH_TRAFFIC("교통상황 원활"),
-    CLOSE_TO_DESTINATION("목적지와 가까움");
+    CLOSE_TO_DESTINATION("목적지와 가까움"),
+    EMPTY("없음");
     
     private final String description;
     

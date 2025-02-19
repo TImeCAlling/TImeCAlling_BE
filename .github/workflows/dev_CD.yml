@@ -32,8 +32,9 @@ jobs:
       - name: Make firebase_service_key.json
         uses: jsdaniell/create-json@v1.2.2
         with:
-          name: "./src/main/resources/firebase_service_key.json"  # 원하는 경로 지정
+          name: "firebase_service_key.json"
           json: ${{ secrets.FIREBASE_SERVICE_KEY }}
+          dir: 'src/main/resources/firebase/'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew

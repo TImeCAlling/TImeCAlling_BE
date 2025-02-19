@@ -68,7 +68,7 @@ public class PushNotificationCommandServiceImpl implements PushNotificationComma
         String receiverFcmToken = userRepository.findFcmTokenByUserId(notificationDTO.getReceiverId())
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-        Schedule schedule = scheduleRepository.findFirstByShareIdAndUser(notificationDTO.getShareId(), user)
+        Schedule schedule = scheduleRepository.findByShareIdAndUserId(notificationDTO.getShareId(), user.getId())
                 .orElseThrow(() -> new ScheduleHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
 
         String message = makeMessage(receiverFcmToken, schedule, notificationDTO, user);

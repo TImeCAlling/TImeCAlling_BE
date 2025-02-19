@@ -48,7 +48,7 @@ public class Checklist extends BaseEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    public void updateChecklist(Boolean isSuccess, Spare spare, Late late, Reason reason, External external, boolean isFit) {
+    public void updateChecklist(Boolean isSuccess, Spare spare, Late late, Reason reason, External external, Boolean isFit) {
         this.isSuccess = isSuccess;
         this.spare = spare;
         this.late = late;
