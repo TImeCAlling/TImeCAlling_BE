@@ -13,13 +13,11 @@ import java.util.Optional;
 @Getter
 @RequiredArgsConstructor
 public enum PushDefaultMessage {
-    PUSH_DEFAULT_MESSAGE0(0, "푸시 테스트 메세지 0"),
-    PUSH_DEFAULT_MESSAGE1(1, "푸시 테스트 메세지 1"),
-    PUSH_DEFAULT_MESSAGE2(2, "푸시 테스트 메세지 2"),
-    PUSH_DEFAULT_MESSAGE3(3, "푸시 테스트 메세지 3"),
-    PUSH_DEFAULT_MESSAGE4(4, "푸시 테스트 메세지 4"),
-    PUSH_DEFAULT_MESSAGE5(5, "푸시 테스트 메세지 5"),
-    PUSH_DEFAULT_MESSAGE6(6, "푸시 테스트 메세지 6");
+    PUSH_DEFAULT_MESSAGE0(0, "벌써 약속 시간 다가와요!"),
+    PUSH_DEFAULT_MESSAGE1(1, "슬슬 나가실 시간이에요!"),
+    PUSH_DEFAULT_MESSAGE2(2, "준비되셨나요!"),
+    PUSH_DEFAULT_MESSAGE3(3, "불은 끄셨나요!"),
+    PUSH_DEFAULT_MESSAGE4(4, "잊어버린 물건은 없으신가요!");
 
     private final int idx;
     private final String body;
