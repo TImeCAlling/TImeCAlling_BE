@@ -40,6 +40,7 @@ public class UserConverter {
     }
 
     public static UserResponseDTO.UserMyPageDTO toUserMyPageDTO(User user) {
+        String fileUrl = (user.getProfileImage() != null) ? user.getProfileImage().getFileUrl() : null;
         return UserResponseDTO.UserMyPageDTO.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
@@ -47,7 +48,7 @@ public class UserConverter {
                 .freeTime(String.valueOf(user.getFreeTime()))
                 .success(user.getSuccess())
                 .failed(user.getFailed())
-                .profileImage(user.getProfileImage().getFileUrl())
+                .profileImage(fileUrl)
                 .build();
     }
 

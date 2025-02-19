@@ -29,7 +29,7 @@ public class S3Service {
     public String uploadFile(MultipartFile file) {
         validateFile(file);
 
-        String fileName = generateUniqueFileName(file.getOriginalFilename());
+        String fileName = file.getOriginalFilename();
         ObjectMetadata metadata = new ObjectMetadata();
 
         try (InputStream inputStream = file.getInputStream()) {
@@ -49,7 +49,7 @@ public class S3Service {
     }
 
     private void validateFile(MultipartFile file) {
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             throw new S3Handler(ErrorStatus.FILE_IS_EMPTY);
         }
 
@@ -59,11 +59,10 @@ public class S3Service {
         }
     }
 
-    private String generateUniqueFileName(String originalFilename) {
-        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String uniqueId = UUID.randomUUID().toString().replace("-", "");
-        return uniqueId + extension;
-    }
+//    private String generateUniqueFileName(String originalFilename) {
+//        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+//        return extension;
+//    }
 
     public void deleteImageFromS3(String imageAddress){
         String key = getKeyFromImageAddress(imageAddress);
@@ -81,6 +80,19 @@ public class S3Service {
             return decodingKey.substring(1); // 맨 앞의 '/' 제거
         }catch (MalformedURLException | UnsupportedEncodingException e){
             throw new S3Handler(ErrorStatus.IO_EXCEPTION_ON_IMAGE_DELETE);
+        }
+    }
+
+    public boolean isFileExists(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        try {
+            amazonS3.getObjectMetadata(bucketName, fileName);
+            return true;  // 파일이 존재하면 true 반환
+        } catch (AmazonS3Exception e) {
+            if (e.getStatusCode() == 404) {
+                return false;  // 파일이 없으면 false 반환
+            }
+            throw e;  // 다른 예외는 그대로 던지기
         }
     }
 }
