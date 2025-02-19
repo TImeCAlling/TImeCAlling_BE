@@ -138,14 +138,34 @@ public class ScheduleConverter {
                 .build();
     }
 
-    public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule) {
+    public static ScheduleResponseDTO.ScheduleStatusDTO toScheduleStatusDTO(Schedule schedule, User user) {
         
         Long leftTime = ChronoUnit.MINUTES.between(LocalTime.now(), schedule.getMeetTime());
+        int spareTime;
+        int plusTime;
+        double checkPercent = (double) user.getSuccess() / (user.getSuccess() + user.getFailed());
+        
+        if (checkPercent > 90.0) {
+            plusTime = 0;
+        } else if (checkPercent > 60.0) {
+            plusTime = 5;
+        } else if (checkPercent > 40.0) {
+            plusTime = 10;
+        } else {
+            plusTime = 15;
+        }
+        
+        switch (schedule.getFreeTime()) {
+            case TIGHT -> spareTime = 5;
+            case RELAXED -> spareTime = 10;
+            case PLENTY -> spareTime = 15;
+            default -> spareTime = 0;
+        }
         
         return ScheduleResponseDTO.ScheduleStatusDTO.builder()
                 .name(schedule.getName())
                 .meetTime(schedule.getMeetTime())
-                .totalTime(LocalTime.MIN.plusMinutes(schedule.getMoveTime()))
+                .totalTime(LocalTime.MIN.plusMinutes(schedule.getMoveTime()).plusMinutes(user.getAvgPrepTime()).plusMinutes(spareTime).plusMinutes(plusTime))
                 .leftTime(leftTime)
                 .build();
     }
