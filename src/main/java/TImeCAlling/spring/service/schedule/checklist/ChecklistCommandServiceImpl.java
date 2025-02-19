@@ -150,7 +150,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService {
     @Transactional
     public Long updateChecklist(Long scheduleId, Long userId, ChecklistRequestDTO.ChecklistUpdateDTO request) {
         Checklist checklist = checklistRepository.findByScheduleIdAndDate(scheduleId, request.getDate());
-        if (checklist.getIsSuccess() == null) {
+        if (checklist.getIsWritten() == false) {
             User user = userQueryService.findOne(userId);
             user.addResult(request.getIsSuccess());
         }
